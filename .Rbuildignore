@@ -1,0 +1,6 @@
+^\.git$
+^\.gitignore$
+^.*\.Rproj$
+^\.Rproj\.user$
+^cataScience_.*\.tar\.gz$
+^.*\.Rcheck$
