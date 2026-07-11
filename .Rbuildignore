@@ -1,5 +1,6 @@
 ^\.git$
 ^\.gitignore$
+^cran-comments\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^cataScience_.*\.tar\.gz$
