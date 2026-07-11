@@ -1,6 +1,15 @@
 # Packages attached at startup. Keep this list minimal: every library() call
 # here slows down app launch, which matters for the packaged desktop build.
-library(tidyverse)
+# Individual tidyverse members are attached instead of the tidyverse
+# meta-package so the cataScience package can declare real dependencies.
+library(dplyr)
+library(forcats)
+library(ggplot2)
+library(purrr)
+library(readr)
+library(stringr)
+library(tibble)
+library(tidyr)
 library(shiny)
 library(markdown) # shiny::markdown()/includeMarkdown() load it at runtime; keep the dep visible to rsconnect
 library(bslib)
