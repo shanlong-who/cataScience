@@ -1,3 +1,9 @@
+## Resubmission
+
+This version (2.1.1) supersedes 2.1.0, submitted earlier today
+(2026-07-11), which can be discarded. It fixes an image-display bug in the
+bundled app that was found immediately after the first submission.
+
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note

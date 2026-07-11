@@ -389,7 +389,9 @@ ui <- page_navbar(
     useBusyIndicators(),
     tags$head(
       tags$link(rel = "icon", type = "image/jpeg", href = "1-logo.jpg"),
-      tags$link(rel = "stylesheet", href = "custom.css")
+      # The ?v= query busts browser caches when the stylesheet changes;
+      # bump it together with meaningful CSS edits.
+      tags$link(rel = "stylesheet", href = "custom.css?v=2.1.1")
     )
   ),
   nav_panel("Home", ui_home, icon = icon("house")),

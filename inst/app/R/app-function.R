@@ -189,9 +189,11 @@ app_img <- function(file, alt = "", class = "img-content", style = NULL) {
   tags$img(src = file.path("picture", file), alt = alt, class = class, style = style)
 }
 
-# Markdown include shortcut for content pages.
+# Markdown include shortcut for content pages. The md-page class constrains
+# images to the card width (see custom.css) — markdown-rendered <img> tags
+# carry no CSS class, and cards clip overflow.
 md_page <- function(file) {
-  div(class = "p-2", includeMarkdown(file.path("markdown", file)))
+  div(class = "p-2 md-page", includeMarkdown(file.path("markdown", file)))
 }
 
 # Compact HTML table for small teaching examples (statistics pages).

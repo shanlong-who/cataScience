@@ -245,6 +245,17 @@
   padding: 0 0.1rem;
 }
 
+/* ---- Markdown content pages ---------------------------------------------- */
+
+/* Images rendered from markdown carry no class; without a cap, wide figures
+   are clipped by the card's overflow: hidden. Percentage width attributes
+   (e.g. width="60%") still apply below the cap. */
+.md-page img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
 /* ---- Prompt / code blocks ------------------------------------------------ */
 
 .prompt-block {
