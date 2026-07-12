@@ -38,9 +38,9 @@ cleaningResetButton <- function(id) {
 cleaningPreviewUI <- function(id) {
   ns <- NS(id)
   tagList(
-    DTOutput(ns("datatable")),
+    div(DTOutput(ns("datatable")), style = "clear: both; margin-bottom: 15px;"),
     div(
-      style = "overflow-x: auto; white-space: pre-wrap;",
+      style = "overflow-x: auto; white-space: pre; clear: both; margin-top: 15px;",
       verbatimTextOutput(ns("glimpse"))
     )
   )
@@ -281,7 +281,14 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
     )
     output$glimpse <- renderPrint({
       req(data_rv())
-      skim(data_rv())
+      old_width <- getOption("width")
+      old_twidth <- getOption("tibble.width")
+      options(width = 150, tibble.width = Inf)
+      on.exit({
+        options(width = old_width)
+        options(tibble.width = old_twidth)
+      })
+      print(skim(data_rv()))
     })
 
     # Missing data ---------------------------------------------------------
