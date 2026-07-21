@@ -20,6 +20,12 @@ clean, visualize, and understand data, then learn to work with AI
 assistants safely. The app opens in your default browser.
 }
 \examples{
+# The app is bundled with the package and launched from its own directory.
+app_dir <- system.file("app", package = "cataScience")
+file.exists(file.path(app_dir, "app.R"))
+
+# Starting the app needs an interactive session, since it blocks R until
+# the browser window is closed.
 if (interactive()) {
   run_cata()
 }

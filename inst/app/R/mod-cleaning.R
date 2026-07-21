@@ -487,7 +487,10 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       validate(need(ncol(df_num) > 0, "No numeric variables are available."))
       df_num %>%
         mutate(.id = seq_len(nrow(.))) %>%
-        pivot_longer(-.id, names_to = "name", values_to = "value", names_transform = fct)
+        pivot_longer(-.id, names_to = "name", values_to = "value", names_transform = fct) %>%
+        # Boxplots ignore missing values anyway; dropping them here keeps the
+        # console free of "removed n rows" warnings while data is being cleaned.
+        filter(!is.na(value))
     })
 
     output$p_outlier <- renderPlotly({

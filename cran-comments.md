@@ -1,8 +1,33 @@
 ## Resubmission
 
-This version (2.1.1) supersedes 2.1.0, submitted earlier today
-(2026-07-11), which can be discarded. It fixes an image-display bug in the
-bundled app that was found immediately after the first submission.
+This is a resubmission of a new package. Thanks for the review of 2.1.1.
+
+> All your examples are wrapped in if(interactive()) and therefore do not
+> get tested. Since we cannot automatically check shiny interfaces, the best
+> solution would be to write tests for your not exported function (e.g.
+> using package testthat).
+
+The package now ships a `testthat` suite (edition 3) that tests the code the
+examples cannot reach. Nothing is skipped on CRAN; the tests run in about
+50 seconds.
+
+* Data-cleaning helpers of the bundled app: IQR outlier detection,
+  winsorizing, mean/median imputation, and file import, including their
+  error paths.
+* The quiz and cleaning module servers, driven end to end with
+  `shiny::testServer()`: importing the example dataset, dropping and
+  imputing missing values, removing and winsorizing outliers, text
+  recoding, reset buttons, and quiz scoring, navigation and topic filters.
+* The bundled question bank: every answer is one of the offered choices,
+  every referenced image exists, and every answer plot builds.
+* A smoke test that sources `inst/app/app.R` and renders the whole UI to
+  HTML, so a breaking change in R or in an imported package is detected.
+* `app_dependencies()`, the unexported function that keeps the Imports list
+  honest, is checked against DESCRIPTION.
+
+The example of `run_cata()` also has a part that runs unconditionally now.
+Starting the app itself still needs `interactive()`, because it blocks the R
+session until the browser window is closed.
 
 ## R CMD check results
 

@@ -1,6 +1,6 @@
 Package: cataScience
 Title: Interactive Training App for Data Science and AI Skills
-Version: 2.1.1
+Version: 2.1.2
 Authors@R: person(given = "Shanlong",
                   family = "Ding",
                   role = c("aut", "cre"),
@@ -44,4 +44,8 @@ Imports:
     tibble,
     tidyr,
     VIM
+Suggests:
+    testthat (>= 3.0.0),
+    withr
+Config/testthat/edition: 3
 Config/roxygen2/version: 8.0.0

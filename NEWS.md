@@ -1,3 +1,14 @@
+# cataScience 2.1.2
+
+* Added a `testthat` test suite covering the app code that `R CMD check`
+  cannot reach through the examples: the data-cleaning helpers (outlier
+  detection, winsorizing, imputation, file import), the quiz and cleaning
+  module servers via `shiny::testServer()`, the question bank, and a smoke
+  test that builds the whole app UI.
+* The example of `run_cata()` now also runs outside an interactive session.
+* The outlier boxplot no longer warns about missing values while a dataset
+  still has them.
+
 # cataScience 2.1.1
 
 * Images inside the markdown lesson pages now scale to the card width

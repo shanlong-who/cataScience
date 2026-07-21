@@ -11,6 +11,12 @@
 #'   The function blocks the R session while the app is running.
 #'
 #' @examples
+#' # The app is bundled with the package and launched from its own directory.
+#' app_dir <- system.file("app", package = "cataScience")
+#' file.exists(file.path(app_dir, "app.R"))
+#'
+#' # Starting the app needs an interactive session, since it blocks R until
+#' # the browser window is closed.
 #' if (interactive()) {
 #'   run_cata()
 #' }
