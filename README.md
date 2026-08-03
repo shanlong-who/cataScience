@@ -11,6 +11,12 @@ science or starting to use AI assistants at work can use it for self-study.
 ## Installation
 
 ```r
+install.packages("cataScience")
+```
+
+or
+
+```r
 # install.packages("remotes")
 remotes::install_github("shanlong-who/cataScience")
 ```
