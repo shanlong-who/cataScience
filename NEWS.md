@@ -1,3 +1,13 @@
+# cataScience 2.1.3
+
+* The markdown lesson pages are now rendered from text instead of from the
+  file path. `markdown::mark()` (>= 2.0) rewrites an input *file* in place
+  when it runs under `R CMD check`, which made the test suite fail on CRAN's
+  Debian machines where the installed package library is mounted read-only
+  (and violated the CRAN policy against writing outside the session temp
+  directory). Rendering from text writes nothing; the generated HTML is
+  unchanged.
+
 # cataScience 2.1.2
 
 * Added a `testthat` test suite covering the app code that `R CMD check`

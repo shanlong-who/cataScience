@@ -192,8 +192,19 @@ app_img <- function(file, alt = "", class = "img-content", style = NULL) {
 # Markdown include shortcut for content pages. The md-page class constrains
 # images to the card width (see custom.css) — markdown-rendered <img> tags
 # carry no CSS class, and cards clip overflow.
+# Render from text, not from the file path: given a path, markdown::mark()
+# (>= 2.0) rewrites the source file in place when it runs under R CMD check,
+# and the installed package library may be read-only (CRAN mounts it so).
+# Given text it renders the same HTML without writing anything; mark() is
+# run from markdown/ so relative image references still resolve (and embed)
+# exactly as they do for file input.
 md_page <- function(file) {
-  div(class = "p-2 md-page", includeMarkdown(file.path("markdown", file)))
+  path <- file.path("markdown", file)
+  lines <- readLines(path, encoding = "UTF-8", warn = FALSE)
+  owd <- setwd(dirname(path))
+  html <- tryCatch(markdown::mark(text = lines, output = NULL), finally = setwd(owd))
+  Encoding(html) <- "UTF-8"
+  div(class = "p-2 md-page", HTML(html))
 }
 
 # Compact HTML table for small teaching examples (statistics pages).
