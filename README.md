@@ -1,5 +1,9 @@
 # cataScience 🐱
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/shanlong-who/cataScience/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/shanlong-who/cataScience/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 **A Journey of Data Science** — an interactive training app for people who
 are new to data: import → clean → visualize → understand, with AI as your
 assistant and you as the judge.
