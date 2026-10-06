@@ -5,8 +5,7 @@
 library(cataScience)
 ```
 
-![cataScience hex logo featuring the maintainer's two
-cats](../reference/figures/logo.png)
+![cataScience hex logo featuring the maintainer's two cats](logo.png)
 
 **cataScience** launches **A Journey of Data Science**, an interactive
 training app for people who are new to working with data. Its learning
@@ -162,7 +161,7 @@ training](https://shanlong-who.github.io/cataScience/articles/training-guide.md)
 ``` r
 
 packageVersion("cataScience")
-#> [1] '2.1.3'
+#> [1] '2.1.4'
 ```
 
 Report problems at the [cataScience issue

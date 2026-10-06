@@ -5,8 +5,7 @@
 library(cataScience)
 ```
 
-![cataScience hex logo featuring the maintainer's two
-cats](../reference/figures/logo.png)
+![cataScience hex logo featuring the maintainer's two cats](logo.png)
 
 cataScience can be the teaching surface for a facilitated session or a
 self-study course. Choose modules for the audience and available time,
@@ -177,7 +176,7 @@ Ask participants to keep the original exercise file and a short note on:
 ``` r
 
 packageVersion("cataScience")
-#> [1] '2.1.3'
+#> [1] '2.1.4'
 ```
 
 For a self-study learner, follow the same sequence with a shorter module

@@ -1,5 +1,15 @@
 # Changelog
 
+## cataScience 2.1.4
+
+- Added three vignettes covering installation and launch, a reproducible
+  data-quality workflow, and guidance for running a training session.
+- Added a pkgdown documentation website, linked from the package
+  metadata and README, with a function reference and searchable
+  articles.
+- Added a package hex logo based on the maintainer’s two cats, displayed
+  in the README, website and vignettes.
+
 ## cataScience 2.1.3
 
 CRAN release: 2026-08-28

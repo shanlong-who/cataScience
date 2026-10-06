@@ -11,8 +11,7 @@ library(ggplot2)
 library(DSIR)
 ```
 
-![cataScience hex logo featuring the maintainer's two
-cats](../reference/figures/logo.png)
+![cataScience hex logo featuring the maintainer's two cats](logo.png)
 
 This 20–30 minute lab follows **Import → Cleaning → Visualize**. The aim
 is to explain a cleaning decision and its effect on a conclusion. Use
