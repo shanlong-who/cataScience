@@ -11,3 +11,4 @@
 ^pkgdown$
 ^docs$
 ^\.github$
+^vignettes/logo\.png$
