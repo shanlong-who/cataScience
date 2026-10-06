@@ -1,0 +1,34 @@
+url: https://shanlong-who.github.io/cataScience/
+template:
+  bootstrap: 5
+  bslib:
+    primary: '#0093D5'
+    base_font:
+      google: Source Sans Pro
+    heading_font:
+      google: Source Sans Pro
+    code_font:
+      google: JetBrains Mono
+home:
+  title: cataScience — A Journey of Data Science
+  description: >
+    An interactive R Shiny training companion for importing, cleaning,
+    visualizing and understanding data, with guided AI exercises and a quiz.
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github]
+reference:
+  - title: Launch the training app
+    desc: Open the bundled training app in a local R session.
+    contents: [run_cata]
+articles:
+  - title: Learn with cataScience
+    navbar: ~
+    contents:
+      - cataScience
+      - data-quality-workflow
+      - training-guide
+authors:
+  Shanlong Ding:
+    href: https://github.com/shanlong-who
