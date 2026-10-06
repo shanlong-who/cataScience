@@ -15,7 +15,8 @@ Description: An interactive 'shiny' training companion for people who are
     topic filters. Launch the app with run_cata().
 License: MIT + file LICENSE
 Language: en-US
-URL: https://github.com/shanlong-who/cataScience
+URL: https://github.com/shanlong-who/cataScience,
+    https://shanlong-who.github.io/cataScience/
 BugReports: https://github.com/shanlong-who/cataScience/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -45,7 +46,11 @@ Imports:
     tidyr,
     VIM
 Suggests:
+    DSIR,
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0),
     withr
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.0.0

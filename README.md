@@ -1,4 +1,4 @@
-# cataScience 🐱
+# cataScience <a href="https://shanlong-who.github.io/cataScience/"><img src="man/figures/logo.png" align="right" height="140" alt="cataScience hex logo featuring the maintainer's two cats" /></a>
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/shanlong-who/cataScience/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/shanlong-who/cataScience/actions/workflows/R-CMD-check.yaml)
@@ -11,6 +11,19 @@ assistant and you as the judge.
 Developed for WHO data trainings (Global Health Learning Center and
 country-office sessions), but the content is general: anyone learning data
 science or starting to use AI assistants at work can use it for self-study.
+
+Documentation: <https://shanlong-who.github.io/cataScience/>
+
+## Guides
+
+| Guide | What you will learn |
+|---|---|
+| [Getting started](https://shanlong-who.github.io/cataScience/articles/cataScience.html) | Launch the app, follow the module map and use the example data |
+| [Data-quality workflow](https://shanlong-who.github.io/cataScience/articles/data-quality-workflow.html) | Compare cleaning choices, inspect text and joins, and explain a chart |
+| [Training guide](https://shanlong-who.github.io/cataScience/articles/training-guide.html) | Plan a three-hour data science session or a two-hour AI session |
+
+The website contains documentation. Launch the Shiny app from R for the
+interactive lessons and exercises.
 
 ## Installation
 
@@ -34,6 +47,13 @@ run_cata()
 
 The app opens in your browser. Everything runs locally — no internet
 connection is needed after installation.
+
+Start with **Import → Or use the example data**, then follow **Cleaning →
+Missing data**, **Cleaning → Outliers**, **Visualize** and **Quiz**.
+Use **Reset to original data** to compare cleaning choices.
+
+Use RStudio's Stop button or Escape in the console to stop the app.
+Live demonstrations with an external AI assistant need internet access.
 
 ## What is inside
 

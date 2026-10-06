@@ -7,4 +7,7 @@
 ^\.Rproj\.user$
 ^cataScience_.*\.tar\.gz$
 ^.*\.Rcheck$
+^_pkgdown\.yml$
+^pkgdown$
+^docs$
 ^\.github$
