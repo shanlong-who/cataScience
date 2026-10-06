@@ -1,6 +1,9 @@
 # cataScience <a href="https://shanlong-who.github.io/cataScience/"><img src="man/figures/logo.png" align="right" height="140" alt="cataScience hex logo featuring the maintainer's two cats" /></a>
 
 <!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/cataScience)](https://cran.r-project.org/package=cataScience)
+[![Lifecycle: mature](https://img.shields.io/badge/lifecycle-mature-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/cataScience)](https://cran.r-project.org/package=cataScience)
 [![R-CMD-check](https://github.com/shanlong-who/cataScience/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/shanlong-who/cataScience/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
