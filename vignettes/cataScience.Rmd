@@ -16,7 +16,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", message = FALSE,
 library(cataScience)
 ```
 
-<img src="../man/figures/logo.png" align="right" height="130" alt="cataScience hex logo featuring the maintainer's two cats" />
+<img src="../man/figures/logo.png" style="width: 130px; height: auto; float: right; margin: 0 0 1rem 1.25rem;" alt="cataScience hex logo featuring the maintainer's two cats" />
 
 **cataScience** launches **A Journey of Data Science**, an interactive
 training app for people who are new to working with data. Its learning path
