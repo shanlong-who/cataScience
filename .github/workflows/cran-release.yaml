@@ -1,0 +1,94 @@
+name: CRAN release checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - DESCRIPTION
+      - .github/workflows/cran-release.yaml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  R_KEEP_PKG_SOURCE: "yes"
+  _R_CHECK_FORCE_SUGGESTS_: "true"
+  _R_CHECK_CRAN_INCOMING_: "true"
+
+jobs:
+  release:
+    name: Build and check with R release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+      - uses: r-lib/actions/setup-tinytex@v2
+        env:
+          TINYTEX_INSTALLER: TinyTeX
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+      - name: Build source package and run full CRAN checks
+        shell: Rscript {0}
+        run: |
+          library(rcmdcheck)
+          check_result <- rcmdcheck(".", args = "--as-cran",
+                                    error_on = "warning", check_dir = "check")
+          writeLines(capture.output(sessionInfo()), "check/session-info.txt")
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cran-source-and-release-check
+          path: |
+            check/*.tar.gz
+            check/*.Rcheck/00check.log
+            check/*.Rcheck/*.pdf
+            check/session-info.txt
+          if-no-files-found: error
+
+  devel:
+    name: Check the release tarball with R devel
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: cran-source-and-release-check
+          path: release
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: devel
+          http-user-agent: release
+      - uses: r-lib/actions/setup-tinytex@v2
+        env:
+          TINYTEX_INSTALLER: TinyTeX
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+      - name: Check the exact source tarball to be submitted
+        shell: Rscript {0}
+        run: |
+          library(rcmdcheck)
+          archive <- list.files("release", pattern = "\\.tar\\.gz$",
+                                full.names = TRUE)
+          stopifnot(length(archive) == 1L)
+          check_result <- rcmdcheck(archive, args = "--as-cran",
+                                    error_on = "warning", check_dir = "check-devel")
+          writeLines(capture.output(sessionInfo()), "check-devel/session-info.txt")
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cran-devel-check
+          path: |
+            check-devel/*.Rcheck/00check.log
+            check-devel/*.Rcheck/*.pdf
+            check-devel/session-info.txt
+          if-no-files-found: error
