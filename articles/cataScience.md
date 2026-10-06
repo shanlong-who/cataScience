@@ -5,7 +5,8 @@
 library(cataScience)
 ```
 
-![cataScience hex logo featuring the maintainer's two cats](logo.png)
+![cataScience hex logo featuring the maintainer's two
+cats](assets/logo.png)
 
 **cataScience** launches **A Journey of Data Science**, an interactive
 training app for people who are new to working with data. Its learning

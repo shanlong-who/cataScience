@@ -5,7 +5,8 @@
 library(cataScience)
 ```
 
-![cataScience hex logo featuring the maintainer's two cats](logo.png)
+![cataScience hex logo featuring the maintainer's two
+cats](assets/logo.png)
 
 cataScience can be the teaching surface for a facilitated session or a
 self-study course. Choose modules for the audience and available time,
