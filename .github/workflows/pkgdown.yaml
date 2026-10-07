@@ -1,43 +1,155 @@
-# Workflow based on r-lib/actions and the DSIR documentation workflow.
-name: pkgdown
-
+name: Reviewed contributor cleanup
 on:
-  push:
-    branches: [main, master]
-  pull_request:
-  release:
-    types: [published]
   workflow_dispatch:
-
-permissions: read-all
-
+    inputs:
+      expected_head:
+        description: Reviewed original main commit
+        required: true
+        type: string
+      expected_clean_head:
+        description: Reviewed cleaned main commit
+        required: true
+        type: string
+permissions:
+  contents: write
 jobs:
-  pkgdown:
+  cleanup:
+    if: github.actor == 'shanlong-who' && github.repository_owner == 'shanlong-who'
     runs-on: ubuntu-latest
     concurrency:
-      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
+      group: contributor-cleanup-main
     env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    permissions:
-      contents: write
+      EXPECTED_HEAD: ${{ inputs.expected_head }}
+      EXPECTED_CLEAN_HEAD: ${{ inputs.expected_clean_head }}
     steps:
       - uses: actions/checkout@v6
         with:
-          # Release tags can contain older documentation; publish the current default branch.
-          ref: ${{ github.event_name == 'pull_request' && github.ref || github.event.repository.default_branch }}
-      - uses: r-lib/actions/setup-pandoc@v2
-      - uses: r-lib/actions/setup-r@v2
-      - uses: r-lib/actions/setup-r-dependencies@v2
+          ref: main
+          fetch-depth: 0
+      - name: Check reviewed main head
+        shell: bash
+        run: |
+          [[ "$EXPECTED_HEAD" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$EXPECTED_CLEAN_HEAD" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+      - name: Back up original history
+        shell: bash
+        run: |
+          git bundle create "$RUNNER_TEMP/history-before-cleanup.bundle" --all
+          git bundle verify "$RUNNER_TEMP/history-before-cleanup.bundle"
+      - uses: actions/upload-artifact@v4
         with:
-          extra-packages: any::pkgdown, local::.
-          needs: website
-      - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
-        shell: Rscript {0}
-      - name: Deploy to GitHub Pages
-        if: github.event_name != 'pull_request'
-        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f
+          name: original-history
+          path: ${{ runner.temp }}/history-before-cleanup.bundle
+          retention-days: 90
+      - name: Prepare and verify the reviewed cleanup
+        shell: pwsh
+        run: |
+          & {
+          param(
+              [Parameter(Mandatory)][string]$Repository,
+              [Parameter(Mandatory)][string]$ExpectedHead,
+              [Parameter(Mandatory)][string]$ReportPath
+          )
+          $ErrorActionPreference = 'Stop'
+          $taskGitPath = (Get-Command git).Source
+          $taskRepositoryPath = (Resolve-Path -LiteralPath $Repository).Path
+          
+          function Invoke-TaskGit {
+              param([string[]]$GitArguments, [AllowNull()][string]$InputText = $null)
+              $taskProcess = [System.Diagnostics.Process]::new()
+              $taskProcess.StartInfo.FileName = $taskGitPath
+              $taskProcess.StartInfo.UseShellExecute = $false
+              $taskProcess.StartInfo.CreateNoWindow = $true
+              $taskProcess.StartInfo.RedirectStandardOutput = $true
+              $taskProcess.StartInfo.RedirectStandardError = $true
+              $taskProcess.StartInfo.StandardOutputEncoding = [System.Text.UTF8Encoding]::new($false)
+              $taskProcess.StartInfo.StandardErrorEncoding = [System.Text.UTF8Encoding]::new($false)
+              foreach ($taskArgument in $GitArguments) { $taskProcess.StartInfo.ArgumentList.Add($taskArgument) }
+              if ($null -ne $InputText) {
+                  $taskProcess.StartInfo.RedirectStandardInput = $true
+                  $taskProcess.StartInfo.StandardInputEncoding = [System.Text.UTF8Encoding]::new($false)
+              }
+              [void]$taskProcess.Start()
+              $taskOutput = $taskProcess.StandardOutput.ReadToEndAsync()
+              $taskError = $taskProcess.StandardError.ReadToEndAsync()
+              if ($null -ne $InputText) { $taskProcess.StandardInput.Write($InputText); $taskProcess.StandardInput.Close() }
+              $taskProcess.WaitForExit()
+              if ($taskProcess.ExitCode -ne 0) { throw $taskError.GetAwaiter().GetResult() }
+              return $taskOutput.GetAwaiter().GetResult()
+          }
+          
+          $taskGitPrefix = @('--git-dir=' + $taskRepositoryPath)
+          $taskOldHead = (Invoke-TaskGit -GitArguments ($taskGitPrefix + @('rev-parse', 'refs/heads/main'))).Trim()
+          if ($taskOldHead -ne $ExpectedHead) { throw 'The main branch changed. Review the new head before proceeding.' }
+          $taskOldCommits = (Invoke-TaskGit -GitArguments ($taskGitPrefix + @('rev-list', '--reverse', '--topo-order', $taskOldHead))).Trim().Split("`n")
+          $taskMap = @{}
+          $taskRows = [System.Collections.Generic.List[object]]::new()
+          $taskRemovedTrailers = 0
+          $taskRemovedSignatures = 0
+          foreach ($taskOldCommit in $taskOldCommits) {
+              $taskRaw = Invoke-TaskGit -GitArguments ($taskGitPrefix + @('cat-file', 'commit', $taskOldCommit))
+              $taskSeparator = $taskRaw.IndexOf("`n`n", [StringComparison]::Ordinal)
+              if ($taskSeparator -lt 0) { throw 'Unexpected Git commit format.' }
+              $taskHeader = $taskRaw.Substring(0, $taskSeparator)
+              $taskMessage = $taskRaw.Substring($taskSeparator + 2)
+              $taskPattern = '(?m)^Co-Authored-By: Claude Fable 5 <noreply@anthropic\.com>\r?\n?'
+              $taskRemovedTrailers += [regex]::Matches($taskMessage, $taskPattern).Count
+              $taskNewMessage = [regex]::Replace($taskMessage, $taskPattern, '')
+              $taskNewHeader = [regex]::Replace($taskHeader, '(?m)^parent ([0-9a-f]{40})$', {
+                  param($taskMatch)
+                  $taskParent = $taskMatch.Groups[1].Value
+                  if (!$taskMap.ContainsKey($taskParent)) { throw 'A parent is missing from the commit map.' }
+                  return 'parent ' + $taskMap[$taskParent]
+              })
+              $taskNewCommit = $taskOldCommit
+              if (($taskNewHeader -ne $taskHeader) -or ($taskNewMessage -ne $taskMessage)) {
+                  # A signature cannot remain valid after the signed commit changes.
+                  $taskSignaturePattern = '(?m)^gpgsig(?:-sha256)? [^\n]*(?:\n [^\n]*)*(?:\n|$)'
+                  $taskRemovedSignatures += [regex]::Matches($taskNewHeader, $taskSignaturePattern).Count
+                  $taskNewHeader = [regex]::Replace($taskNewHeader, $taskSignaturePattern, '').TrimEnd("`n")
+                  $taskNewRaw = $taskNewHeader + "`n`n" + $taskNewMessage
+                  $taskNewCommit = (Invoke-TaskGit -GitArguments ($taskGitPrefix + @('hash-object', '-t', 'commit', '-w', '--stdin')) -InputText $taskNewRaw).Trim()
+                  $taskVerifiedRaw = Invoke-TaskGit -GitArguments ($taskGitPrefix + @('cat-file', 'commit', $taskNewCommit))
+                  if ($taskVerifiedRaw -cne $taskNewRaw) { throw 'The rewritten commit did not preserve its exact bytes.' }
+                  foreach ($taskField in @('tree', 'author', 'committer')) {
+                      $taskFieldPattern = '(?m)^' + $taskField + ' .+$'
+                      if ([regex]::Match($taskHeader, $taskFieldPattern).Value -cne [regex]::Match($taskNewHeader, $taskFieldPattern).Value) {
+                          throw "The $taskField field changed unexpectedly."
+                      }
+                  }
+              }
+              $taskMap[$taskOldCommit] = $taskNewCommit
+              $taskRows.Add([pscustomobject]@{old_commit = $taskOldCommit; new_commit = $taskNewCommit; changed = $taskOldCommit -ne $taskNewCommit})
+          }
+          if ($taskRemovedTrailers -ne 1) { throw 'Expected exactly one Claude co-author trailer.' }
+          $taskNewHead = $taskMap[$taskOldHead]
+          [void](Invoke-TaskGit -GitArguments ($taskGitPrefix + @('diff', '--exit-code', $taskOldHead, $taskNewHead)))
+          $taskRemaining = Invoke-TaskGit -GitArguments ($taskGitPrefix + @('log', $taskNewHead, '--regexp-ignore-case', '--grep=co-authored-by:.*claude', '--format=%H'))
+          if ($taskRemaining.Trim()) { throw 'A Claude co-author trailer remains.' }
+          [void](Invoke-TaskGit -GitArguments ($taskGitPrefix + @('update-ref', 'refs/heads/contributor-cleanup-preview', $taskNewHead)))
+          $taskReport = [pscustomobject]@{
+              old_head = $taskOldHead
+              new_head = $taskNewHead
+              tree = (Invoke-TaskGit -GitArguments ($taskGitPrefix + @('rev-parse', ($taskNewHead + '^{tree}')))).Trim()
+              removed_coauthor_trailers = $taskRemovedTrailers
+              changed_commit_ids = @($taskRows | Where-Object changed).Count
+              removed_invalid_signatures = $taskRemovedSignatures
+              file_changes = 0
+              original_authors_and_dates_preserved = $true
+              commits = $taskRows
+          }
+          [System.IO.File]::WriteAllText($ReportPath, ($taskReport | ConvertTo-Json -Depth 5), [System.Text.UTF8Encoding]::new($false))
+          Write-Output ($taskReport | Select-Object old_head, new_head, changed_commit_ids, removed_coauthor_trailers, file_changes, original_authors_and_dates_preserved | ConvertTo-Json)
+          } -Repository '.git' -ExpectedHead $env:EXPECTED_HEAD -ReportPath "$env:RUNNER_TEMP/cleanup-preview.json"
+          $taskResult = Get-Content -LiteralPath "$env:RUNNER_TEMP/cleanup-preview.json" -Raw | ConvertFrom-Json
+          if ($taskResult.new_head -cne $env:EXPECTED_CLEAN_HEAD) { throw 'The cleanup differs from the reviewed result.' }
+      - name: Publish only the reviewed main branch
+        shell: bash
+        run: |
+          git push origin --force-with-lease="refs/heads/main:$EXPECTED_HEAD" "$EXPECTED_CLEAN_HEAD:refs/heads/main"
+      - uses: actions/upload-artifact@v4
         with:
-          branch: gh-pages
-          folder: docs
+          name: cleanup-verification
+          path: ${{ runner.temp }}/cleanup-preview.json
 
