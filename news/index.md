@@ -2,6 +2,8 @@
 
 ## cataScience 2.1.4
 
+CRAN release: 2026-10-06
+
 - Added three vignettes covering installation and launch, a reproducible
   data-quality workflow, and guidance for running a training session.
 - Added a pkgdown documentation website, linked from the package

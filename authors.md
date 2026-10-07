@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/shanlong-who/cataScience/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/shanlong-who/cataScience/blob/v2.1.4/DESCRIPTION)
 
 Ding S (2026). *cataScience: Interactive Training App for Data Science
 and AI Skills*. R package version 2.1.4,
