@@ -382,7 +382,8 @@ if (cata_workshop) ui_home <- whyUI("why")
 ui <- page_navbar(
   id = "main-nav",
   title = tags$span(
-    tags$img(src = "1-logo.jpg", class = "navbar-logo", alt = ""),
+    tags$img(src = "cata-cats.png", class = "navbar-logo", width = 48, height = 48,
+      alt = "Two silver tabby cats, one sleepy and one alert"),
     "A Journey of Data Science"
   ),
   window_title = "A Journey of Data Science",
@@ -391,10 +392,10 @@ ui <- page_navbar(
   header = tagList(
     useBusyIndicators(),
     tags$head(
-      tags$link(rel = "icon", type = "image/jpeg", href = "1-logo.jpg"),
+      tags$link(rel = "icon", type = "image/png", href = "cata-cats.png"),
       # The ?v= query busts browser caches when the stylesheet changes;
       # bump it together with meaningful CSS edits.
-      tags$link(rel = "stylesheet", href = "custom.css?v=2.2.0")
+      tags$link(rel = "stylesheet", href = "custom.css?v=2.2.0-cats")
     )
   ),
   nav_panel("Home", ui_home, icon = icon("house")),

@@ -19,10 +19,15 @@ published in 1855. A 760-pixel image is bundled for offline teaching.
 
 | File or reference | Use | Source |
 |---|---|---|
-| `www/1-logo.jpg` | Navbar logo and favicon | Author's own / AI-generated |
+| `www/cata-cats.png` | Shared navbar logo and favicon for both app launchers | AI-generated on 2026-10-30 from the author's photograph of two silver tabby cats (`picture/0-maomi.jpg`), with the package hex logo as a supporting reference |
 | `picture/0-maomi.jpg` | Introduction cat image | Author's own / AI-generated |
 | `picture/2-workflow.png` | Introduction workflow image | Author's own / AI-generated |
 | `www/datasets.zip` | Downloadable exercise datasets | Compiled by the author from WHO/UN public data |
+
+The website icons under `pkgdown/favicon/` are size and format derivatives
+of `www/cata-cats.png`. The existing package hex logo remains in
+`man/figures/logo.png` and the website content. Regenerate website icons
+from the package root with `source("pkgdown/build-favicons.R")`.
 
 ## Markdown lesson images
 

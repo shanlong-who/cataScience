@@ -1,4 +1,6 @@
 url: https://shanlong-who.github.io/cataScience/
+# The page keeps man/figures/logo.png; browser icons are independent.
+# Regenerate pkgdown/favicon/ with pkgdown/build-favicons.R.
 template:
   bootstrap: 5
   bslib:
