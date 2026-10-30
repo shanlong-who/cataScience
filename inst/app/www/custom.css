@@ -332,3 +332,10 @@
   background-color: rgba(0, 114, 178, 0.05) !important;
   color: #005a8e !important;
 }
+/* Extended workshop: readable projection and responsive lesson layout. */
+.workshop-hero { display: flex; align-items: center; gap: 28px; margin: 12px 0 28px; }
+.workshop-hero > div { flex: 1; }
+.workshop-hero > img { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; }
+.workshop-hero h1 { color: #00547f; font-weight: 700; }
+.shiny-plot-output { max-width: 100%; }
+@media (max-width: 700px) { .workshop-hero { display: block; } .workshop-hero > img { display: none; } }

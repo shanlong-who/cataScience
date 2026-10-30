@@ -79,34 +79,33 @@ quiz_questions <- list(
   list(
     topic = "Missing data",
     question = paste(
-      "While collecting data for SDG 3.8.1 (Universal Health Coverage), the",
-      "sub-indicator **proportion of people with diabetes receiving medication**",
+      "While collecting country-level data, a diabetes treatment indicator",
       "is entirely missing for a specific country. Investigation reveals the",
       "country **has no diabetes registry** and **places low priority on",
       "noncommunicable diseases (NCDs)**. Other variables such as incident TB",
-      "cases and malaria were reported normally. Which type of missingness does",
-      "this most likely represent?"
+      "cases and malaria were reported normally. Can this information establish",
+      "the missingness mechanism?"
     ),
     choices = c(
       "Missing Completely At Random (MCAR)",
       "Missing At Random (MAR)",
-      "Missing Not At Random (MNAR)"
+      "Missing Not At Random (MNAR)",
+      "The mechanism cannot be established from this information alone"
     ),
-    answer = "Missing Not At Random (MNAR)",
+    answer = "The mechanism cannot be established from this information alone",
     explanation = paste(
-      "- MNAR applies when missingness is related to the **unobserved value itself**.",
-      "- Here the lack of data is **structural and policy-driven** — the country's",
-      "neglect of diabetes care makes it more likely that no data is collected or reported.",
+      "- An absent registry explains a collection gap, but does not establish MAR or MNAR.",
+      "- MAR concerns dependence on observed information; MNAR involves remaining dependence on unobserved values.",
+      "- Investigate the collection process, state assumptions and consider sensitivity analyses.",
       sep = "\n"
     )
   ),
   list(
     topic = "Missing data",
     question = paste(
-      "You are analyzing SDG 3.4.1 (NCD mortality rate). Your dataset contains a",
-      "numerical variable (mortality rate per 100,000), but some values are",
-      "missing and the data include **outliers**. Which imputation method is the",
-      "most appropriate?"
+      "In a simple classroom demonstration, you want to replace missing numerical",
+      "values with one summary statistic. The observed values contain extremes.",
+      "Which summary statistic is less sensitive to extreme values?"
     ),
     choices = c(
       "Drop missing values",
@@ -119,9 +118,9 @@ quiz_questions <- list(
     explanation = paste(
       "- The median is a robust statistic: it is not sensitive to extreme values.",
       "- The mean is influenced by outliers.",
-      "- Filling with 0 introduces artificial bias and may mislead downstream analysis.",
-      "- Dropping missing values may lose valuable information.",
-      "- kNN is powerful but often unnecessary for simple missingness patterns.",
+      "- This comparison does not make median imputation the best method for a real analysis.",
+      "- Single-value replacement distorts the distribution and does not reflect missing-data uncertainty.",
+      "- Choose a method using the analysis purpose, data structure and missingness assumptions.",
       sep = "\n"
     )
   ),
@@ -129,23 +128,20 @@ quiz_questions <- list(
     topic = "Outliers",
     question = paste(
       "You visualized a numerical SDG 3 indicator with a boxplot and observed",
-      "several extreme outliers above the upper whisker. Which is the most",
-      "appropriate way to reduce their influence while preserving the overall",
-      "data structure?"
+      "several values above the upper whisker. What should you do first?"
     ),
     choices = c(
       "Remove all outliers",
       "Winsorize the outliers by capping them at the IQR bounds",
       "Replace outliers with the mean value",
-      "Do nothing and keep all outliers"
+      "Check the source and units, then decide whether the values are errors or valid extremes"
     ),
-    answer = "Winsorize the outliers by capping them at the IQR bounds",
+    answer = "Check the source and units, then decide whether the values are errors or valid extremes",
     explanation = paste(
-      "- Removing may lose information, especially with many outliers.",
-      "- **Winsorization** reduces the influence of extreme values while preserving",
-      "the data size — often preferred for robust analysis.",
-      "- Replacing with the mean may introduce bias, particularly with skewed distributions.",
-      "- Doing nothing can mislead results when outliers heavily affect the mean or SD.",
+      "- An IQR flag is a review signal, not proof of an error.",
+      "- Preserve the original values and document the evidence for any correction or exclusion.",
+      "- Valid extremes may be important. Consider a suitable analysis and sensitivity checks.",
+      "- Capping, replacement and deletion change the data and need justification.",
       sep = "\n"
     )
   ),

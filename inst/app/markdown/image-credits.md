@@ -5,9 +5,15 @@ static assets. Keep this file updated when adding or replacing images.
 
 ## Provenance and license
 
-All images bundled with this app are the author's own work or were generated
-with AI tools by the author (confirmed 2026-07-11). They are distributed with
-the `cataScience` package under its MIT license.
+Except for the historical map listed below, images bundled with this app
+are the author's own work or were generated with AI tools by the author
+(confirmed 2026-07-11). Those images are distributed with the `cataScience`
+package under its MIT license.
+
+The John Snow cholera map (`www/snow-cholera-map.jpg`) is from the
+[Wellcome Collection](https://wellcomecollection.org/works/dx4prdbj),
+image L0072142, marked Public Domain. It depicts the 1854 outbreak and was
+published in 1855. A 760-pixel image is bundled for offline teaching.
 
 ## App assets
 

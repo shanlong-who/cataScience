@@ -1,0 +1,11 @@
+facility_id,district,facility_type,vl_service
+A01,A,Hospital,TRUE
+A02,A,Health Center,FALSE
+B01,B,Hospital,TRUE
+B02,B,Health Center,FALSE
+C01,C,Hospital,FALSE
+C02,C,Health Center,TRUE
+D01,D,Hospital,TRUE
+D02,D,Health Center,FALSE
+E01,E,Hospital,TRUE
+E02,E,Health Center,FALSE

@@ -21,7 +21,13 @@ navbar:
 reference:
   - title: Launch the training app
     desc: Open the bundled training app in a local R session.
-    contents: [run_cata]
+    contents: [run_cata, run_catas]
+  - title: Review and prepare data
+    contents: [cata_read, cata_profile, cata_missing, cata_check_keys, cata_flag_outliers, cata_join]
+  - title: Examples and denominators
+    contents: [cata_example, cata_proportion, cata_count_status, cata_lao_analysis, cata_mice_demo]
+  - title: Visualise and communicate
+    contents: [cata_plot, theme_cata, cata_report, cata_export]
 articles:
   - title: Learn with cataScience
     navbar: ~

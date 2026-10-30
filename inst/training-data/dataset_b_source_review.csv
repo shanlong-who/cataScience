@@ -1,0 +1,5 @@
+patient_id,first_source_row,additional_source_row,source_evidence
+B0020,20,601,Synthetic extraction audit confirms row 601 repeats the same source record as row 20. No new visit or measurement. Row 20 is the retained source record.
+B0040,40,602,"Rows are identical, but no source pointer or visit documentation is available. Accidental copy versus a distinct record cannot be established."
+B0060,60,603,"The same ID has different VL information. No dates, source pointer or correction notice establish which record is authoritative."
+B0080,80,604,"The same ID has Female versus F, with other fields matching. A label mapping does not establish whether two records represent one source event. No confirming audit is available."

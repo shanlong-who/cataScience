@@ -1,3 +1,25 @@
+# cataScience 2.2.0
+
+* Added `run_catas()` for an extended workshop; `run_cata()` remains the
+  original entry point. The workflow connects review, audited joins, explicit
+  denominators, charts and communication, with input snapshots and undo.
+* Added reusable import, profile, missingness, key-check, outlier-flag,
+  join, proportion and status-summary functions, plus documented examples.
+* Added `cata_plot()` with 11 chart types and `theme_cata()`, and offline
+  HTML report/dashboard exports. Project exports include reproducible R,
+  Quarto and Shiny sources, input snapshots and preparation records.
+* Added Why data matters, John Snow's map, a care-cascade lesson and the
+  synthetic Lao workshop B/C analysis. Kept AI chart comparison as an
+  external classroom exercise.
+* Kept the mice cat Easter egg and added multiple imputation, diagnostic
+  chains and pooled model estimates using synthetic cats.
+* Removed rio. Made VIM optional for kNN; replaced its missingness chart
+  with mice. Kept naniar/skimr and the optional DSIR theme.
+* Fixed classic outlier removal so source columns beginning with `shadow_`
+  are preserved. Added explicit UTF-8 loading for nested app scripts.
+* Revised quiz explanations to distinguish review flags from errors and
+  missingness assumptions from conclusions established by observed data.
+
 # cataScience 2.1.4
 
 * Added three vignettes covering installation and launch, a reproducible

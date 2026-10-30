@@ -12,3 +12,6 @@
 ^docs$
 ^\.github$
 ^vignettes/logo\.png$
+^cataScience-shinylive-site$
+^cataScience-shinylive-test$
+^outputs$

@@ -1,6 +1,6 @@
 Package: cataScience
 Title: Interactive Training App for Data Science and AI Skills
-Version: 2.1.4
+Version: 2.2.0
 Authors@R: person(given = "Shanlong",
                   family = "Ding",
                   role = c("aut", "cre"),
@@ -12,7 +12,9 @@ Description: An interactive 'shiny' training companion for people who are
     text cleaning, merging, visualization, and basic statistics, plus a set
     of AI-skills pages (prompting levels, a prompt gallery, AI safety rules,
     and a methodology case study) and an interactive quiz with per-session
-    topic filters. Launch the app with run_cata().
+    topic filters. Includes reusable data-quality, plotting and reporting
+    functions and an extended workshop app with public health examples.
+    Launch the original app with run_cata() or the workshop with run_catas().
 License: MIT + file LICENSE
 Language: en-US
 URL: https://github.com/shanlong-who/cataScience,
@@ -23,6 +25,7 @@ Roxygen: list(markdown = TRUE)
 Depends:
     R (>= 4.1.0)
 Imports:
+    base64enc,
     broom,
     bslib (>= 0.6.0),
     cowplot,
@@ -30,6 +33,7 @@ Imports:
     DT,
     forcats,
     ggplot2,
+    htmltools,
     markdown,
     mice,
     naniar,
@@ -37,20 +41,21 @@ Imports:
     purrr,
     readr,
     readxl,
-    rio,
+    rlang,
     scales,
     shiny (>= 1.8.1),
     skimr,
     stringr,
     tibble,
     tidyr,
-    VIM
+    zip
 Suggests:
     DSIR,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
+    VIM,
     withr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0

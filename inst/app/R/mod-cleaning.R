@@ -85,7 +85,9 @@ cleaningMissingUI <- function(id) {
               "Fill missing values down or up" = "fill",
               "Replace missing with mean" = "mean",
               "Replace missing with median" = "median",
-              "K-Nearest Neighbors imputation" = "knn"
+              if (requireNamespace("VIM", quietly = TRUE)) {
+                c("K-Nearest Neighbors imputation (optional VIM)" = "knn")
+              }
             ),
             selected = "drop_na"
           ),
@@ -229,7 +231,7 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
     observeEvent(input$file, {
       tryCatch(
         {
-          df <- safe_import_data(input$file$datapath)
+          df <- safe_import_data(input$file$datapath, input$file$name)
           raw_rv(df)
           data_rv(df)
         },
@@ -348,6 +350,8 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       if (length(missing_variable()) == 0 || all_complete(data_rv())) {
         data_rv()
       } else {
+        validate(need(requireNamespace("VIM", quietly = TRUE),
+                      "The optional VIM package is needed for kNN imputation."))
         VIM::kNN(data_rv(), missing_variable(), imp_var = FALSE)
       }
     })
@@ -391,7 +395,7 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
     })
     output$p_aggr <- renderPlot({
       need_missing()
-      VIM::aggr(data_rv(), combined = TRUE, number = TRUE, prop = FALSE)
+      mice::md.pattern(as.data.frame(data_rv()), rotate.names = TRUE)
     })
     output$p_gg_miss_var <- renderPlotly({
       need_missing()
@@ -449,10 +453,8 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       if (length(outlier_variable()) == 0) {
         data_rv()
       } else {
-        data_rv() %>%
-          mutate(across(outlier_variable(), recognize_outlier, .names = "shadow_{.col}")) %>%
-          filter(if_all(starts_with("shadow_"), ~ .x == TRUE)) %>%
-          select(-starts_with("shadow_"))
+        keep <- Reduce(`&`, lapply(data_rv()[outlier_variable()], recognize_outlier))
+        data_rv()[keep, , drop = FALSE]
       }
     })
 

@@ -15,15 +15,14 @@ library(markdown) # shiny::markdown()/includeMarkdown() load it at runtime; keep
 library(bslib)
 library(DT)
 library(plotly)
-library(rio)
-library(readxl) # rio dispatches to readxl for .xlsx; keep the dep visible to rsconnect
+library(readxl)
 library(skimr)
 library(naniar)
 library(cowplot)
 
 # Heavy packages used at a single call site are accessed with `::` so they are
 # loaded lazily instead of at startup:
-#   VIM::kNN(), VIM::aggr(), mice::md.pattern(), broom::tidy()
+#   VIM::kNN() (optional), mice::md.pattern(), broom::tidy()
 
 theme_set(theme_minimal_grid())
 
@@ -31,3 +30,6 @@ theme_set(theme_minimal_grid())
 # use paths relative to markdown/ ("images/…"), which Shiny does not serve by
 # default.
 addResourcePath("images", "markdown/images")
+
+# Captured when the UI is built; the original launcher remains the default.
+cata_workshop <- isTRUE(getOption("cataScience.workshop", FALSE))

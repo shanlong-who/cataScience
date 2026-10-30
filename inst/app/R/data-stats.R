@@ -3,9 +3,9 @@
 
 # Real WHO example datasets shipped with the app ------------------------------
 
-stats_df_uhc_pop <- as_tibble(rio::import("data/2025-09-18-sdg381-pop-2021.xlsx"))
-stats_df_two_methods <- as_tibble(rio::import("data/2025-09-18-sdg-two-methods.xlsx"))
-stats_df_uhc_gdp <- as_tibble(rio::import("data/2025-09-18-uhc-gdp.xlsx"))
+stats_df_uhc_pop <- safe_import_data("data/2025-09-18-sdg381-pop-2021.xlsx")
+stats_df_two_methods <- safe_import_data("data/2025-09-18-sdg-two-methods.xlsx")
+stats_df_uhc_gdp <- safe_import_data("data/2025-09-18-uhc-gdp.xlsx")
 
 # Teaching examples ------------------------------------------------------------
 

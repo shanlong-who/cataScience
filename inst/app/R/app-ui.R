@@ -377,7 +377,10 @@ ui_training_guide <- div(
 
 # ---- Assemble -------------------------------------------------------------------
 
+if (cata_workshop) ui_home <- whyUI("why")
+
 ui <- page_navbar(
+  id = "main-nav",
   title = tags$span(
     tags$img(src = "1-logo.jpg", class = "navbar-logo", alt = ""),
     "A Journey of Data Science"
@@ -391,15 +394,17 @@ ui <- page_navbar(
       tags$link(rel = "icon", type = "image/jpeg", href = "1-logo.jpg"),
       # The ?v= query busts browser caches when the stylesheet changes;
       # bump it together with meaningful CSS edits.
-      tags$link(rel = "stylesheet", href = "custom.css?v=2.1.1")
+      tags$link(rel = "stylesheet", href = "custom.css?v=2.2.0")
     )
   ),
   nav_panel("Home", ui_home, icon = icon("house")),
+  if (cata_workshop) nav_panel("Workflow", page_wrap(workflowUI("workflow")), icon = icon("route")),
   nav_panel("Import", page_wrap(ui_import), icon = icon("file-import")),
   nav_menu(
     "Cleaning",
     icon = icon("broom"),
     nav_panel("Missing data", page_wrap(ui_missing), icon = icon("circle-question")),
+    if (cata_workshop) nav_panel("Multiple imputation", page_wrap(miUI("mi"))),
     nav_panel("Outliers", page_wrap(ui_outliers), icon = icon("bullseye")),
     nav_panel("Text", page_wrap(ui_text), icon = icon("eraser")),
     nav_panel("Merge", page_wrap(ui_merge), icon = icon("object-group"))
@@ -411,7 +416,8 @@ ui <- page_navbar(
     nav_panel("Describing data", page_wrap(ui_stats_describe)),
     nav_panel("Normal distribution", page_wrap(ui_stats_normal)),
     nav_panel("t-test", page_wrap(ui_stats_ttest)),
-    nav_panel("Regression", page_wrap(ui_stats_regression))
+    nav_panel("Regression", page_wrap(ui_stats_regression)),
+    if (cata_workshop) nav_panel("Public health example", page_wrap(publicHealthUI("public")))
   ),
   nav_menu(
     "AI",

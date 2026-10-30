@@ -12,7 +12,9 @@ has_missing <- function(df) {
       n_case_miss(df), " row incomplete."
     )
   } else {
-    cat(capture.output(mice::md.pattern(df, plot = FALSE))[1:6], sep = "\n")
+    # Keep mice's complete-data cat as part of the original app's character.
+    # head() avoids printing artificial NA lines if the message changes.
+    cat(utils::head(capture.output(mice::md.pattern(df, plot = FALSE)), 6), sep = "\n")
   }
 }
 
@@ -126,11 +128,24 @@ catatable <- function(df) {
 
 # Import an uploaded or bundled file, stopping with a readable message when
 # the file cannot be used. Callers wrap this in tryCatch + showNotification.
-safe_import_data <- function(path) {
+safe_import_data <- function(path, original_name = path) {
   if (is.null(path) || !file.exists(path)) {
     stop("Please upload a valid file.", call. = FALSE)
   }
-  df <- rio::import(path)
+  format <- tolower(tools::file_ext(original_name))
+  if (requireNamespace("cataScience", quietly = TRUE) &&
+      "cata_read" %in% getNamespaceExports("cataScience")) {
+    return(cataScience::cata_read(path, format = format))
+  }
+  # A small reader fallback keeps the classic app usable as a standalone
+  # directory, including existing shinylive deployments without this package.
+  df <- switch(format,
+    csv = readr::read_csv(path, show_col_types = FALSE, progress = FALSE,
+                          name_repair = "check_unique"),
+    xls = readxl::read_xls(path, .name_repair = "check_unique"),
+    xlsx = readxl::read_xlsx(path, .name_repair = "check_unique"),
+    stop("Please choose a CSV, XLS, or XLSX file.", call. = FALSE)
+  )
   if (!is.data.frame(df)) {
     stop("The uploaded file could not be read as a table.", call. = FALSE)
   }

@@ -18,7 +18,7 @@ server <- function(input, output, session) {
 
   # Merging ------------------------------------------------------------------
 
-  source("R/server-merging.R", local = TRUE)
+  source("R/server-merging.R", local = TRUE, encoding = "UTF-8")
 
   observe({
     df <- df1()
@@ -78,7 +78,7 @@ server <- function(input, output, session) {
   # Visualization --------------------------------------------------------------
 
   # Variable-selector updates live in server-visualization.R (vis_var_specs).
-  source("R/server-visualization.R", local = TRUE)
+  source("R/server-visualization.R", local = TRUE, encoding = "UTF-8")
 
   ## Chart outputs -------------------------------------------------------------
 
@@ -137,9 +137,16 @@ server <- function(input, output, session) {
 
   # Statistics pages ------------------------------------------------------------
 
-  source("R/server-stats.R", local = TRUE)
+  source("R/server-stats.R", local = TRUE, encoding = "UTF-8")
 
   # Quiz -------------------------------------------------------------------------
 
   quizServer("quiz", quiz_questions)
+
+  if (cata_workshop) {
+    whyServer("why")
+    workflowServer("workflow", reactive(list(ds1 = df1(), ds2 = df2(), merged = df_merged_applied())))
+    miServer("mi")
+    publicHealthServer("public")
+  }
 }
