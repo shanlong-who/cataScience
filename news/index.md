@@ -2,6 +2,10 @@
 
 ## cataScience 2.2.0
 
+- Added a shared two-cat navbar icon and favicon based on the
+  maintainer’s cats, with a larger circular mark for both app launchers.
+  The website uses the same cat favicon and retains its original hex
+  logo.
 - Added
   [`run_catas()`](https://shanlong-who.github.io/cataScience/reference/run_catas.md)
   for an extended workshop;
