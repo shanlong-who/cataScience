@@ -162,7 +162,7 @@ training](https://shanlong-who.github.io/cataScience/articles/training-guide.md)
 ``` r
 
 packageVersion("cataScience")
-#> [1] '2.1.4'
+#> [1] '2.2.0'
 ```
 
 Report problems at the [cataScience issue

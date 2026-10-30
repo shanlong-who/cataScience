@@ -11,13 +11,13 @@ Source:
 [`DESCRIPTION`](https://github.com/shanlong-who/cataScience/blob/main/DESCRIPTION)
 
 Ding S (2026). *cataScience: Interactive Training App for Data Science
-and AI Skills*. R package version 2.1.4,
+and AI Skills*. R package version 2.2.0,
 <https://github.com/shanlong-who/cataScience>.
 
     @Manual{,
       title = {cataScience: Interactive Training App for Data Science and AI Skills},
       author = {Shanlong Ding},
       year = {2026},
-      note = {R package version 2.1.4},
+      note = {R package version 2.2.0},
       url = {https://github.com/shanlong-who/cataScience},
     }

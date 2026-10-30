@@ -1,5 +1,37 @@
 # Changelog
 
+## cataScience 2.2.0
+
+- Added
+  [`run_catas()`](https://shanlong-who.github.io/cataScience/reference/run_catas.md)
+  for an extended workshop;
+  [`run_cata()`](https://shanlong-who.github.io/cataScience/reference/run_cata.md)
+  remains the original entry point. The workflow connects review,
+  audited joins, explicit denominators, charts and communication, with
+  input snapshots and undo.
+- Added reusable import, profile, missingness, key-check, outlier-flag,
+  join, proportion and status-summary functions, plus documented
+  examples.
+- Added
+  [`cata_plot()`](https://shanlong-who.github.io/cataScience/reference/cata_plot.md)
+  with 11 chart types and
+  [`theme_cata()`](https://shanlong-who.github.io/cataScience/reference/theme_cata.md),
+  and offline HTML report/dashboard exports. Project exports include
+  reproducible R, Quarto and Shiny sources, input snapshots and
+  preparation records.
+- Added Why data matters, John Snow’s map, a care-cascade lesson and the
+  synthetic Lao workshop B/C analysis. Kept AI chart comparison as an
+  external classroom exercise.
+- Kept the mice cat Easter egg and added multiple imputation, diagnostic
+  chains and pooled model estimates using synthetic cats.
+- Removed rio. Made VIM optional for kNN; replaced its missingness chart
+  with mice. Kept naniar/skimr and the optional DSIR theme.
+- Fixed classic outlier removal so source columns beginning with
+  `shadow_` are preserved. Added explicit UTF-8 loading for nested app
+  scripts.
+- Revised quiz explanations to distinguish review flags from errors and
+  missingness assumptions from conclusions established by observed data.
+
 ## cataScience 2.1.4
 
 CRAN release: 2026-10-06

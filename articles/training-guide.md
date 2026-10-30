@@ -14,6 +14,57 @@ use the app for demonstrations, and let participants practise on their
 own copy. This guide adapts the playbook and lab material bundled with
 the app.
 
+## The extended workshop
+
+Launch
+[`run_catas()`](https://shanlong-who.github.io/cataScience/reference/run_catas.md)
+for the connected workflow, or
+[`run_cata()`](https://shanlong-who.github.io/cataScience/reference/run_cata.md)
+for the original app. Both entry points remain available.
+
+For the Lao workshop, start with **Why data matters**. Let participants
+predict a result before revealing its denominator, discuss what Snow’s
+map can and cannot establish, and inspect Dataset A’s care cascade. Its
+district counts are independent of the synthetic records in B/C.
+
+In **Workflow**, load **Dataset B: reference with flags**, review the
+codebook and key checks, then join the facility table. The declared
+many-to-one join retains 604 records, including two unmatched records.
+The **Apply course S7 selection** action retains 587. Compare the Yes/No
+denominator with all selected records; keep Unknown and blank visible.
+Each action records its sample size and code, and can be undone.
+
+In **Statistics \> Public health example**, the fixed worked example
+reproduces the course’s 604, 604, 587, 582, 577 and 575 sample counts.
+The chi-square and regression use different declared denominators.
+Regression models use the same 575 complete-predictor records, with
+Female and Health Center as references. Discuss selection, functional
+form and within-facility correlation before interpreting intervals.
+
+Use **Cleaning \> Multiple imputation** to compare a complete synthetic
+dataset, complete cases, mean replacement and pooled multiple
+imputation. Inspect completed values and chains. Stable chains do not
+prove that missingness assumptions are correct in a real study.
+
+In **Workflow \> Visualise**, compare a bar chart and a sorted dot plot
+of the same summary. Ask participants to write one defensible finding
+and its limitation before using **Communicate**. HTML reports/dashboard
+files work offline. Project ZIP files contain the original input
+snapshot, selected records, preparation code, RStudio project, Quarto
+and Shiny sources. Review included data before sharing. Re-run
+`analysis.R` from the exported project directory to check
+reproducibility. The narrative needs human review after any changes to
+the data.
+
+For the separate AI chart exercise, give each tool the same synthetic
+data and question. Compare values, denominator, scales and emphasis with
+the R output. The app does not require an AI service or API key.
+
+Before travelling, install required packages, optionally install VIM for
+kNN and DSIR for its theme, then test both launchers and downloads
+without network access. Quarto is optional for the ready-made HTML
+exports.
+
 ## Match the modules to a learning goal
 
 | Goal | Suggested modules | Evidence of learning |
@@ -177,7 +228,7 @@ Ask participants to keep the original exercise file and a short note on:
 ``` r
 
 packageVersion("cataScience")
-#> [1] '2.1.4'
+#> [1] '2.2.0'
 ```
 
 For a self-study learner, follow the same sequence with a shorter module
