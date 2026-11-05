@@ -4,6 +4,7 @@ library(fs)
 library(xml2)
 library(withr)
 library(jsonlite)
+source("pkgdown/translate-interface.R")
 
 args <- commandArgs(trailingOnly = TRUE)
 destination <- path_abs(if (length(args)) args[1] else "docs")
@@ -42,6 +43,7 @@ for (file in html.files) {
   counterpart <- file.path(destination, if (chinese) page else file.path("zh", page))
   if (!file.exists(counterpart)) next
   document <- read_html(file, encoding = "UTF-8")
+  if (chinese) document <- translate_interface(document)
   # Some translated reference headings become '-' or begin with a number.
   # Bootstrap uses CSS selectors, so these IDs need a valid leading letter.
   nodes <- xml_find_all(document, "//*[@id]")
@@ -81,9 +83,8 @@ for (directory in c(destination, file.path(destination, "zh"))) {
       search[[i]]$id <- unname(replacements[search[[i]]$id])
     }
     if (identical(directory, file.path(destination, "zh"))) {
-      labels <- c(Articles = "使用指南", Reference = "函数参考", News = "更新记录", Changelog = "更新记录")
-      if (length(search[[i]]$dir) == 1L && search[[i]]$dir %in% names(labels)) {
-        search[[i]]$dir <- unname(labels[search[[i]]$dir])
+      for (field in intersect(c("dir", "what", "previous_headings", "title"), names(search[[i]]))) {
+        search[[i]][[field]] <- translate_label(search[[i]][[field]])
       }
     }
   }

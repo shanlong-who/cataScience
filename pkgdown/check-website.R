@@ -1,6 +1,7 @@
 # Check translated signatures and every local link in both generated languages.
 library(fs)
 library(xml2)
+source("pkgdown/translate-interface.R")
 
 args <- commandArgs(trailingOnly = TRUE)
 site.dir <- path_abs(if (length(args)) args[1] else "docs")
@@ -72,6 +73,13 @@ for (search.file in c(file.path(site.dir, "search.json"), file.path(site.dir, "z
 reference.zh <- read_html(file.path(site.dir, "zh/reference/cata_mice_demo.html"), encoding = "UTF-8")
 stopifnot(trimws(xml_text(xml_find_first(reference.zh, "//*[@id='ref-usage']"))) == "用法")
 stopifnot(xml_attr(xml_find_first(reference.zh, "//*[@id='search-input']"), "aria-label") == "搜索网站")
+# Simulate a build without Chinese message catalogs and preserve every code block.
+reference.en <- read_html(file.path(site.dir, "reference/cata_mice_demo.html"), encoding = "UTF-8")
+code.before <- xml_text(xml_find_all(reference.en, "//pre"))
+fallback.zh <- translate_interface(reference.en)
+stopifnot(trimws(xml_text(xml_find_first(fallback.zh, "//*[@id='ref-usage']"))) == "用法")
+stopifnot(xml_attr(xml_find_first(fallback.zh, "//*[@id='search-input']"), "aria-label") == "搜索网站")
+stopifnot(identical(code.before, xml_text(xml_find_all(fallback.zh, "//pre"))))
 if (length(failures)) stop(paste(failures, collapse = "\n"))
 stopifnot(switches >= 44L)
 cat("PASS translated signatures:", length(source.files), "\n")
