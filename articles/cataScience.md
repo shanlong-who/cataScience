@@ -48,9 +48,14 @@ installation, the bundled lessons and data activities work offline. Live
 demonstrations with an external AI assistant need internet access and an
 account with that service.
 
-The documentation website contains the guides and function reference. To
-use the interactive training app, launch it from R. The website does not
-host the Shiny application.
+The documentation website contains guides and the function reference.
+You can also use the [online workshop
+app](https://shanlong-who.github.io/cata/) or [online classic
+app](https://shanlong-who.github.io/cata/classic/) without installing R.
+The first visit downloads the runtime and packages; the startup page
+shows progress and offers retry if a download fails. For the extended
+workshop in a local R session, use
+[`run_catas()`](https://shanlong-who.github.io/cataScience/reference/run_catas.md).
 
 The R console stays busy while the app runs. Use RStudio’s Stop button
 or press Escape in the console to stop it. Closing the browser tab may
@@ -153,7 +158,7 @@ training](https://shanlong-who.github.io/cataScience/articles/training-guide.md)
 
 | Question | Answer |
 |----|----|
-| Do learners need R? | The package edition needs R; a separately distributed portable Windows edition can be obtained from the maintainer |
+| Do learners need R? | The online edition does not; the package edition needs R. A portable Windows edition is available separately from the maintainer |
 | Can I use it offline? | Yes, for the bundled lessons and data activities; external AI demonstrations need connectivity |
 | Why is the preview empty? | Load a file or click the example-data button on Import first |
 | How do I undo cleaning? | Click Reset to original data, then try another method |
