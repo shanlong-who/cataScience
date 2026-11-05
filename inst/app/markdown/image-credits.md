@@ -24,8 +24,10 @@ published in 1855. A 760-pixel image is bundled for offline teaching.
 | `picture/2-workflow.png` | Introduction workflow image | Author's own / AI-generated |
 | `www/datasets.zip` | Downloadable exercise datasets | Compiled by the author from WHO/UN public data |
 
-The website icons under `pkgdown/favicon/` are size and format derivatives
-of `www/cata-cats.png`. The existing package hex logo remains in
+The app icon and website icons under `pkgdown/favicon/` are size and format
+derivatives of `pkgdown/assets/cata-cats-master.png` in the source repository.
+The app bundles a 192-pixel copy for its 48-pixel navbar display.
+The existing package hex logo remains in
 `man/figures/logo.png` and the website content. Regenerate website icons
 from the package root with `source("pkgdown/build-favicons.R")`.
 

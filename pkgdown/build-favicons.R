@@ -1,9 +1,9 @@
-# Run from the package root after changing the shared Shiny cat icon.
+# Run from the package root after changing the shared cat artwork.
 # Keep the website's original hex logo in man/figures/logo.png.
 library(magick)
 library(base64enc)
 
-source.path <- "inst/app/www/cata-cats.png"
+source.path <- "pkgdown/assets/cata-cats-master.png"
 output.dir <- "pkgdown/favicon"
 dir.create(output.dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -20,6 +20,7 @@ for (size in c(16L, 32L, 48L, 96L)) {
 }
 image_write(icons[["180"]], file.path(output.dir, "apple-touch-icon.png"), format = "png")
 image_write(icons[["192"]], file.path(output.dir, "web-app-manifest-192x192.png"), format = "png")
+image_write(icons[["192"]], "inst/app/www/cata-cats.png", format = "png")
 image_write(icons[["512"]], file.path(output.dir, "web-app-manifest-512x512.png"), format = "png")
 image_write(image_join(icons[c("16", "32", "48")]),
   file.path(output.dir, "favicon.ico"), format = "ico")
