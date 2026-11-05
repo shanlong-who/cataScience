@@ -13,6 +13,9 @@ site.dir <- file.path(output.dir, "site")
 dir_create(stage.dir)
 dir_create(site.dir)
 options(timeout = max(600, getOption("timeout")))
+# The bundled core fs binary does not load with webR 0.6.0. Include the
+# matching repository binary ahead of the core library in both browser apps.
+Sys.setenv(SHINYLIVE_DOWNLOAD_WASM_CORE_PACKAGES = "fs")
 shinylive::assets_ensure(assets.version)
 
 # A locally installed GitHub development copy has no matching Wasm release.
@@ -72,6 +75,7 @@ for (mode in c("workshop", "classic")) {
   }
 
   bootstrap <- c(
+    'library(fs)',
     sprintf('options(cataScience.workshop = %s)', if (mode == "workshop") "TRUE" else "FALSE"),
     'cata_browser_file <- function(...) {',
     '  path <- file.path(...)',
