@@ -22,17 +22,17 @@
 <link rel="alternate" hreflang="zh-CN" href="https://shanlong-who.github.io/cataScience/zh/reference/cata_plot.html">
 </head>
 <body>
-    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+    <a href="#main" class="visually-hidden-focusable">跳到正文</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="网站导航"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">cataScience</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="切换导航栏">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -54,7 +54,7 @@
 <ul class="navbar-nav">
 <li class="nav-item"><a class="external-link nav-link" href="../../reference/cata_plot.html" hreflang="en" lang="en" aria-label="Read this page in English">English</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
- <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="搜索网站" placeholder="搜索" data-search-index="../search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/shanlong-who/cataScience/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
@@ -75,7 +75,7 @@
     </div>
 
     <div class="section level2">
-    <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a>
+    <h2 id="ref-usage">用法<a class="anchor" aria-label="anchor" href="#ref-usage"></a>
 </h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cata_plot</span><span class="op">(</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"bar"</span>, <span class="va">x</span>, y <span class="op">=</span> <span class="cn">NULL</span>, group <span class="op">=</span> <span class="cn">NULL</span>, facet <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  value <span class="op">=</span> <span class="cn">NULL</span>, yend <span class="op">=</span> <span class="cn">NULL</span>, lower <span class="op">=</span> <span class="cn">NULL</span>, upper <span class="op">=</span> <span class="cn">NULL</span>, title <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -84,7 +84,7 @@
     </div>
 
     <div class="section level2">
-    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a>
+    <h2 id="arguments">参数<a class="anchor" aria-label="anchor" href="#arguments"></a>
 </h2>
 
 
@@ -152,30 +152,30 @@
 </dl>
 </div>
     <div class="section level2">
-    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a>
+    <h2 id="value">返回值<a class="anchor" aria-label="anchor" href="#value"></a>
 </h2>
     <p>可编辑的 ggplot 对象，带有 <code>cata_rows</code> 属性，说明输入、绘图和省略的行数。</p>
     </div>
 
     <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a>
+    <h2 id="ref-examples">示例<a class="anchor" aria-label="anchor" href="#ref-examples"></a>
 </h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>district <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75</span>, <span class="fl">68</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cata_plot</span><span class="op">(</span><span class="va">d</span>, <span class="st">"dot"</span>, <span class="st">"district"</span>, <span class="st">"percent"</span>, percent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="cata_plot-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="目录"><h2>本页目录</h2>
     </nav></aside>
 </div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://github.com/shanlong-who" class="external-link">Shanlong Ding</a>.</p>
+  <p>开发者： <a href="https://github.com/shanlong-who" class="external-link">Shanlong Ding</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
+  <p>网站构建工具： <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
