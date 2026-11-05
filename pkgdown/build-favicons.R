@@ -51,3 +51,7 @@ stopifnot(all(vapply(seq_along(sizes), function(i) {
   info <- image_info(icons[[i]])
   info$width == sizes[i] && info$height == sizes[i]
 }, logical(1))))
+
+# The vignette displays this at 130 pixels; keep the full website hex untouched.
+hex <- image_strip(image_resize(image_read("man/figures/logo.png"), "260x260"))
+image_write(hex, "vignettes/assets/logo.png", format = "png")
