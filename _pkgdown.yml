@@ -19,11 +19,14 @@ home:
 navbar:
   structure:
     left: [app, intro, reference, articles, news]
-    right: [search, github]
+    right: [language, search, github]
   components:
     app:
       text: Open app
       href: https://shanlong-who.github.io/cata/
+    language:
+      text: 中文
+      href: zh/index.html
 reference:
   - title: Launch the training app
     desc: Open the bundled training app in a local R session.

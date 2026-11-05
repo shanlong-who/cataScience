@@ -32,7 +32,9 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
       - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        run: |
+          source("pkgdown/build-bilingual-site.R")
+          source("pkgdown/check-website.R")
         shell: Rscript {0}
       - name: Deploy to GitHub Pages
         if: github.event_name != 'pull_request'

@@ -1,0 +1,58 @@
+url: https://shanlong-who.github.io/cataScience/zh/
+lang: zh_CN
+template:
+  bootstrap: 5
+  bslib:
+    primary: '#0093D5'
+    base_font: 'system-ui, Microsoft YaHei, PingFang SC, sans-serif'
+    heading_font: 'system-ui, Microsoft YaHei, PingFang SC, sans-serif'
+    code_font: 'Consolas, monospace'
+home:
+  title: cataScience — 数据科学之旅
+  description: 用交互式 R Shiny 应用学习数据导入、清理、可视化、统计分析与结果沟通。
+navbar:
+  structure:
+    left: [app, intro, reference, articles, news]
+    right: [language, search, github]
+  components:
+    app:
+      text: 打开应用
+      href: https://shanlong-who.github.io/cata/
+    intro:
+      text: 入门
+      href: articles/cataScience.html
+    reference:
+      text: 函数参考
+      href: reference/index.html
+    articles:
+      text: 使用指南
+      menu:
+        - text: 快速入门
+          href: articles/cataScience.html
+        - text: 数据质量工作流
+          href: articles/data-quality-workflow.html
+        - text: 培训指南
+          href: articles/training-guide.html
+    news:
+      text: 更新记录
+      href: news/index.html
+    language:
+      text: English
+      href: https://shanlong-who.github.io/cataScience/
+reference:
+  - title: 启动培训应用
+    desc: 在本地 R 会话中打开经典版或扩展培训版。
+    contents: [run_cata, run_catas]
+  - title: 检查和整理数据
+    contents: [cata_read, cata_profile, cata_missing, cata_check_keys, cata_flag_outliers, cata_join]
+  - title: 示例、分母与统计分析
+    contents: [cata_example, cata_proportion, cata_count_status, cata_lao_analysis, cata_mice_demo]
+  - title: 可视化与结果沟通
+    contents: [cata_plot, theme_cata, cata_report, cata_export]
+articles:
+  - title: 学习使用 cataScience
+    navbar: ~
+    contents: [cataScience, data-quality-workflow, training-guide]
+authors:
+  Shanlong Ding:
+    href: https://github.com/shanlong-who

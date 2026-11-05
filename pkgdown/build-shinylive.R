@@ -117,6 +117,8 @@ for (mode in c("workshop", "classic")) {
 file_copy("pkgdown/favicon/favicon-96x96.png", file.path(site.dir, "favicon-96x96.png"), overwrite = TRUE)
 file_copy("pkgdown/favicon/favicon.ico", file.path(site.dir, "favicon.ico"), overwrite = TRUE)
 file_create(file.path(site.dir, ".nojekyll"))
+source("pkgdown/build-launcher.R", local = TRUE)
+write_cata_launcher(site.dir)
 write_json(list(package = "cataScience", version = version,
   source_commit = system2("git", c("rev-parse", "HEAD"), stdout = TRUE),
   shinylive = as.character(packageVersion("shinylive")),
