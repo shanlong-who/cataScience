@@ -13,9 +13,6 @@ site.dir <- file.path(output.dir, "site")
 dir_create(stage.dir)
 dir_create(site.dir)
 options(timeout = max(600, getOption("timeout")))
-# The bundled core fs binary does not load with webR 0.6.0. Include the
-# matching repository binary ahead of the core library in both browser apps.
-Sys.setenv(SHINYLIVE_DOWNLOAD_WASM_CORE_PACKAGES = "fs")
 shinylive::assets_ensure(assets.version)
 
 # A locally installed GitHub development copy has no matching Wasm release.
@@ -71,11 +68,22 @@ for (mode in c("workshop", "classic")) {
       text <- replace_required(text, 'system.file("training-data", file, package = "cataScience")',
         'cata_browser_file("training-data", file)')
     }
+    if (basename(file) == "mod-cleaning.R") {
+      # VIM imports xgboost, whose shared-memory Wasm binary cannot load in
+      # this runtime. A failed load also corrupts subsequent DLL loading.
+      text <- replace_required(text, 'requireNamespace("VIM", quietly = TRUE)', 'FALSE')
+      text <- replace_required(text, 'VIM::kNN(data_rv(), missing_variable(), imp_var = FALSE)',
+        'stop("kNN imputation is available in the R app.")')
+      text <- replace_required(text, 'The optional VIM package is needed for kNN imputation.',
+        'kNN imputation is available in the R app.')
+      text <- replace_required(text, '          checkboxGroupInput(\n            ns("missing_variable"),',
+        paste('          helpText("kNN imputation is available in the R app."),',
+          '          checkboxGroupInput(\n            ns("missing_variable"),', sep = "\n"))
+    }
     writeLines(text, file, useBytes = TRUE)
   }
 
   bootstrap <- c(
-    'library(fs)',
     sprintf('options(cataScience.workshop = %s)', if (mode == "workshop") "TRUE" else "FALSE"),
     'cata_browser_file <- function(...) {',
     '  path <- file.path(...)',
