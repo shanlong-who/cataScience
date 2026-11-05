@@ -82,28 +82,37 @@
 
     /* Search --------------------------*/
     /* Adapted from https://github.com/rstudio/bookdown/blob/2d692ba4b61f1e466c92e78fd712b0ab08c11d31/inst/resources/bs4_book/bs4_book.js#L25 */
-    // Initialise search index on focus
+    // Share one pending download so the first query waits for the search index.
     var fuse;
-    $("#search-input").focus(async function (e) {
-      if (fuse) {
-        return;
-      }
+    var searchReady;
+    function loadSearchIndex() {
+      if (fuse) return Promise.resolve();
+      if (searchReady) return searchReady;
+      var input = $("#search-input");
+      input.addClass("loading");
+      searchReady = (async function () {
+        try {
+          var response = await fetch(input.data("search-index"));
+          if (!response.ok) throw new Error("Search index: HTTP " + response.status);
+          var data = await response.json();
+          fuse = new Fuse(data, {
+            keys: ["what", "text", "code"],
+            ignoreLocation: true,
+            threshold: 0.1,
+            includeMatches: true,
+            includeScore: true,
+          });
+        } catch (error) {
+          console.warn("Search index could not be loaded. Type again to retry.", error);
+        } finally {
+          input.removeClass("loading");
+          searchReady = null;
+        }
+      })();
+      return searchReady;
+    }
+    $("#search-input").focus(loadSearchIndex);
 
-      $(e.target).addClass("loading");
-      var response = await fetch($("#search-input").data("search-index"));
-      var data = await response.json();
-
-      var options = {
-        keys: ["what", "text", "code"],
-        ignoreLocation: true,
-        threshold: 0.1,
-        includeMatches: true,
-        includeScore: true,
-      };
-      fuse = new Fuse(data, options);
-
-      $(e.target).removeClass("loading");
-    });
 
     // Use algolia autocomplete
     var options = {
@@ -114,7 +123,7 @@
     };
     var q;
     async function searchFuse(query, callback) {
-      await fuse;
+      await loadSearchIndex();
 
       var items;
       if (!fuse) {
@@ -148,7 +157,7 @@
         },
       },
     ]).on('autocomplete:selected', function (event, s) {
-      window.location.href = s.path + "?q=" + q + "#" + s.id;
+      if (s.path) window.location.href = s.path + "?q=" + encodeURIComponent(q || "") + (typeof s.id === "string" && s.id ? "#" + encodeURIComponent(s.id) : "");
     });
   });
 })(window.jQuery || window.$)
