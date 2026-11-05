@@ -18,8 +18,12 @@ home:
     visualizing and understanding data, with guided AI exercises and a quiz.
 navbar:
   structure:
-    left: [intro, reference, articles, news]
+    left: [app, intro, reference, articles, news]
     right: [search, github]
+  components:
+    app:
+      text: Open app
+      href: https://shanlong-who.github.io/cata/
 reference:
   - title: Launch the training app
     desc: Open the bundled training app in a local R session.

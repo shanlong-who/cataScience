@@ -17,6 +17,13 @@ science or starting to use AI assistants at work can use it for self-study.
 
 Documentation: <https://shanlong-who.github.io/cataScience/>
 
+Try it online: **[Workshop app](https://shanlong-who.github.io/cata/)** ·
+[Classic app](https://shanlong-who.github.io/cata/classic/)
+
+The online apps run R in your browser with Shinylive. No R installation is
+needed; allow time for the runtime and packages to download on the first
+visit. kNN imputation requires the local R app and the optional VIM package.
+
 ## Guides
 
 | Guide | What you will learn |
@@ -25,8 +32,8 @@ Documentation: <https://shanlong-who.github.io/cataScience/>
 | [Data-quality workflow](https://shanlong-who.github.io/cataScience/articles/data-quality-workflow.html) | Compare cleaning choices, inspect text and joins, and explain a chart |
 | [Training guide](https://shanlong-who.github.io/cataScience/articles/training-guide.html) | Plan a three-hour data science session or a two-hour AI session |
 
-The website contains documentation. Launch the Shiny app from R for the
-interactive lessons and exercises.
+Use the online apps above for interactive lessons, or launch either edition
+from R using the commands below.
 
 ## Installation
 
