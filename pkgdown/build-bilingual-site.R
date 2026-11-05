@@ -26,7 +26,7 @@ for (file in c("README.md", "NEWS.md", "_pkgdown.yml")) {
 for (directory in c("man", "vignettes")) {
   dir_copy(file.path("pkgdown", "zh", directory), file.path(stage.dir, directory), overwrite = TRUE)
 }
-with_envvar(c(LANGUAGE = "zh_CN"), {
+with_language("zh_CN", {
   build_site_github_pages(pkg = stage.dir, dest_dir = file.path(destination, "zh"),
     clean = FALSE, new_process = FALSE, install = FALSE)
 })
@@ -81,12 +81,12 @@ for (directory in c(destination, file.path(destination, "zh"))) {
       search[[i]]$id <- unname(replacements[search[[i]]$id])
     }
     if (identical(directory, file.path(destination, "zh"))) {
-      labels <- c(Articles = "使用指南", Reference = "函数参考", News = "更新记录")
+      labels <- c(Articles = "使用指南", Reference = "函数参考", News = "更新记录", Changelog = "更新记录")
       if (length(search[[i]]$dir) == 1L && search[[i]]$dir %in% names(labels)) {
         search[[i]]$dir <- unname(labels[search[[i]]$dir])
       }
     }
   }
-  write_json(search, search.file, auto_unbox = TRUE)
+  write_json(search, search.file, auto_unbox = TRUE, null = "null")
 }
 cat("Bilingual website:", destination, "\n")

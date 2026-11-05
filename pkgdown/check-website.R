@@ -58,6 +58,8 @@ base.url <- "https://shanlong-who.github.io/cataScience/"
 for (search.file in c(file.path(site.dir, "search.json"), file.path(site.dir, "zh/search.json"))) {
   entries <- jsonlite::fromJSON(search.file, simplifyVector = FALSE)
   for (entry in entries) {
+    # A missing fragment must remain JSON null, never an object or an array.
+    stopifnot(is.null(entry$id) || (is.character(entry$id) && length(entry$id) == 1L))
     if (length(entry$path) != 1L || !startsWith(entry$path, base.url)) next
     target <- file.path(site.dir, sub(base.url, "", entry$path, fixed = TRUE))
     if (dir_exists(target)) target <- file.path(target, "index.html")
@@ -67,6 +69,9 @@ for (search.file in c(file.path(site.dir, "search.json"), file.path(site.dir, "z
     }
   }
 }
+reference.zh <- read_html(file.path(site.dir, "zh/reference/cata_mice_demo.html"), encoding = "UTF-8")
+stopifnot(trimws(xml_text(xml_find_first(reference.zh, "//*[@id='ref-usage']"))) == "用法")
+stopifnot(xml_attr(xml_find_first(reference.zh, "//*[@id='search-input']"), "aria-label") == "搜索网站")
 if (length(failures)) stop(paste(failures, collapse = "\n"))
 stopifnot(switches >= 44L)
 cat("PASS translated signatures:", length(source.files), "\n")
