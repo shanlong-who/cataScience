@@ -3,6 +3,7 @@ library(jsonlite)
 
 write_cata_launcher <- function(site.dir) {
   template <- readLines("pkgdown/shinylive-launcher/index.html", encoding = "UTF-8")
+  template <- gsub("{{loader_version}}", unname(tools::md5sum("pkgdown/shinylive-launcher/launch.js")), template, fixed = TRUE)
   for (mode in c("workshop", "classic")) {
     html <- gsub("{{edition}}", if (mode == "workshop") "Workshop" else "Classic", template, fixed = TRUE)
     html <- gsub("{{root}}", if (mode == "workshop") "./" else "../", html, fixed = TRUE)
