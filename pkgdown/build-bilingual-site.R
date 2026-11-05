@@ -5,6 +5,7 @@ library(xml2)
 library(withr)
 library(jsonlite)
 source("pkgdown/translate-interface.R")
+source("pkgdown/patch-search.R")
 
 args <- commandArgs(trailingOnly = TRUE)
 destination <- path_abs(if (length(args)) args[1] else "docs")
@@ -31,6 +32,7 @@ with_language("zh_CN", {
   build_site_github_pages(pkg = stage.dir, dest_dir = file.path(destination, "zh"),
     clean = FALSE, new_process = FALSE, install = FALSE)
 })
+for (directory in c(destination, file.path(destination, "zh"))) patch_search(directory)
 
 # Resolve the language switch at build time: no translation service or JS is needed.
 base.url <- "https://shanlong-who.github.io/cataScience/"
@@ -44,6 +46,11 @@ for (file in html.files) {
   if (!file.exists(counterpart)) next
   document <- read_html(file, encoding = "UTF-8")
   if (chinese) document <- translate_interface(document)
+  script <- xml_find_first(document, "//script[@src='pkgdown.js' or @src='../pkgdown.js']")
+  if (!inherits(script, "xml_missing")) {
+    asset <- file.path(destination, if (chinese) "zh" else "", "pkgdown.js")
+    xml_set_attr(script, "src", paste0(xml_attr(script, "src"), "?v=", unname(tools::md5sum(asset))))
+  }
   # Some translated reference headings become '-' or begin with a number.
   # Bootstrap uses CSS selectors, so these IDs need a valid leading letter.
   nodes <- xml_find_all(document, "//*[@id]")
