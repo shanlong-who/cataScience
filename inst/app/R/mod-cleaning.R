@@ -223,7 +223,7 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
     need_data <- function() {
       validate(need(
         data_rv(),
-        "No data yet — upload a file or load the example data on the Import page."
+        cata_label("No data yet — upload a file or load the example data on the Import page.")
       ))
     }
 
@@ -385,7 +385,7 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       need_data()
       validate(need(
         any_miss(data_rv()),
-        "No missing values in this dataset. 🎉"
+        cata_label("No missing values in this dataset. 🎉")
       ))
     }
 
@@ -486,7 +486,7 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
     df_long <- reactive({
       df_num <- data_rv() %>%
         select(where(is.numeric))
-      validate(need(ncol(df_num) > 0, "No numeric variables are available."))
+      validate(need(ncol(df_num) > 0, cata_label("No numeric variables are available.")))
       df_num %>%
         mutate(.id = seq_len(nrow(.))) %>%
         pivot_longer(-.id, names_to = "name", values_to = "value", names_transform = fct) %>%

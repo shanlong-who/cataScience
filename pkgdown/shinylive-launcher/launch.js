@@ -7,7 +7,12 @@
   const error = document.getElementById("launch-error");
   const retry = document.getElementById("retry");
   const base = new URL(document.body.dataset.root, location.href);
-  let chinese = navigator.language.toLowerCase().startsWith("zh");
+  const preferenceKey = "cataScience.language";
+  const requested = new URL(location.href).searchParams.get("lang");
+  let saved;
+  try { saved = localStorage.getItem(preferenceKey); } catch (_) { /* Storage is optional. */ }
+  const initial = [requested, saved].find(value => value === "zh" || value === "en");
+  let chinese = initial ? initial === "zh" : /^zh\b/i.test(navigator.language);
   let running = false;
   let runtimeStarted = false;
   let phase = "preparing";
@@ -45,6 +50,12 @@
   }
   function render() {
     document.documentElement.lang = chinese ? "zh-CN" : "en";
+    document.body.dataset.cataLaunchLanguage = chinese ? "zh" : "en";
+    const workshop = document.body.dataset.edition === "Workshop";
+    const edition = chinese ? (workshop ? "扩展培训版" : "经典版") : document.body.dataset.edition;
+    document.title = `cataScience ${edition}`;
+    document.getElementById("launch-title").textContent = document.title;
+    document.getElementById("launch-subtitle").textContent = chinese ? "数据科学之旅" : "A Journey of Data Science";
     status.textContent = text()[phase];
     document.getElementById("launch-intro").textContent = text().intro;
     document.getElementById("help-title").textContent = text().help;
@@ -57,7 +68,11 @@
     if (phase === "downloading") showProgress();
     else detail.textContent = phase === "starting" ? text().ready : text().waiting;
   }
-  document.getElementById("language").addEventListener("click", () => { chinese = !chinese; render(); });
+  document.getElementById("language").addEventListener("click", () => {
+    chinese = !chinese;
+    try { localStorage.setItem(preferenceKey, chinese ? "zh" : "en"); } catch (_) { /* This visit still works. */ }
+    render();
+  });
 
   function deadline(promise, message, milliseconds = 20000) {
     let timer;
@@ -87,7 +102,10 @@
     resetDeadline();
     try {
       // Read the complete response so subsequent webR requests can reuse the HTTP cache.
-      const response = await fetch(new URL(file.path, base), { cache: "default", signal: controller.signal });
+      // Revalidate the lesson bundle after a deployment; reuse unchanged runtime files.
+      const response = await fetch(new URL(file.path, base), {
+        cache: file.path.endsWith("app.json") ? "no-cache" : "default", signal: controller.signal
+      });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       resetDeadline();
       if (response.body) {

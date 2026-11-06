@@ -22,7 +22,7 @@ output$st_p_mean_median <- renderPlotly({
     geom_vline(xintercept = md, color = "black", linewidth = 1) +
     scale_color_manual(values = c("Office cat" = "#0072B2", "Newcomer" = "#E69F00")) +
     scale_y_continuous(limits = c(-.5, .5), breaks = NULL) +
-    labs(
+    cata_teaching_labs(
       x = "Weight (kg)", y = "", color = "",
       title = "Dashed line = mean, solid line = median"
     )
@@ -90,7 +90,7 @@ output$st_p_rule <- renderPlot({
       fill = "#0072B2", alpha = .35
     ) +
     geom_line(linewidth = 1.1) +
-    labs(x = "Standard deviations from the mean", y = "Density")
+    cata_teaching_labs(x = "Standard deviations from the mean", y = "Density")
 })
 
 output$st_rule_text <- renderUI({
@@ -98,7 +98,7 @@ output$st_rule_text <- renderUI({
   share <- (pnorm(k) - pnorm(-k)) * 100
   p(
     class = "lead text-center",
-    sprintf("About %.1f%% of values fall within %d SD of the mean.", share, k)
+    sprintf(cata_label("About %.1f%% of values fall within %d SD of the mean."), share, k)
   )
 })
 
@@ -138,7 +138,7 @@ output$st_p_uhc_density <- renderPlot({
     ) +
     scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, 10)) +
     scale_y_continuous(expand = expansion(mult = c(0, .05))) +
-    labs(
+    cata_teaching_labs(
       subtitle = paste0(
         "n = ", length(x), "  |  IQR shaded (",
         round(q[1], 1), "–", round(q[2], 1), ")"
@@ -160,9 +160,9 @@ output$st_p_clt <- renderPlot({
     geom_histogram(color = "white", fill = "#0072B2", bins = 30) +
     geom_vline(xintercept = mean(x), color = "#D55E00", linetype = "dashed", linewidth = 1) +
     scale_x_continuous(limits = c(30, 100)) +
-    labs(
+    cata_teaching_labs(
       x = "Mean of one sample", y = "Count",
-      subtitle = sprintf("Sampling distribution of the mean (n = %d per sample)", n)
+      subtitle = sprintf(cata_label("Sampling distribution of the mean (n = %d per sample)"), n)
     )
 })
 
@@ -189,7 +189,7 @@ output$st_p_ttest <- renderPlotly({
     geom_boxplot(alpha = .6, outlier.shape = NA) +
     geom_jitter(width = .15, alpha = .5, size = 1.5) +
     palette_cat() +
-    labs(x = "", y = "Purring minutes per day") +
+    cata_teaching_labs(x = "", y = "Purring minutes per day") +
     theme(legend.position = "none")
   cata_plotly(p)
 })
@@ -234,7 +234,7 @@ output$st_p_methods <- renderPlotly({
     geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "gray50") +
     geom_point(color = "#0072B2", size = 2.5, alpha = .8) +
     coord_equal() +
-    labs(
+    cata_teaching_labs(
       x = "UHC index — old method", y = "UHC index — new method",
       title = "Points above the dashed line: new method estimates higher"
     )
@@ -284,10 +284,10 @@ output$st_p_cat_reg <- renderPlotly({
   p <- ggplot(df_cat, aes(length_cm, weight_kg)) +
     geom_point(color = "#0072B2", size = 2, alpha = .8) +
     geom_smooth(method = "lm", se = FALSE, color = "#D55E00") +
-    labs(
+    cata_teaching_labs(
       x = "Cat length (cm)", y = "Cat weight (kg)",
       title = sprintf(
-        "weight = %.2f + %.3f × length   (R² = %.2f)",
+        cata_label("weight = %.2f + %.3f × length   (R² = %.2f)"),
         coef(fit)[1], coef(fit)[2], r2
       )
     )
@@ -308,7 +308,7 @@ output$st_p_uhc_gdp <- renderPlotly({
       method = "lm", se = FALSE, color = "#D55E00"
     ) +
     scale_x_log10(labels = scales::label_comma()) +
-    labs(
+    cata_teaching_labs(
       x = "GDP per capita (US$, log scale)",
       y = "UHC service coverage index (SDG 3.8.1)"
     )

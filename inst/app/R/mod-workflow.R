@@ -330,7 +330,8 @@ workflowServer <- function(id, datasets) {
         summary_spec = summary_spec(), chart_data = if (isTRUE(input$include_plot)) input$plot_data else "records",
         audit = state$audit, width = input$width, height = input$height), report_args()))
     }
-    output$dimensions <- renderText(paste(nrow(state$data), "selected records ·", ncol(state$data), "variables ·", nrow(state$audit), "recorded steps"))
+    output$dimensions <- renderText(sprintf(cata_label("%d selected records · %d variables · %d recorded steps"),
+      nrow(state$data), ncol(state$data), nrow(state$audit)))
     output$data <- renderDT(catatable(state$data), server = FALSE)
     output$profile <- renderDT(catatable(cataScience::cata_profile(state$data)), server = FALSE)
     output$key_summary <- renderDT({ req(input$key); catatable(cataScience::cata_check_keys(state$data, input$key)$summary) }, server = FALSE)
@@ -349,15 +350,16 @@ workflowServer <- function(id, datasets) {
     output$audit <- renderDT(catatable(state$audit), server = FALSE)
     output$missing <- renderPlot({
       data <- cataScience::cata_missing(state$data)
-      cataScience::cata_plot(data, "dot", "variable", "missing", sort = TRUE, xlab = "Variable", ylab = "Missing values")
+      cataScience::cata_plot(data, "dot", "variable", "missing", sort = TRUE, xlab = cata_label("Variable"), ylab = cata_label("Missing values"))
     })
     output$missing_message <- renderPrint({
-      if (!nrow(state$data)) cat("The selected dataset has no rows. Review the sample filters.") else has_missing(state$data)
+      if (!nrow(state$data)) cat(cata_label("The selected dataset has no rows. Review the sample filters.")) else has_missing(state$data)
     })
     output$codebook <- renderUI({
       example <- state$example
       file <- if (!is.null(example) && example %in% c("art", "art_raw")) "dataset_b_codebook.md" else if (identical(example, "facilities")) "dataset_c_codebook.md" else NULL
       if (!is.null(file)) {
+        if (identical(cata_session_language(), "zh")) file <- file.path("zh", file)
         text <- readLines(system.file("training-data", file, package = "cataScience"), encoding = "UTF-8", warn = FALSE)
         return(HTML(markdown::mark(text = text, output = NULL)))
       }

@@ -21,11 +21,11 @@ var_num <- reactive({
 validate_vis_data <- function() {
   validate(need(
     df0(),
-    paste(
+    cata_label(paste(
       "No data for this selection yet.",
       "Import data on the Import page;",
       "for the merged dataset, click 'Apply merging' on the Merge page."
-    )
+    ))
   ))
 }
 

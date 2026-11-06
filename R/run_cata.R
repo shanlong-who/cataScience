@@ -6,6 +6,9 @@
 #'
 #' @param ... Passed on to [shiny::runApp()], for example `port` or
 #'   `launch.browser`.
+#' @param language Interface language: `"zh"` (Simplified Chinese), `"en"`
+#'   (English), or `"auto"` (saved browser preference, then browser language).
+#'   Participants can switch languages in the navigation bar during a session.
 #'
 #' @return No return value; called for the side effect of launching the app.
 #'   The function blocks the R session while the app is running.
@@ -22,7 +25,10 @@
 #' }
 #'
 #' @export
-run_cata <- function(...) {
+run_cata <- function(..., language = c("auto", "en", "zh")) {
+  language <- match.arg(language)
+  previous <- options(cataScience.language = language)
+  on.exit(options(previous), add = TRUE)
   app_dir <- system.file("app", package = "cataScience")
   if (!nzchar(app_dir)) {
     stop(

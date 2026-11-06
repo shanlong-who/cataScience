@@ -4,10 +4,14 @@
 \alias{run_catas}
 \title{Launch the extended cataScience workshop}
 \usage{
-run_catas(...)
+run_catas(..., language = c("auto", "en", "zh"))
 }
 \arguments{
 \item{...}{Arguments passed to \code{\link[shiny:runApp]{shiny::runApp()}}.}
+
+\item{language}{Interface language: \code{"zh"} (Simplified Chinese), \code{"en"}
+(English), or \code{"auto"} (saved browser preference, then browser language).
+Participants can switch languages in the navigation bar during a session.}
 }
 \value{
 Called for its side effect; blocks while the app is running.

@@ -59,10 +59,10 @@ whyServer <- function(id) {
     })
     output$cascade <- renderPlot({
       data <- selected()
-      counts <- data.frame(stage = c("Living with HIV", "Diagnosed", "On ART", "Usable result", "Suppressed"),
+      counts <- data.frame(stage = cata_label(c("Living with HIV", "Diagnosed", "On ART", "Usable result", "Suppressed")),
         count = as.numeric(unlist(data[1, c("l", "d", "a", "t", "s")], use.names = FALSE)))
-      cataScience::cata_plot(counts, "cascade", "stage", "count", xlab = "", ylab = "People",
-        title = paste("District", input$district, input$year), caption = "Synthetic training counts")
+      cataScience::cata_plot(counts, "cascade", "stage", "count", xlab = "", ylab = cata_label("People"),
+        title = paste(cata_label("District"), input$district, input$year), caption = cata_label("Synthetic training counts"))
     })
     output$ratios <- renderTable({
       data <- selected()
@@ -124,7 +124,7 @@ miServer <- function(id) {
     output$comparison <- renderPlot({
       req(result())
       cataScience::cata_plot(result()$comparison, "forest", "method", "estimate", lower = "lower", upper = "upper",
-        reference = 0, ylab = "Weight difference (kg) per cm of length", title = "One model, different missing-data approaches")
+        reference = 0, ylab = cata_label("Weight difference (kg) per cm of length"), title = cata_label("One model, different missing-data approaches"))
     })
     output$estimates <- renderDT({
       req(result())
@@ -187,8 +187,8 @@ publicHealthServer <- function(id) {
       d <- result()$odds_ratios
       d <- d[d$model == "Adjusted", ]
       cataScience::cata_plot(d, "forest", "contrast", "estimate", lower = "lower", upper = "upper",
-        log_scale = TRUE, reference = 1, title = "Adjusted associations in the synthetic sample",
-        ylab = "Odds ratio (ordinary 95% Wald CI)", caption = "Outcome: reported testing Yes vs No. Within-facility correlation is not accounted for.")
+        log_scale = TRUE, reference = 1, title = cata_label("Adjusted associations in the synthetic sample"),
+        ylab = cata_label("Odds ratio (ordinary 95% Wald CI)"), caption = cata_label("Outcome: reported testing Yes vs No. Within-facility correlation is not accounted for."))
     })
   })
 }

@@ -1,10 +1,15 @@
 # Print a short missing-data summary.
 has_missing <- function(df) {
   if (is.null(df) || !is.data.frame(df)) {
-    cat("No dataset is available.")
+    cat(cata_label("No dataset is available."))
     return(invisible(NULL))
   }
   if (any_miss(df)) {
+    if (identical(cata_session_language(), "zh")) {
+      cat(sprintf(cata_label("Missing values: %d cells, %d variables, %d incomplete rows."),
+        n_miss(df), n_var_miss(df), n_case_miss(df)))
+      return(invisible(NULL))
+    }
     cat(
       "There is still missing data...\n",
       n_miss(df), " values with missing,\n",
@@ -121,6 +126,11 @@ catatable <- function(df) {
       dom = "Bfrtip",
       pageLength = 10,
       scrollX = TRUE,
+      language = if (identical(cata_session_language(), "zh")) list(
+        search = "搜索：", info = "显示第 _START_ 至 _END_ 条，共 _TOTAL_ 条", infoEmpty = "没有记录",
+        infoFiltered = "（从 _MAX_ 条记录中筛选）", emptyTable = "表中没有数据", zeroRecords = "没有匹配记录",
+        lengthMenu = "每页显示 _MENU_ 条", paginate = list(previous = "上一页", `next` = "下一页"),
+        buttons = list(copy = "复制", print = "打印")) else list(),
       buttons = c("copy", "csv", "excel", "print")
     )
   )

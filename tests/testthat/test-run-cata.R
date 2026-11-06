@@ -1,6 +1,7 @@
 test_that("run_cata() passes extra arguments on to shiny::runApp()", {
   expect_true(is.function(run_cata))
-  expect_named(formals(run_cata), "...")
+  expect_named(formals(run_cata), c("...", "language"))
+  expect_error(run_cata(language = "unavailable"), "arg")
 })
 
 test_that("the app directory shipped with the package is complete", {

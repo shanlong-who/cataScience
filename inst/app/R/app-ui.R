@@ -395,7 +395,8 @@ ui <- page_navbar(
       tags$link(rel = "icon", type = "image/png", href = "cata-cats.png"),
       # The ?v= query busts browser caches when the stylesheet changes;
       # bump it together with meaningful CSS edits.
-      tags$link(rel = "stylesheet", href = "custom.css?v=2.2.0-cats")
+      tags$link(rel = "stylesheet", href = "custom.css?v=local-language-2"),
+      tags$script(src = "i18n/interface.js", defer = NA)
     )
   ),
   nav_panel("Home", ui_home, icon = icon("house")),
@@ -437,11 +438,15 @@ ui <- page_navbar(
     nav_panel("Credits", page_wrap(md_page("image-credits.md")))
   ),
   nav_spacer(),
+  nav_item(tags$button(type = "button", id = "cata-language-switch",
+    class = "nav-link cata-language-switch", `data-default` = getOption("cataScience.language", "auto"),
+    `aria-label` = "Switch language / 切换语言", "中文 / English")),
   nav_item(
     tags$a(
       icon("envelope"),
-      "dings@who.int",
+      tags$span(class = "cata-contact-label", "dings@who.int"),
       href = "mailto:dings@who.int",
+      `aria-label` = "dings@who.int", title = "dings@who.int",
       class = "nav-link"
     )
   )

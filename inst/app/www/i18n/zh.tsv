@@ -1,0 +1,1918 @@
+en	zh
+Training lab guide	课堂实验指南
+Learning objective:	学习目标
+recognize whether a file is ready for analysis before asking AI to write R code.	：在请 AI 编写 R 代码前，判断文件能否用于分析。
+Try this:	动手试试
+open the example dirty file, identify at least three problems, and ask whether each problem would affect descriptive statistics, visualization, or indicator interpretation.	：打开待清理的示例文件，找出至少三个问题，判断它们对描述性统计、图表和指标解释的影响。
+Watch out:	注意
+AI can write code that imports a file successfully while still missing hidden rows, merged headers, text-coded numbers, or inconsistent category labels. A successful import is not the same as clean data.	：即使文件导入成功，AI 也可能忽略隐藏行、合并表头、以文本存储的数字或类别标签不一致等问题。导入后要核查数据。
+🧾 What is a data table?	🧾 什么是数据表？
+Tabular data: a rectangular structure made of rows and columns.	表格数据由行和列组成。
+Each row	每一行
+represents an individual record (e.g., one cat, one patient, one survey response)	代表一条记录，例如一只猫、一名患者或一份问卷。
+Each column	每一列
+represent variables or fields (e.g., age, sex, region, blood pressure)	代表一个变量或字段，例如年龄、性别、地区或血压。
+Tidy data has:	整洁的数据表应具备：
+A single	单一
+header row	表头行
+Each column with	每列
+only one type of value	只存一种类型的值
+No merged cells or sub-headers	不合并单元格，也不插入子表头
+No extra footnotes or decorative formatting	不夹杂脚注或装饰性格式
+🗃️ Common File Formats	🗃️ 常见文件格式
+Format	格式
+Description	说明
+Pros	优点
+Cautions	注意事项
+Comma-separated values, plain text	逗号分隔值，纯文本
+Simple, universal	简单、通用
+Can’t store multiple sheets or formatting	不能保存多张工作表或格式
+Excel spreadsheet	Excel 电子表格
+Allows multiple sheets, formulas	支持多张工作表与公式
+May contain merged cells, hidden rows	可能存在合并单元格、隐藏行
+SPSS/Stata files	SPSS 或 Stata 文件
+Useful for surveys	适合调查数据
+Need special packages to read	需要相应的软件包读取
+Semi-structured formats	半结构化格式
+Common in APIs	API 中常见
+Not ready for analysis without reshaping	分析前通常需要重整结构
+diagnose import problems before building an analysis pipeline.	：在建立分析流程前诊断导入问题。
+list which issues are data-entry problems, which are file-format problems, and which are analysis-readiness problems.	：区分录入、文件格式和分析准备方面的问题。
+if AI writes code directly from a messy spreadsheet, it may make the wrong assumptions silently. Always inspect the imported table before summarizing it.	：AI 可能对杂乱的表格作出错误假设。汇总之前，请检查导入的表。
+❗ Common Import Issues	❗ 常见导入问题
+Even when a file opens fine in Excel, it may have issues during analysis:	即使 Excel 能打开文件，分析时仍可能遇到问题。
+🚩 1. Missing Values	🚩 1. 缺失值
+Cells with	含有
+may not be automatically detected	的单元格可能不会被自动识别为缺失
+🚩 2. Wrong Data Types	🚩 2. 数据类型错误
+Numbers stored as text:	以文本存储的数字：
+Dates not recognized:	未识别的日期：
+could be Jan 2 or Feb 1, depending on locale	可能表示 1 月 2 日或 2 月 1 日，取决于地区设置
+Categorical values with inconsistent spelling:	类别拼写不一致：
+🚩 3. Formatting Artifacts	🚩 3. 格式遗留问题
+Merged header cells	合并的表头单元格
+Hidden rows or columns	隐藏行或列
+Extra notes at the bottom (e.g.,	数据底部的额外备注（例如
+These issues can break your cleaning pipeline or lead to	这些问题可能使清理流程失败，或导致
+misleading results	误导性的结果
+🧼 Key Takeaway	🧼 要点
+Importing data is not just about reading the file.	读取文件只是导入的第一步。
+Garbage in, garbage out.	输入有误，输出也可能有误。
+A careful import sets you up for	认真核查导入结果有助于开展
+efficient, reliable analysis	高效、可靠的分析
+distinguish between detecting missing data and deciding what the missing data means.	：区分识别缺失值和解释缺失的含义。
+upload a dataset with missing values, inspect which variables and rows are affected, then compare row removal with one imputation method.	：上传有缺失值的数据，检查受影响的行和变量，比较删除记录与一种插补方法的结果。
+filling missing values can make a dataset look complete while reducing uncertainty or hiding bias. Always ask why the value is missing before choosing a method.	：填补后数据看似完整，却可能低估不确定性或掩盖偏倚。选方法前先问为什么缺失。
+🐾 What is missing data?	🐾 什么是缺失数据？
+Imagine you’re collecting data about cats — their age, height, favorite toy…	假设你正在收集猫咪的年龄、身高和最喜欢的玩具等信息……
+But oops! Some cats forgot to tell you their favorite toy. That’s	有些猫没有留下心爱玩具的信息，这就是
+missing data	缺失数据
+In technical terms, missing data refers to the absence of a value where one is expected.	即在原本预计会有观测的位置，没有记录相应的值。
+🧠 Why does it matter?	🧠 为什么值得关注？
+It can	它可能使
+bias your analysis	分析产生偏倚
+(like judging a cat’s weight without knowing half of them!)	（试想，一半猫咪的体重没有记录，却要估计总体体重）。
+Some models	某些模型
+refuse to work	无法直接处理
+with missing values	缺失值。
+It hides	缺失可能掩盖
+important patterns	重要规律
+in your data	。
+🧭 Where Does It Come From?	🧭 缺失来自哪里？
+📝 People forget to fill in a form	📝 填表者忘记填写
+💻 Sensors fail to record	💻 传感器未能记录
+🧹 Data gets deleted or corrupted	🧹 数据被删除或损坏
+🐱 Even cats don’t always cooperate with data collection. That’s why we clean up their mess — statistically!	🐱 猫咪也未必配合测量。让我们从统计角度看看这些缺失。
+connect missingness patterns to analytical risk.	：联系缺失模式和分析风险。
+classify a missing-value example as MCAR, MAR, or MNAR before choosing a handling method.	：结合资料讨论示例更符合 MCAR、MAR 还是 MNAR，再选择处理方法。
+the same missing-value pattern can look harmless in a table but be highly biased in a policy indicator. Missingness is a data-generating problem, not just a coding problem.	：同一模式在表中可能不起眼，却可能使政策指标有偏。应调查数据是如何产生的。
+🧩 Types of Missing Data	🧩 缺失机制的类型
+Not all missing data is created equal! Here are the three main types:	常见的缺失机制假设有三种：
+(Missing Completely At Random):	（完全随机缺失）
+The cat randomly decides whether to step on the scale.	猫咪是否站上体重秤完全随机。
+→ The missingness has nothing to do with any variable — it’s pure randomness.	→ 缺失与已观测或未观测变量都无关。
+(Missing At Random):	（随机缺失）
+The aloof cat refuses to be weighed.	性格高冷的猫不肯称重。
+→ The missingness is related to another variable (like personality), but not the missing one itself.	→ 给定已观测的性格等信息后，缺失不再取决于未测得的体重。
+(Missing Not At Random):	（非随机缺失）
+The overweight cat refuses to be weighed.	较重的猫更不愿意称重。
+→ The missingness is related to the value of the variable itself (in this case, weight).	→ 缺失仍与未观测到的体重本身有关。
+understand what each missing-data handling method assumes.	：了解不同缺失值处理方法的假设。
+apply two different methods to the same variable and compare the summary statistics before and after cleaning.	：对同一变量使用两种方法，比较清理前后的汇总统计。
+mean, median, and kNN imputation in this dashboard are teaching examples of single imputation. For analytical work, single imputation usually understates uncertainty. Multiple imputation, for example with	：本应用的均值、中位数和 kNN 是单次插补教学示例。单次插补通常低估不确定性。多重插补（例如使用
+, is often more appropriate when missingness is substantial and assumptions are defensible.	）在缺失较多且假设合理时可能更合适。
+🛠️ Common Handling Strategies	🛠️ 常见缺失值处理方法
+When to Use	适用情况
+Remove rows with missing values	删除有缺失的行
+When missingness is rare	缺失较少且删除的假设合理
+Fill with previous/next values	用前一个或后一个值填充
+Time series or ordered data	有顺序的数据或时间序列
+Replace with mean	用均值填补
+Numeric data, symmetric distribution	近似对称的数值分布
+Replace with median	用中位数填补
+Skewed numeric data	偏态数值分布
+Use similar rows to fill in	用相似记录填补
+When data is rich and correlated	相关变量较丰富
+🐾 Tip: Always explore your missing data before choosing a method. Cats don’t all behave the same — neither does data!	🐾 先调查缺失，再选择方法。不同的数据需要不同的处理。
+separate unusual values from incorrect values.	：区分少见值与错误值。
+find outliers in a numeric variable, then decide whether each outlier is a data error, a valid extreme case, or an analytically important signal.	：识别数值变量的异常值，再判断它是录入错误、真实极端值还是值得调查的信号。
+deleting outliers only because they are inconvenient can remove the most important part of a public health story.	：只因异常值碍眼就删除，可能会丢失最重要的公共卫生信息。
+🚨 What Are Outliers?	🚨 什么是异常值？
+Outliers are values that stand out - they are far from the majority of data.	异常值与大部分观测相距较远。
+Sometimes they are mistakes; sometimes they are just… special.	有时是错误，有时是真实但少见的个案。
+Yes, it’s an outlier	是的，这是一个异常值
+🌱 Why Do Outliers Matter?	🌱 为什么要关心异常值？
+📉 They distort averages and trends	📉 它们影响均值和趋势
+(One extreme value can pull the mean far away from the center.)	（一个极端值就可能拉动均值。）
+🧠 They confuse models	🧠 它们会影响模型
+(Some algorithms — like linear regression — are very sensitive to them.)	（例如普通线性回归对某些极端观测很敏感。）
+🎨 They mess with visualizations	🎨 它们改变图表的显示范围
+(One strange dot can shrink your entire scatterplot.)	（一个远离其余观测的点就可能使大部分散点挤在一起。）
+use the IQR rule as a screening tool, not as an automatic decision rule.	：用四分位距规则筛查，再判断下一步。
+compare the IQR rule with the actual data context. Ask whether the flagged value is impossible, unlikely, or simply rare.	：把 IQR 标记放回实际背景中，判断该值是不可能、不寻常，还是少见但合理。
+univariate outlier rules can miss multivariable anomalies. A country, facility, or respondent may look normal on each variable separately but unusual in combination.	：单个变量看似正常，多个变量组合起来仍可能异常。
+How Do We Detect Outliers?	如何检测异常值？
+Boxplot Rule (IQR method)	箱线图规则（四分位距法）
+IQR = Q3 - Q1	IQR = Q3 − Q1
+Lower bound = Q1 - 1.5 * IQR	下界 = Q1 − 1.5 × IQR
+Upper bound = Q3 + 1.5 * IQR	上界 = Q3 + 1.5 × IQR
+Should I Remove Outliers?	应该删除异常值吗？
+It depends!	要看证据。
+Data entry errors - Remove.	若核实为录入错误，可按有依据的规则纠正或排除。
+Real-world extremes - Keeping or Winsorizing.	真实的极端值：考虑保留或有依据地缩尾。
+Anomalies are meaningful (e.g., rare diseases) - Keep them! They are the story.	有意义的异常，如罕见病，应予保留和研究。
+compare the consequences of removing and winsorizing outliers.	：比较删除异常值与缩尾的后果。
+apply both methods and check whether the mean, median, range, and visual pattern change.	：分别应用两种方法，检查均值、中位数、极差和图形的变化。
+outlier handling is an analytical decision, not a cosmetic one. Document what you changed and why, especially if results will support a policy brief.	：异常值处理是一项分析决策。记录所做的更改和原因，尤其是在为政策简报准备分析时。
+🛠 How to Handle Outliers?	🛠 如何处理异常值？
+1. Remove outliers — “Too heavy to box!”	1. 移除异常值：“太重了，不能参加这场比赛！”
+You’re hosting a cat boxing championship. Most cats are within a normal weight range.	假设你组织了一场猫咪拳击赛，大多数猫的体重在常见范围内。
+But Dazhuang is coming…	这时大壮来了……
+You decide he’s too heavy to play safely — so you disqualify him.	你觉得它的体重不适合这个量级，于是让它退出比赛。
+“Sorry, heavyweight champ, this ring is for middleweights only!”	“重量级冠军，这里是中量级的擂台！”
+This is like	这类似于
+removing outliers	移除异常值
+— simple and effective, especially when the extreme values don’t belong to the same context.	。需要先判断该记录是否属于本次分析的人群。
+But we may lose potentially valid cases - who knows if Dazhuang is a boxing genius?	这样也可能丢掉真实而有价值的记录。说不定大壮就是天才拳手呢？
+2. Winsorize outliers - “Let the big cat in… but tone it down”	2. 缩尾：“欢迎大猫，不过登记时按上限计”
+But maybe you still want to give Dazhuang an opportunity…	也许你还是希望给大壮一个机会……
+Okay, we’ll let the big cat play, but we’ll pretend he only weighs 7kg.	继续让它参赛，但假设登记体重上限是 7 千克。
+Welcome in! But officially, your weight is listed as the upper limit.	欢迎上场！登记体重按上限记录。
+Winsorizing	缩尾
+— adjusting extreme values to be less extreme, instead of removing them.	是把极端值调整到设定的界限，而不是删除记录。
+But this might distort real variation - other cats will be affected a lot.	这样也可能改变真实的变异，需要说明理由。
+see how small text inconsistencies become false categories in descriptive statistics and plots.	：观察细小的文本差异如何在统计和图表中产生错误类别。
+standardize casing and labels, then compare frequency tables before and after cleaning.	：统一大小写和标签，再比较清理前后的频数表。
+text replacement can create new errors if the matching rule is too broad. Check a sample of changed rows before trusting the result.	：匹配规则过宽会引入新的错误。抽查实际修改的记录。
+Why do we need text cleaning?	为什么要清理文本？
+Messy text is everywhere — people write “USA”, “U.S.A.”, and “the States”, but we just want one version!	同一国家可能写成“USA”“U.S.A.”或“the States”，分析时要统一编码。
+Text models are picky — “Doctor”, “doctor”, and “DOCTOR” look the same to humans, but not to machines.	人能识别 Doctor、doctor 和 DOCTOR 的联系，软件可能把它们视为不同类别。
+Grouping, filtering, searching… all get confused when spelling or casing isn’t consistent.	拼写或大小写不统一会影响分组、筛选和搜索。
+Think of raw text like unfiltered juice — tasty, but full of pulp (a.k.a. mess).	原始文本像未过滤的果汁，需要先整理。
+Solution? Clean the text before doing anything smart with it!	先清理文本，再进行分析。
+What can we do?	有哪些做法？
+Change text casing	转换文本大小写
+Want it ALL UPPER, all lower, Like Title, or Like a sentence?	可选择全部大写、全部小写、单词首字母大写或句首大写。
+Find and replace	查找和替换
+Replace every “M” with “male”.	例如，把作为完整类别标签的 M 统一为 male。
+understand why merge keys determine whether joined data are trustworthy.	：了解为什么关联键决定合并结果的可信度。
+merge two files with a key variable, then check row counts and unmatched records before interpreting the merged table.	：用键关联两份文件，解释结果前核查行数和未匹配记录。
+a merge can run without errors and still duplicate records, drop records, or match the wrong entities.	：合并没有报错，也可能重复、遗漏记录或匹配到错误对象。
+🧵 Why Do We Merge Datasets?	🧵 为什么要合并数据集？
+Real-world data is rarely in one place	现实中的数据很少全部存放在一处
+One table may hold 🐱cat names and breeds, another table has 🥣cat food preferences.	一张表可能有猫咪的名字和品种，另一张记录食物偏好。
+You want to analyze how breed relates to diet? You need to merge.	要分析品种与饮食的关系，就需要关联这两张表。
+Merging is like matchmaking	合并是在表间匹配记录
+You’re pairing records across two datasets based on matching values — like matching “Cat ID” = 007 in both tables.	按两表中相同的键值配对，例如两张表的 Cat ID 都是 007。
+If a cat is missing in one table, do we keep them? Drop them? That’s where join types come in!	某只猫只在一张表里出现时，是否保留它？这取决于关联方式。
+choose a join type based on the analytical question.	：根据分析问题选择关联方式。
+compare left join, right join, inner join, and full join on the same two files. Check which rows are kept or lost.	：在相同的两表上比较左连接、右连接、内连接和全连接，检查哪些行被保留。
+join choice is a substantive decision. For indicator work, losing unmatched countries, years, facilities, or population groups can bias the message.	：关联方式影响结果。丢失未匹配的国家、年份、机构或人群，可能使指标解释产生偏倚。
+Types of joins	关联方式
+Imagine we have two datasets:	假设我们有两份数据：
+one holds 🐱cat names and breeds,	一份记录猫咪名字和品种，
+one has 🥣cat food preferences.	另一份记录食物偏好。
+Join Type	关联类型
+Example Scenario	示例情形
+INNER JOIN	内连接
+Only keeps matched rows in both tables	只保留两表都匹配的行
+Cats that appear in both the name and diet tables	在名字表和饮食表中都出现的猫
+LEFT JOIN	左连接
+Keep all from left, add from right when matched	保留左表全部记录，补充右表匹配信息
+All registered cats, with food info if known	全部已登记猫咪，有饮食资料时一并显示
+RIGHT JOIN	右连接
+Opposite of LEFT JOIN	与左连接相反
+All feeding records, even for mystery cats	保留全部喂养记录，即使猫咪身份未知
+FULL JOIN	全连接
+Keep all rows from both tables	保留两表的全部行
+You don’t want to miss any cat	不遗漏任何猫咪
+Potential problems	可能的问题
+Wrong join keys = chaos.	选错关联键会产生错误匹配。
+If you match on the wrong variable (e.g., matching on age instead of cat ID), you may merge cats that have the same age but are different cats — and that’s bad.	例如用年龄代替猫咪编号，会把同龄的不同猫匹配在一起。
+Duplicates cause explosion.	重复键会大幅增加行数。
+One-to-many or many-to-many joins can cause row numbers to unexpectedly explode.	一对多或多对多关联可能使行数出乎意料地增加。
+Different variable names? No problem.	两张表的键名不同怎么办？
+My dashboard allows you to select key1 and key2 to map mismatched column names!	可分别选择 key1 和 key2，指定两表中对应的键。
+use visualization to support interpretation, not just to decorate an analysis.	：用图表帮助解释分析结果。
+create one chart for exploration and one chart for communication. Ask whether the chart changes what a decision-maker would notice.	：分别制作探索用图与汇报用图，思考它们如何影响决策者注意到的信息。
+a chart can be technically correct but still misleading if it hides uncertainty, confounding, denominator issues, or data quality problems.	：即使绘图代码正确，隐藏不确定性、混杂、分母或质量问题的图仍可能误导。
+📌 Visualization Overview	📌 可视化概览
+A Picture is Worth a Thousand Words	一图胜千言
+Data visualization is not just a tool for displaying results — it’s a way of thinking. Effective visualization helps us:	图表可以帮助我们观察数据、检验思路并解释结果：
+Detect patterns	识别规律
+Reveal outliers	发现异常值
+Enhance communication	促进沟通
+Support decision-making	支持决策
+A well-crafted chart can speak more powerfully than pages of text.	清晰的图表能把长篇文字难以说明的关系呈现出来。
+📍 Minard’s Map of Napoleon’s Russian Campaign (1869)	📍 米纳尔绘制的拿破仑俄国战役图（1869）
+Charles Minard visualized six dimensions (army size, geography, time, temperature, direction, battles) in a single chart, showing Napoleon’s catastrophic 1812 war of Russia.	米纳尔在一张图中呈现军队规模、地理位置、时间、气温、行进方向和战事，描绘拿破仑 1812 年俄国战役的损失。
+From 422,000 soldiers marching east to only 10,000 returning — a powerful story told visually.	图中东进时约 42.2 万人，返回时仅约 1 万人，人数变化一目了然。
+🩺 Florence Nightingale’s Rose Diagram (1858)	🩺 南丁格尔的玫瑰图（1858）
+Florence Nightingale used this chart to highlight how preventable diseases — not battles — were the main cause of death during the Crimean War.	南丁格尔用图表显示，克里米亚战争期间，可预防疾病是造成大量死亡的重要原因。
+👉 Her visual argument convinced British Parliament to reform military healthcare, saving countless lives.	👉 她的图表成为推动英国军事卫生改革的证据之一。
+choose charts based on variable type and analytical question.	：根据变量类型和分析问题选图。
+write the question first, identify the variable types, then pick the chart. Do not start by choosing a chart because it looks impressive.	：先写下问题，再确定变量类型并选图。
+AI-generated chart code often produces a plot that runs, but not necessarily the plot that answers the question.	：AI 生成的绘图代码即使可以运行，图表也未必能回答问题。
+📊 Common Chart Types and Use Cases	📊 常见图表和用途
+1. Amounts	1. 数量比较
+Single categorical variable: bars or dots.	一个分类变量：用柱状图或点图。
+Use bars when you want to show clear differences in magnitude.	柱状图适合突出数量差异。
+Use dots when focusing on exact values or when screen space is limited.	关注具体数值或版面有限时，可用点图。
+Always sort your categories if ranking is part of the message.	需要突出排名时，按数值给类别排序。
+Two or more categorical variables: grouped or staked bars, or heatmap.	两个或更多分类变量：可用分组柱状图、堆叠柱状图或热图。
+Grouped Bar Charts allow you to compare sub-groups side by side within each main category.	分组柱状图可在每个大类中并排比较各亚组。
+Stacked Bar Charts show the total per category while allowing comparison of relative sub-group sizes.	堆叠柱状图既显示总量，也显示各组成部分的大小。
+Heatmaps are useful when both variables have many levels, making bar charts visually cluttered.	两个分类变量的类别都很多时，热图通常比拥挤的柱状图更清晰。
+2. Distributions	2. 分布
+Single numeric variable: histogram, density plot.	一个数值变量：直方图或密度图。
+A histogram breaks the range of a continuous variable into intervals (bins) and shows the count of observations in each bin.	直方图将数值范围划分成若干区间，显示各区间的观测数。
+A density Plot is a smoothed version of the histogram, and shows the relative likelihood of values,	密度图平滑地展示分布形状和数值密集的位置。
+More than one numeric variables: boxplot.	分组比较数值分布：箱线图。
+Sometimes, we want to understand how a continuous variable is distributed across multiple categories. A boxplot is one of the most powerful and widely used tools for this.	比较多个类别中同一连续变量的分布时，箱线图非常实用。
+3. Proportions	3. 比例
+Single categorical variable: pie charts, bars, stacked bars.	单个分类变量：可用饼图、柱状图或堆叠柱状图。
+Pie Charts show parts of a whole as slices in a circle. It is popular but often criticized for being visually imprecise.	饼图用扇形表示整体的构成，但用角度精确比较数值较困难。
+More than one variables: multiple pie charts, stacked bars.	比较多个组的构成：可用多个饼图或百分比堆叠柱状图。
+Multiple Pie Charts: Each pie representing the composition of a different group. Useful for showing within-group composition. But cross-group comparison is difficult.	多个饼图可以分别显示每组的构成，但跨组比较不容易。
+Stacked Bar Charts: Each bar represents a group, segmented by category to reflect internal composition. Each bar represents 100%. But only the top and bottom segments share a common baseline, making it harder to compare mid segments accurately.	百分比堆叠柱状图中每根柱代表一个组，总长为 100%。中间部分没有共同基线，精确比较较困难。
+4. Associations Between Variables	4. 变量之间的关系
+Relationships between numeric variables: scatterplot, bubble chart.	两个数值变量：散点图或气泡图。
+Scatterplot: Each point represents a single observation with two numeric variables. Can be enhanced with trend lines (e.g., regression), color coding by category, or marginal distributions.	散点图的每个点代表一条观测的两个数值，可添加趋势线、按类别着色或展示边际分布。
+Bubble Chart: A variation of the scatterplot where a third numeric variable is mapped to the size of each point. Best for showing multivariate relationships in small to medium-sized datasets.	气泡图用点的大小表示第三个数值变量，适合展示中小型数据集中的多变量关系。
+Visualize how a variable changes across time or another ordered dimension: line chart.	展示变量随时间或其他有序维度的变化：折线图。
+Line Graph: Plots a continuous variable (usually time) on the x-axis, with a value on the y-axis. Suitable for showing trends over days, months, years, etc.	折线图常把时间放在横轴、数值放在纵轴，用于展示日、月或年的趋势。
+Smooth Line Graph: shows how a variable changes, but instead of connecting raw data points with straight lines, it uses a smoothed curve to highlight the overall trend. Reduces noise in the data by fitting a smooth curve	平滑曲线帮助辨认总体趋势，但应注意它可能掩盖局部波动。
+critique whether a visualization communicates fairly.	：判断图表是否公允地传达信息。
+identify one chart design choice that improves clarity and one choice that could mislead the audience.	：各找出一项提高可读性的设计和一项可能误导受众的设计。
+for policy communication, clarity is an ethical issue. Avoid visual choices that exaggerate differences, hide denominators, or imply causality from correlation.	：政策沟通需要清楚、诚实。避免夸大差异、隐藏分母或把相关误读为因果。
+Principles of data visualization	数据可视化原则
+Which graphs should I be using?	应该选哪种图？
+As a general rule of thumb:	可参考以下经验：
+Bar charts are for showing the relationship between 1 categorical variable (e.g. color, car model, gender) against 1 numerical variable (height, test scores, IQ and other measurements).	柱状图可按类别（例如颜色、车型或性别）比较某个数值（如身高或测试成绩）。
+Pie charts are for the same thing, but aren’t very good for data that contains more than 2-3 categories. E.g. it’s fine for gender since it only has male, female and other, but it’s terrible for listing all car models.	饼图用来表示整体构成，通常只适合少数类别；类别过多时难以比较。
+Scatterplots are for finding correlations between 2 numerical variables.	散点图适合研究两个数值变量的关系。
+Time series are for showing changes over time (time vs. numerical variable).	时间序列图显示数值随时间的变化。
+Some bad examples:	几个反例
+1. Pie chart with too many categories	1. 饼图的类别太多
+Pie charts are best used when there are 2-3 items that make up a whole.	饼图较适合用两至三个部分表示整体。
+It’s difficult for the human eye to distinguish between the parts of a circle.	人眼难以精确比较圆形扇区的大小。
+Notice how it’s hard to distinguish the size of these parts.	试着判断图中哪两部分最接近。
+2. Ink-ratio principle	2. 数据墨水比
+Maximize data-ink, minimize non-data-ink. Only use ink that communicates data; remove unnecessary visual elements.	突出用于表达数据的图形元素，移除多余元素。
+Avoid chartjunk. Decorative elements like 3D effects, excessive gridlines, or shadows often distract from the data.	三维效果、过密网格和阴影容易分散注意力。
+Simplify without sacrificing clarity. A clean design often improves readability and interpretability.	在保持信息清晰的前提下简化设计。
+Use minimalist design to emphasize patterns. Less ink allows trends and anomalies to stand out more clearly.	简洁的呈现让趋势和异常更容易被发现。
+Apply to all visual forms. Whether line, bar, or scatter plots, this principle encourages clarity and efficiency in all graphics.	无论折线图、柱状图或散点图，都可以采用这一原则。
+Let’s see a worst graph and its comparison:	比较下面的原图和改进图：
+3. Charts that don’t start at zero (misleading)	3. 未从零开始的柱状图
+Always remember: bar charts should start from zero.	用柱长比较数量时，数值轴应从零开始。
+Bars represent quantity through length. If you truncate the y-axis, it visually exaggerates differences.	柱长代表数量。截断数值轴会夸大差异。
+Always start bar charts at zero to avoid misleading the audience—especially when comparing magnitudes.	比较数量大小时，保留柱状图的零基线。
+🚫 Common Pitfall: Unsorted or Hard-to-Read Bar Charts	🚫 常见问题：柱状图未排序或标签难读
+Bar charts are one of the most common and effective visualization tools—but they can be confusing or misleading if not properly constructed.	柱状图适合比较类别，但设计不当同样会误导。
+In the figure above, the leftmost chart is a bad example:	上图最左侧的图存在这些问题：
+The bars are not sorted by value.	柱子没有按数值排序。
+It forces the viewer to jump back and forth to identify the highest and lowest values.	读者要来回查找才能识别最高和最低值。
+The message is unclear at first glance.	主要信息不容易看出。
+The middle chart is better:	中间的图有所改进：
+The bars are now sorted from highest to lowest.	柱子已从高到低排列。
+This makes it easier to see the ranking of categories and compare their values.	这样更容易识别排名并比较数值。
+The rightmost chart takes it one step further:	最右侧的图进一步改进：
+By rotating to a horizontal bar chart, it improves label readability, especially when category names are long.	横向显示柱子，较长的类别名称更容易阅读。
+This format is often preferable when you have many categories or long text labels.	类别较多或标签较长时，常适合横向排列。
+✅ Best Practice:	✅ 实用建议
+Always sort bars from highest to lowest (or vice versa) unless there’s a logical or temporal reason not to.	若没有既定顺序或时间顺序，可按数值升序或降序排列。
+Consider using horizontal bars when labels are long or numerous.	标签较长或很多时，可使用横向柱状图。
+📊 Three types of multiple groups in bar charts	📊 多组柱状图的三种布局
+When visualizing categorical comparisons across groups, bar charts can use different positioning strategies. Below are the three main types:	比较多个组时，常用以下三种布局。
+Stacked bar chart	堆叠柱状图
+Bars are stacked on top of each other.	各亚组的柱段首尾相接。
+Shows the total count per group while preserving each subgroup’s contribution.	显示每组总量，并保留各亚组的贡献。
+Useful for emphasizing overall quantity and composition.	适合强调总体规模及构成。
+Filled bar chart	百分比堆叠柱状图
+Bars are stacked and normalized to the same height (100%).	各部分堆叠，每根柱子的总长归一化为 100%。
+Shows the proportion of each subgroup within each group.	显示各亚组在本组中的比例。
+Excellent for comparing percentages or distributions across groups.	适合比较各组的百分比构成。
+Dodged bar chart	并列柱状图
+Bars for each subgroup are placed side by side.	各亚组的柱子并排放置。
+Makes it easy to compare subgroup values directly within and across groups.	便于在组内及组间直接比较。
+Best for raw count comparison between categories.	适合比较各类别的计数。
+AI safety for WHO work	WHO 工作中的 AI 安全
+AI assistants are powerful, and most of their risks are managed by a few simple habits. These four rules apply to	使用 AI 助手时，以下四条规则适用于
+every	每一种
+AI tool and	AI 工具及
+task — from drafting an email to analyzing indicator data.	任务，包括起草邮件和分析指标数据。
+The four rules	四条规则
+1. No confidential data 🔒	1. 保护机密数据 🔒
+Never upload personally identifiable information (PII), classified documents, or sensitive member state communications. Before uploading a file, ask yourself:	不要上传个人身份信息、涉密文件或敏感的会员国通信。上传前想一想：
+would I email this file to an external consultant?	我会把这个文件发给外部顾问吗？
+If the answer is no, do not upload it.	如果不会，就不要上传。
+2. Always verify ✅	2. 核实内容 ✅
+AI can make mistakes — and its mistakes look as polished as its correct answers. Cross-check facts, statistics, citations, and	AI 的错误也可能写得很像正确答案。请核实事实、统计数字、引用及
+methods	方法
+(see	（参见
+AI → When AI gets it wrong	AI → 当 AI 判断出错
+for how an outdated methodology can slip through unnoticed).	，了解过时的方法如何被忽略）。
+3. You are accountable 🖋️	3. 你对结果负责 🖋️
+AI assists;	AI 提供协助，
+you decide	由你作出判断
+. Every output that leaves your hands carries your name and your professional judgment, not the AI’s. Review anything an AI drafts before it reaches a colleague, a counterpart, or the public — the human stays on the send button.	。对同事、合作伙伴或公众发送材料前，请核查 AI 起草的内容。
+4. No medical or policy decisions on AI output alone 🚫	4. 医疗或政策决策须有独立证据 🚫
+Do not use AI outputs as the sole basis for clinical or policy recommendations. AI is an input to human judgment, never a substitute for it.	不要仅以 AI 输出作为临床或政策建议的依据，应由人结合证据作出判断。
+Daily habits that keep you safe	日常使用习惯
+Start low-stakes.	从风险较低的任务开始。
+Summaries, first drafts, and formatting are the right first tasks. Move to analysis only with verification habits in place.	先试摘要、初稿和格式调整。建立核查习惯后再用于分析。
+Ask AI to show its work.	要求展示步骤。
+“State the method and assumptions you used at each step” turns a black box into something you can check.	请说明每一步的方法和假设，便于核查。
+Give the current rules, don’t assume them.	提供现行规则。
+Upload the methodology note, the definitions, the weights. AI’s knowledge has a cutoff date; your documents do not.	提供方法说明、定义和权重。AI 的知识可能未涵盖最新修订。
+Keep a record.	保留使用记录。
+For any analysis that feeds a report, note which tool, which prompts, and which files were used — reproducibility applies to AI-assisted work too.	用于报告的分析应记录所用工具、提示词和文件，以便复现。
+Check organizational guidance.	查阅机构指南。
+Rules for AI use in your office may evolve; follow the current WHO guidance where it exists.	遵守所在办公室适用的现行 WHO 指南。
+Getting started	开始使用
+— create an account with your work email; a free tier is available for trying the basics.	：按所在机构要求使用工作邮箱注册账户，可用适合的版本熟悉基本操作。
+Start with the	先打开
+AI → Prompt gallery	AI → 提示词示例
+page in this app: copy a prompt, adapt the brackets, and iterate.	，复制提示词，替换方括号中的内容，再逐步调整。
+When a task starts to matter, move up the ladder in	对重要任务，请参见
+: light to explore, middle to guide, strong to control.	：轻度用于探索，中度用于引导，高度用于明确流程。
+Prompt inspiration: the Anthropic prompt library at	更多提示词示例可参阅 Anthropic 提示词库：
+Start small. Be curious. Iterate.	从小任务开始，保持好奇，逐步调整。
+This app is the	本应用可作为
+single teaching surface	统一的教学平台
+for data science and AI trainings — no separate slide decks. Each navbar page is a self-contained module. Pick the modules that fit your audience and your time, walk through them live on the projector, and let participants follow on their own copy.	开展数据科学与 AI 培训。每个菜单页面是一个独立模块，可按受众和时间选择。教师现场演示，学员在自己的应用里同步练习。
+The module menu	模块菜单
+Module	模块
+What it teaches	教学内容
+Typical time	参考时长
+The data science workflow; everything is data	工作流程与“万物皆数据”
+10 min	10 分钟
+Loading files; first inspection of a dataset	载入文件并初步查看数据集
+15–20 min	15–20 分钟
+MCAR / MAR / MNAR; comparing imputation choices	MCAR、MAR、MNAR 与插补方案比较
+20–30 min	20–30 分钟
+Detection; error vs rare vs important; winsorizing	检测异常值，判断错误、罕见值和重要信号，练习缩尾
+Cleaning → Text	数据清理 → 文本处理
+Inconsistent encodings; standardization	修正不一致的编码，统一标签
+10–15 min	10–15 分钟
+Cleaning → Merge	数据清理 → 合并
+Join types, keys, and denominators	关联方式、关联键与分母
+Chart choice; same data, different messages	选图；同一数据如何传达不同信息
+25–40 min	25–40 分钟
+Statistics (4 pages)	统计分析（4 页）
+Describing data, normal distribution, t-test, regression	描述数据、正态分布、t 检验、回归
+15–25 min per page	每页 15–25 分钟
+The light / middle / strong framework	轻度、中度和高度引导
+Live demos: copy, paste, adapt	现场演示：复制、粘贴、改写
+30–45 min	30–45 分钟
+AI → AI-assisted analysis	AI → AI 辅助分析
+Human judgment around AI-written analysis	对 AI 编写的分析作专业判断
+The SDG 3.8.1 methodology case study	SDG 3.8.1 方法案例
+The four rules and daily habits	四条规则与日常习惯
+Knowledge check — filter the topics to match your session	知识测验：按本次课程筛选主题
+15–25 min	15–25 分钟
+Ready-made agendas	可直接采用的议程
+A. Data science and interpretation — 3 hours	A. 数据科学与结果解释（3 小时）
+Time	时间
+Home: workflow framing	首页：介绍工作流程
+Talk-through	讲解
+Import: upload	导入：上传
+, inspect it	并检查
+Hands-on	动手操作
+Missing data: compare two imputation choices	缺失数据：比较两种插补方案
+Hands-on + discussion	操作与讨论
+Outliers: wrong, rare, or important?	异常值：错误、罕见值还是重要线索？
+Break	休息
+Visualize: one chart before and after cleaning	可视化：比较清理前后的图表
+AI-assisted analysis + critique checklist	AI 辅助分析与审阅清单
+Talk-through + group work	讲解与小组活动
+Quiz (topics: Tidy data, Missing data, Outliers, Visualization)	测验（整洁数据、缺失数据、异常值、可视化）
+Interactive	互动
+Wrap-up and take-home messages	回顾与课后要点
+B. Using AI in daily work — 2 hours	B. 在日常工作中使用 AI（2 小时）
+Home + why AI, why now	首页：为什么使用 AI
+Talk-through + try one prompt per level	讲解并试用每个层次的一条提示词
+Prompt gallery: 3–4 live demos, participants follow	提示词示例：3–4 个现场演示，学员同步操作
+Live demo + hands-on	现场演示与动手练习
+Talk-through + discussion	讲解与讨论
+Quiz (topics: Prompting, AI & methods) + Q&A	测验（提示词、AI 与方法）及答疑
+C. Full day — data science + AI	C. 全天课程：数据科学与 AI
+Run agenda A in the morning and agenda B in the afternoon. Use one or two Statistics pages after lunch as a bridge, and end with the full Quiz (all topics) as the closing activity. The	上午采用议程 A，下午采用议程 B。午餐后可选一两个统计页面承上启下，最后用涵盖全部主题的测验收尾。
+page works best late in the day, after participants have seen both the data quality labs and the AI demos.	页面适合安排在后段，学员届时已经完成数据质量实验和 AI 演示。
+Delivery tips	授课建议
+Quiz topic filter	测验主题筛选
+is the module selector: tick only the topics your session covered.	可限定本次教学范围，只勾选已讲授的主题。
+example data buttons	“载入示例数据”按钮
+on the Import page load the cat datasets without any file juggling; the	可在“导入”页面直接载入猫咪数据；
+button on the Home page gives participants all exercise files.	按钮在首页，可下载全部练习文件。
+Everything in this app runs	本地安装后，本应用支持
+offline	离线运行
+. Only the live AI demos (Prompt gallery) need internet and an AI account — if the venue has no connectivity, demo from your own machine or skip to the worked examples on the Prompting levels page.	。现场使用外部 AI 工具的演示需要网络和账户。若会场无法联网，可以展示预先准备好的示例。
+Alternate formats every 20–30 minutes: talk-through → hands-on → discussion. The instructor prompts in the lab script (next section) carry the discussion parts.	每隔 20–30 分钟改变教学方式：讲解、操作、讨论。下一节实验脚本提供讨论提示。
+Pre-course checklist (send to participants)	课前准备清单（发给学员）
+Receive the portable app zip from the instructor.	向讲师领取便携版压缩包。
+Extract the whole zip	完整解压
+before running anything — do not open the app from inside the zip file.	后再运行，避免直接在压缩包内启动。
+Extract to a	解压到
+short local path	较短的本地路径
+such as	，例如
+— avoid OneDrive folders and deep directory trees.	；尽量避免同步文件夹或过深的目录。
+Double-click the launcher and confirm the app opens in the browser.	双击启动器，确认应用能在浏览器中打开。
+No R or RStudio installation is needed.	使用便携版无需另装 R 或 RStudio。
+For AI modules only: an account with an AI assistant (for example claude.ai) — or simply watch the instructor’s live demos.	AI 练习需要 AI 助手账户，或跟随讲师观看现场演示。
+Data-quality lab script (20–30 minutes)	数据质量实验脚本（20–30 分钟）
+A guided lab for the Import → Cleaning → Visualize modules. The purpose is to slow participants down and make them check data quality before trusting any analysis — their own, or one written by AI.	本实验贯穿导入、清理和可视化模块。请先核查数据质量，再解释自己或 AI 生成的分析结果。
+Learning goals	学习目标
+By the end of this lab, participants should be able to:	完成实验后，学员应能：
+inspect whether a dataset is analysis-ready;	判断数据集是否适合分析；
+explain why missing values and outliers are not only technical problems;	解释缺失值及异常值对分析的影响；
+compare at least two cleaning choices;	比较至少两种清理方案；
+describe how a cleaning decision can change a chart or policy message.	说明清理决策怎样改变图表或政策信息。
+Suggested timing	参考时间安排
+Activity	活动
+Instructor prompt	讲师提问
+3 min	3 分钟
+Frame the lab	说明实验目的
+“AI can help write code, but it cannot know whether the data make sense unless we check.”	“AI 可以帮助写代码，但数据是否合理仍需我们核查。”
+5 min	5 分钟
+Import and inspect	导入并检查
+“What would you check before asking AI to summarize this file?”	“请 AI 汇总这个文件前，你会检查什么？”
+7 min	7 分钟
+“Which missing values are harmless, and which could bias an indicator?”	“哪些缺失值影响较小？哪些可能使指标有偏？”
+“Is this value wrong, rare, or important?”	“这个值是错误、罕见，还是值得关注？”
+“Does the chart answer the question, or only produce a plot?”	“这张图能回答问题吗？”
+Debrief	讨论回顾
+“What should we ask AI to revise after seeing the data quality issues?”	“发现这些质量问题后，应请 AI 修改哪些地方？”
+Recommended lab path	建议实验步骤
+Open	打开
+and load	并载入
+(example data button).	（点击示例数据按钮）。
+Ask participants to inspect rows, columns, variable names, data types, and obvious formatting problems.	请学员检查行、列、变量名、数据类型及明显的格式问题。
+Move to	前往
+Compare row removal with mean, median, or kNN imputation.	比较删除记录与均值、中位数或 kNN 插补。
+Ask participants to describe one assumption behind each method.	请学员指出每种方法依赖的一项假设。
+Use the boxplot to identify flagged values.	用箱线图找出待核查的数值。
+Compare removing outliers with winsorizing.	比较删除异常值和缩尾。
+Create one chart before and after cleaning.	用相同设置分别绘制清理前后的图。
+Ask whether the message changed.	讨论主要信息是否改变。
+Questions to ask participants	可向学员提出的问题
+What would an AI tool likely do if we asked it to “clean this data” without context?	如果只对 AI 说“清理这份数据”，它可能会怎么做？
+Which values should be checked against the original source?	哪些数值需要回查原始资料？
+Which cleaning choices need to be documented in a policy brief?	哪些清理决定应写入政策简报？
+Did cleaning change the denominator, the distribution, or the conclusion?	清理是否改变了分母、分布或结论？
+What should we never automate without human review?	哪些操作在自动执行前需要人工核查？
+Linking the lab to interpretation	从数据质量联系到结果解释
+End the lab by connecting data quality to interpretation:	实验结束时讨论以下问题：
+Missingness can create bias.	缺失可能引入偏倚。
+Outliers can represent errors or meaningful inequity.	异常值可能是错误，也可能揭示重要的不公平。
+Correlation can appear stronger or weaker after cleaning.	清理后，关联可能变强或变弱。
+A clean-looking chart can still support a weak causal claim.	图很整洁，也不能单凭图得出因果结论。
+This sets up the follow-on group activity: critiquing an AI-generated analysis with the	接下来开展小组活动，使用
+critique checklist	审阅清单
+(next panel) and turning it into a cautious, useful policy brief.	（下一面板）检查 AI 生成的分析，并写成措辞审慎的政策简报。
+AI-Generated Analysis Critique Checklist	AI 生成分析的审阅清单
+Use this checklist in Slot 2 when participants review an AI-generated analysis. The goal is not to catch every coding mistake. The goal is to decide whether the analysis is trustworthy enough to inform a policy brief.	在第二个环节，请学员用此清单判断 AI 分析能否为政策简报提供可信证据。
+1. Data and indicator fit	1. 数据与指标是否适用
+Is the indicator clearly defined?	指标定义清楚吗？
+Is the denominator appropriate?	分母合适吗？
+Are the units, year, geography, and population group clear?	单位、年份、地区和人群说清楚了吗？
+Are missing values, duplicates, and outliers checked before interpretation?	解释前检查过缺失、重复和异常值吗？
+Does the analysis explain why this indicator was selected?	是否说明了选择该指标的原因？
+2. Descriptive claims	2. 描述性结论
+Are summary statistics appropriate for the variable type?	汇总统计量适合变量类型吗？
+Are means used for skewed data without checking the distribution?	是否未经检查就在偏态数据中使用了均值？
+Are small groups or unstable rates flagged?	是否标明了小样本组或不稳定的率？
+Are visualizations matched to the question?	图表与问题匹配吗？
+Are uncertainty or data quality limitations shown where needed?	需要时是否呈现了不确定性或数据质量局限？
+3. Causal language	3. 因果措辞
+Does the analysis imply causation from correlation?	是否从相关性暗示了因果关系？
+Are possible confounders named?	是否指出可能的混杂因素？
+Are alternative explanations considered?	是否考虑其他解释？
+Does the conclusion go beyond what the design and data can support?	结论是否超出了研究设计和数据支持的范围？
+4. Bias and context	4. 偏倚与背景
+Who may be missing from the data?	哪些人可能未被数据覆盖？
+Could reporting quality differ across countries, facilities, or groups?	各国家、机构或人群的报告质量是否不同？
+Could measurement definitions have changed over time?	测量定义是否随时间变化？
+Are equity concerns visible, or hidden by averages?	平均值是否遮蔽了公平性问题？
+5. Communication and policy use	5. 沟通与政策用途
+Is the main message clear in plain English?	能否用通俗语言读懂主要信息？
+Are limitations stated without weakening the whole analysis?	是否说明了局限及其对结论的具体影响？
+Does the policy recommendation follow from the evidence?	政策建议是否有证据支持？
+Is the tone appropriate for decision-makers?	语气是否适合决策者？
+Would a technical reviewer and a programme colleague both understand the message?	技术审阅者和项目同事都能理解吗？
+Suggested group task	建议的小组任务
+Ask each group to mark the AI-generated analysis using three labels:	请各组用三种标记审阅 AI 分析：
+Keep:	保留
+a claim, chart, or method that is appropriate.	合适的结论、图表或方法。
+Revise:	修改
+a useful idea that needs clearer wording, better evidence, or a better chart.	有价值，但需改进措辞、证据或图表的想法。
+Remove:	删除
+a claim, chart, or method that is unsupported, misleading, or not relevant to the policy question.	缺乏支持、具有误导性或与政策问题无关的结论、图表或方法。
+End with a two-sentence policy brief message:	最后用两句话写出政策简报的核心信息：
+What does the evidence suggest?	证据提示了什么？
+What should decision-makers do next, and what uncertainty should they keep in mind?	决策者下一步该怎么做？需要考虑哪些不确定性？
+Training Dataset Recommendation	培训数据集建议
+Use one primary dataset for the dashboard lab and keep the SDG datasets as short extension exercises. This keeps the hands-on section focused and avoids spending too much time on file selection.	主实验使用一份数据集，将 SDG 数据用于简短拓展，避免把练习时间花在挑选文件上。
+Primary dashboard lab dataset	主实验数据集
+Use	使用
+for the main 20-30 minute lab.	开展 20–30 分钟的主要实验。
+Why this file works well:	选择这份文件的原因
+It is small enough for participants to inspect manually.	规模较小，学员可逐条检查。
+It has a mix of text, numeric, logical, and identifier variables.	含文本、数值、逻辑值和标识符。
+It includes missing values.	包含缺失值。
+It has numeric variables suitable for outlier detection.	有适合演示异常值筛查的数值变量。
+It is low-stakes and friendly, which helps participants focus on the method rather than debating the epidemiology too early.	猫咪示例方便学员专注理解方法。
+Recommended tasks:	建议任务
+Upload	上传
+as file 1.	作为文件 1。
+Inspect variable names, data types, and missing values.	检查变量名、数据类型及缺失值。
+In	在
+, compare row removal with median imputation.	，比较删除缺失记录和中位数插补。
+, compare removing outliers with winsorizing.	，比较删除异常值与缩尾。
+, standardize one categorical variable if needed.	，视需要统一某个分类变量的标签。
+Data visualization	数据可视化
+, create one chart before and after cleaning.	，比较清理前后的图表。
+Expected discussion points:	预期讨论要点
+Missing values should not be filled automatically without context.	填补前应了解缺失背景。
+Median imputation is more robust than mean imputation when outliers are present.	存在极端值时，中位数比均值更稳健。
+Outlier detection should trigger investigation, not automatic deletion.	异常值筛查后应核查原因，再决定如何处理。
+A chart can change after cleaning, so cleaning decisions belong in the analytical record.	清理会改变图表，应将清理决定写入分析记录。
+Optional merge exercise	可选的数据合并练习
+as file 1 and	作为文件 1，并将
+as file 2.	作为文件 2。
+Merge by	按以下键合并：
+Compare row counts before and after merging.	比较合并前后的行数。
+Check whether any records are unmatched or duplicated.	检查是否有未匹配或重复记录。
+Ask participants what would happen if the key variable were misspelled, duplicated, or not unique.	讨论键拼写错误、重复或不唯一时会发生什么。
+SDG extension datasets	SDG 拓展数据集
+Use these only after the main dashboard lab, or when moving from data quality to interpretation and AI-assisted analysis.	主实验结束后，或进入结果解释与 AI 辅助分析环节时再使用。
+Dataset	数据集
+Best use	主要用途
+Suggested question	建议讨论的问题
+Weighted and unweighted descriptive statistics	加权和未加权的描述性统计
+How does population weighting change the summary of SDG 3.8.1?	人口加权会怎样改变 SDG 3.8.1 的汇总结果？
+Correlation and regression caution	相关与回归的解释限制
+Do richer countries appear to have higher UHC, and what should we not claim?	较富裕国家的 UHC 指数看起来更高吗？哪些结论超出了证据？
+Paired comparison / method revision	配对比较与方法修订
+Are values from the old and new method meaningfully different?	用新旧方法得到的值是否有实际意义上的差异？
+Fixed-data dashboard or Quarto example	固定数据的仪表板或 Quarto 示例
+How has SDG 3.8.1 changed over time across WPRO?	西太平洋区域的 SDG 3.8.1 随时间如何变化？
+Recommended training choice	建议授课顺序
+For a short course, use this sequence:	短课可以按此顺序进行：
+for the dashboard lab.	用于主实验。
+only if there is time for merging.	有时间做合并练习时再使用。
+One SDG dataset for AI-assisted R coding and interpretation.	再选一份 SDG 数据，用于 AI 辅助 R 编程和结果解释。
+This gives participants both experiences: a controlled data quality lab and a realistic health-indicator analysis task.	这样既能在可控条件下练习数据质量检查，也能分析真实的健康指标。
+Image and Asset Credits	图片和资源鸣谢
+This training app uses a mix of generated charts, local training images, and static assets. Keep this file updated when adding or replacing images.	本应用使用生成的图表、本地培训图片和静态资源。增换图片时请更新来源记录。
+Provenance and license	来源与许可
+Except for the historical map listed below, images bundled with this app are the author’s own work or were generated with AI tools by the author (confirmed 2026-07-11). Those images are distributed with the	除下述历史地图外，应用图片为作者原创或由作者使用 AI 工具生成（2026 年 7 月 11 日确认）。这些图片随
+package under its MIT license.	包按 MIT 许可证分发。
+The John Snow cholera map (	约翰·斯诺的霍乱地图（
+) is from the	）来自
+Wellcome Collection	Wellcome Collection
+, image L0072142, marked Public Domain. It depicts the 1854 outbreak and was published in 1855. A 760-pixel image is bundled for offline teaching.	，图片编号 L0072142，标为公有领域。地图描绘 1854 年的疫情，发表于 1855 年。应用内附 760 像素宽的版本供离线教学。
+App assets	应用资源
+File or reference	文件或引用
+Source	来源
+Shared navbar logo and favicon for both app launchers	两个应用共用的导航栏标志和浏览器图标
+AI-generated on 2026-10-30 from the author’s photograph of two silver tabby cats (	根据作者拍摄的两只银虎斑猫照片，于 2026 年 10 月 30 日使用 AI 生成（
+), with the package hex logo as a supporting reference	），并参考包的六角标志。
+Introduction cat image	首页猫咪图片
+Author’s own / AI-generated	作者原创或由作者使用 AI 生成
+Introduction workflow image	首页工作流程图
+Downloadable exercise datasets	可下载的练习数据集
+Compiled by the author from WHO/UN public data	作者根据 WHO 和联合国公开数据整理
+The app icon and website icons under	应用图标及位于
+are size and format derivatives of	的网站图标派生自
+in the source repository. The app bundles a 192-pixel copy for its 48-pixel navbar display. The existing package hex logo remains in	源文件。导航栏用 192 像素图像显示为 48 像素大小。原有的包六角标志位于
+and the website content. Regenerate website icons from the package root with	及网站内容中。从包根目录运行以下命令可以重新生成网站图标：
+Markdown lesson images	Markdown 课程图片
+The figures under	位于
+(dirty-data examples, join diagrams, chart-type examples, outlier and missing-data illustrations, and the cat story illustrations) are the author’s own work or AI-generated illustrations made by the author.	的图片（待清理数据、关联示意图、图表示例、异常值和缺失示意，以及猫咪故事插图）为作者原创或由作者使用 AI 工具生成。
+Oversized originals were compressed on 2026-07-11 (resized to a maximum width of 1400 px and palette-quantized where lossless); originals are recoverable from git history if a print-quality version is ever needed.	较大的原图已于 2026 年 7 月 11 日压缩，最大宽度为 1,400 像素，并在不损失质量时缩减调色板。印刷需要时，可从 Git 历史找回原图。
+External assets removed	已移除的外部资源
+The introduction page previously loaded a GIF directly from Giphy. This was replaced with the local	首页原先直接加载 Giphy 的 GIF，现已替换为本地
+asset so the app works offline and avoids an undocumented external media dependency.	资源，方便离线使用。
+Toggle navigation	切换导航栏
+A Journey of Data Science	数据科学之旅
+Home	首页
+Import	导入
+Cleaning	数据清理
+Missing data	缺失数据
+Outliers	异常值
+Text	文本处理
+Merge	合并
+Visualize	可视化
+Statistics	统计分析
+Describing data	描述数据
+Normal distribution	正态分布
+t-test	t 检验
+Regression	回归分析
+AI	人工智能
+Prompting levels	提示词层次
+Prompt gallery	提示词示例
+AI-assisted analysis	AI 辅助分析
+When AI gets it wrong	当 AI 判断出错
+AI safety	AI 安全
+Quiz	测验
+Training	培训
+Training guide	培训指南
+Credits	鸣谢
+A hands-on training companion for people who are new to data: import → clean → visualize → understand — with AI as your assistant, and you as the judge.	从导入、清理、可视化到理解数据，动手完成你的第一次分析。AI 可以协助，判断由你作出。
+An image is data, because it is made up of raster pixels. Sound is data, because it is defined by frequency, volume, and timbre. In fact,	图像由像素组成，声音可以用频率、音量和音色描述。它们都是数据。事实上，
+everything is data	万物皆数据
+Data analysis is the process of discovering patterns from data to serve our work and our lives. We don't have to obsess over tools — R, Stata, SAS, Python, or Excel — because:	分析数据，就是从中发现规律，服务于工作和生活。R、Stata、SAS、Python 和 Excel 都是工具：
+It doesn't matter if a cat is black or white, as long as it catches the mouse. 🐭	不管黑猫白猫，能捉到老鼠就是好猫。🐭
+Download datasets	下载数据集
+Contact Shanlong	联系 Shanlong
+Your instructor is ready. 🐱	猫咪老师准备好了。🐱
+The data science workflow	数据科学工作流程
+We follow this loop throughout the training: the pages in the navbar mirror each step, the AI pages teach you to work with an assistant, and the Quiz checks what you remember.	培训中会反复用到这套流程。顶部菜单对应各个步骤，AI 页面介绍如何与助手协作，测验帮你检验所学。
+2 files	2 个文件
+Upload your own Excel/CSV files or load the example data.	上传 Excel 或 CSV 文件，或载入示例数据。
+Clean	清理
+4 skills	4 项技能
+Missing data, outliers, text, and merging.	处理缺失数据、异常值、文本及数据合并。
+7 charts	7 类图表
+Bar, histogram, density, line, pie, scatter, and box.	柱状图、直方图、密度图、折线图、饼图、散点图和箱线图。
+4 topics	4 个主题
+Describing data, the normal distribution, t-tests, and regression.	描述数据、正态分布、t 检验与回归。
+AI skills	AI 技能
+5 pages	5 个页面
+Prompting levels, a prompt gallery, safety rules, and a cautionary tale.	提示词层次、提示词示例、安全使用以及错误案例。
+27 questions	27 道题
+Pick the topics for your session and test yourself.	选择本次培训的主题，检验所学。
+Practise	练习
+Background	背景
+Issues	常见问题
+📂 Upload your data files	📂 上传数据文件
+📝 Please upload one or two Excel/CSV files.	📝 请上传一至两个 Excel 或 CSV 文件。
+📄 Each file should contain only one sheet.	📄 每个 Excel 文件应只包含一张工作表。
+🤝 If you don't need to merge data, uploading one file is enough.	🤝 无需合并数据时，上传一个文件即可。
+🐱 No file at hand? Use the	🐱 手边没有文件？点击
+example data	示例数据
+buttons.	按钮。
+Dataset 1	数据集 1
+Upload a .csv / .xlsx / .xls file (one sheet):	上传 .csv、.xlsx 或 .xls 文件（单张工作表）：
+Browse...	浏览…
+Or use the example data	载入示例数据
+Reset to original data	恢复原始数据
+Dataset 2	数据集 2
+Type	类型
+Methodology	方法
+Recognize	识别
+Deal	处理
+Where are the missing values?	缺失值在哪里？
+Missing values per variable	各变量的缺失值
+Missing-data patterns	缺失模式
+Missing values per case	各条记录的缺失值
+Preview of the cleaned dataset	清理后的数据预览
+Please select a method:	选择处理方法：
+Drop rows with missing values	删除含缺失值的行
+Fill missing values down or up	向下或向上填充缺失值
+Replace missing with mean	用均值填补
+Replace missing with median	用中位数填补
+K-Nearest Neighbors imputation (optional VIM)	k 近邻插补（需可选包 VIM）
+Please select variables to deal with:	选择要处理的变量：
+All	全部
+Fill direction:	填充方向：
+down	向下
+up	向上
+Apply cleaning to dataset	将清理结果应用到数据集
+Detect	检测
+Handle	处理方法
+Boxplots of all numeric variables	所有数值变量的箱线图
+Remove extreme values	移除极端值
+Winsorize extreme values	对极端值缩尾
+Select variables to treat:	选择要处理的变量：
+Please select the variables you want to edit:	选择要编辑的变量：
+Please select a method for upper case:	选择大小写转换方式：
+ALL UPPER	全部大写
+all lower	全部小写
+Like Title	单词首字母大写
+Like sentence	句子首字母大写
+Please input the text you want to replace from:	要查找的文本：
+Please input the text you want to replace to:	替换为：
+Show results	显示结果
+Preview: dataset 1	预览数据集 1
+Preview: dataset 2	预览数据集 2
+Please select the keys in order for dataset 1:	按顺序选择数据集 1 的关联键：
+Please select the keys in order for dataset 2:	按相同顺序选择数据集 2 的关联键：
+Please select a join method:	选择关联方式：
+left_join	左连接（left_join）
+right_join	右连接（right_join）
+inner_join	内连接（inner_join）
+full_join	全连接（full_join）
+Merge!	合并
+Apply merging to dataset	将合并结果应用到数据集
+Merged result	合并结果
+Current dataset used for visualization	当前用于绘图的数据
+Bar chart	柱状图
+Histogram	直方图
+Density plot	密度图
+Line chart	折线图
+Pie chart	饼图
+Scatterplot	散点图
+Box plot	箱线图
+History	历史
+Principles	原则
+Principles of bar charts	柱状图原则
+Please select x-axis:	选择横轴：
+Please select y-axis:	选择纵轴：
+Please select grouped variable:	选择分组变量：
+Please select faceted variable:	选择分面变量：
+Use pre-counted data?	数据已经汇总计数？
+Position of different groups:	分组显示方式：
+stack	堆叠
+fill	百分比堆叠
+dodge	并列
+Number of bins:	分箱数：
+Please select variable:	选择变量：
+Please select the x-axis:	选择横轴：
+Please select the y-axis:	选择纵轴：
+Please select the grouped variable:	选择分组变量：
+Please select the faceted variable:	选择分面变量：
+Do you want a regression line?	添加回归线？
+Global options	通用选项
+Dataset to visualize:	选择绘图数据：
+Merged	合并结果
+Please clean your data before visualization. :-)	绘图前请先检查并清理数据。
+Do you want to flip the graph?	交换横纵轴？
+Please set a graph title:	图表标题：
+Please set a graph subtitle:	图表副标题：
+Mode — the most frequent value	众数：出现次数最多的值
+Mode	众数
+= the value that appears	是
+most often	出现次数最多的值
+Works well for	适用于
+categorical	分类数据
+or	或
+skewed	偏态
+data.	数据。
+Not affected by outliers.	不受极端值影响。
+In health data: most common symptom, most common risk behavior.	健康数据示例：最常见的症状或危险行为。
+Example: for 2, 2, 3, 4, 4, 4, 5, 5 the mode is 4 (appears 3 times).	例如，在 2、2、3、4、4、4、5、5 中，众数是 4，出现了 3 次。
+Median — the middle value	中位数：排在中间的值
+Median	中位数
+= the middle value when data are sorted.	是数据排序后位于中间的值。
+Even number of values → average of the two middle ones.	数据个数为偶数时，取中间两个值的平均数。
+Not pulled by outliers: for 2, 4, 4, 5, 6, 8, 11,	极端值影响较小：对于 2、4、4、5、6、8、11，
+the median is still 5.5.	中位数仍是 5.5。
+Common in health reports: median survival time, median hospital cost, median household income.	健康报告常用中位生存时间、住院费用中位数和家庭收入中位数。
+Mean — not only one thing	均值的几种形式
+Arithmetic	算术
+mean: everyday average — life expectancy.	平均数：日常使用的平均值，例如平均预期寿命。
+Geometric	几何
+mean: long-term growth, ratios (RR, OR).	平均数：用于长期增长和比值，如相对危险度和优势比。
+Weighted	加权
+mean: fair representation of a population.	平均数：按权重反映总体。
+Choosing the right mean is critical for correct analysis.	应根据问题和数据选择合适的平均数。
+Try it: a very big cat joins the office 🐱	动手试试：办公室来了一只大猫 🐱
+Nine office cats weigh between 4.2 and 4.9 kg. Use the slider to let one	办公室的九只猫体重在 4.2 到 4.9 千克之间。移动滑块，让一只
+new cat	新猫
+walk in and watch what happens to the	加入，观察
+mean	均值
+and the	和
+median	中位数
+Weight of the new cat (kg):	新猫体重（千克）：
+The mean chases the big cat; the median barely moves. This is why we report the median for skewed data such as costs or length of stay.	大猫使均值升高，中位数却变化很小。因此描述费用、住院时长等偏态数据时，常报告中位数。
+Three kinds of mean	三种平均数
+Arithmetic mean	算术平均数
+Sum of all values divided by the number of values.	所有观测值之和除以观测数。
+Example: cat weights 4.2, 4.4, 4.5, 4.9 → (4.2 + 4.4 + 4.5 + 4.9) / 4 =	例如，猫咪体重为 4.2、4.4、4.5、4.9，则 (4.2 + 4.4 + 4.5 + 4.9) / 4 =
+Pros: intuitive, widely used.	优点：直观，应用广泛。
+Cons: sensitive to outliers.	局限：容易受极端值影响。
+Common in: income, life expectancy, GDP per capita.	常见示例：收入、预期寿命、人均 GDP。
+mean = Σ xᵢ / n	均值 = Σ xᵢ / n
+Geometric mean	几何平均数
+Multiply all values and take the n-th root.	将所有正数相乘，再开 n 次方。
+Example: growth rates 1.10, 1.20, 1.30 → arithmetic mean ≈ 1.20, geometric mean ≈	增长倍数为 1.10、1.20、1.30 时，算术平均数约为 1.20，几何平均数约为
+(more accurate, because growth compounds).	（计算复合增长时更合适）。
+Pros: right for ratios, percentages, growth rates.	适用于增长倍数和比值。
+Cons: cannot handle zeros or negative values.	不适用于零或负值。
+Common in: economic growth, relative risk (RR), odds ratio (OR).	常用于经济增长、相对危险度（RR）和优势比（OR）。
+Weighted mean	加权平均数
+Values are averaged with weights, so bigger groups count more.	按权重计算平均值，规模较大的组贡献较大。
+Story	例子
+: three mother cats, one question — what is the overall vaccination coverage across all kittens?	：三只猫妈妈的全部幼猫中，疫苗接种率是多少？
+name	名字
+kittens	幼猫数
+coverage (%)	接种率（%）
+vaccinated kittens	已接种幼猫数
+Simple average of 50, 60, 90 → 66.7% (ignores litter size).	50%、60%、90% 的简单平均值为 66.7%，没有考虑每窝幼猫数量。
+Weighted: (2 + 3 + 9) / (4 + 5 + 10) = 14 / 19 =	加权计算：(2 + 3 + 9) / (4 + 5 + 10) = 14 / 19 =
+This is exactly how population-weighted coverage indicators work.	按人口加权的覆盖率指标也遵循这一原理。
+Practice: five countries, three means	练习：五个国家，三种平均数
+Country	国家
+UHC Index	全民健康覆盖指数
+Population (M)	人口（百万）
+Calculate the arithmetic, geometric, and weighted mean of the UHC index.	计算全民健康覆盖指数的算术、几何和加权平均数。
+Show the answer	显示答案
+Variance and standard deviation	方差和标准差
+Low variance	方差小
+: results are consistent, close together.	：结果彼此接近。
+High variance	方差大
+: results are scattered.	：结果较为分散。
+Variance measures spread,	方差描述离散程度，
+not	不是
+the shape of the distribution.	分布的形状。
+Steps: mean → deviation → squared deviation → mean of squares. Standard deviation = √variance (same unit as the data).	计算步骤：求均值、求离均差、平方，再求平方的均值。标准差是方差的平方根，单位与原数据相同。
+value	数值
+deviation	离均差
+square	平方
+MEAN	均值
+Skewness — which side is the tail on?	偏度：长尾在哪一侧？
+Right-skewed	右偏
+: long tail to the right →	：右侧有长尾，通常
+mean > median	均值 > 中位数
+. Examples: costs, length of stay, income, viral load.	。例如费用、住院时长、收入和病毒载量。
+Left-skewed	左偏
+: long tail to the left →	：左侧有长尾，通常
+mean < median	均值 < 中位数
+. Examples: ceiling effects (test scores near 100).	。例如满分为 100 时，多数人的分数接近 100。
+What to do in practice	实际工作中怎么做
+For skewed data, report	描述偏态数据，常报告
+median (IQR)	中位数（四分位距）
+rather than mean (SD).	，比单独报告均值及标准差更合适。
+Always	记得
+show a plot	绘图
+(histogram or boxplot).	（直方图或箱线图）。
+If strictly positive and strongly right-skewed, consider a	若所有观测值均为正且明显右偏，可以考虑
+log scale	对数刻度
+or the geometric mean.	或几何平均数。
+Don't over-interpret mean differences when distributions are skewed.	比较偏态分布的均值时要谨慎解释。
+Practice with AI: descriptive statistics on real data	AI 练习：用真实数据做描述性统计
+Download the SDG 3.8.1 dataset from the Home page, upload it to an AI assistant, and use this prompt:	从首页下载 SDG 3.8.1 数据，上传到 AI 助手，试试这段提示词：
+Copy	复制
+Hello, I am uploading a file that contains the 2021 UHC Service Coverage Index results for WHO Western Pacific Region Member States. The file has three columns: - id = country/area code - sdg381 = UHC Service Coverage Index value - population = population size Each row corresponds to one Member State. Please help me perform descriptive statistics and visualization, including: - Arithmetic mean of sdg381 - Geometric mean of sdg381 - Population-weighted mean of sdg381 (using population as weight) - Variance of sdg381 - Skewness (and indicate whether left-skewed or right-skewed) - A density plot of sdg381 to observe distribution shape - Any other useful descriptive statistics or plots you find relevant	你好，我上传了 WHO 西太平洋区域会员国 2021 年全民健康覆盖服务指数的数据文件。三列分别为 id（国家或地区代码）、sdg381（服务覆盖指数）和 population（人口数）。每行代表一个会员国。请计算 sdg381 的算术平均数、几何平均数、按人口加权的平均数、方差及偏度，说明偏态方向，并绘制密度图。请建议其他有助于理解数据的统计量或图表。
+Our real life follows a bell curve	生活中的钟形曲线
+Most cats weigh around	大多数猫的体重约为
+4–5 kg	4–5 千克
+; few are very small, few are very big.	，特别轻或特别重的猫较少。
+The same holds for human height, weight, blood pressure, exam scores…	身高、体重、血压或考试成绩也可能呈现类似的分布。
+The	（
+normal distribution	正态分布
+is symmetric and bell-shaped: most values near the mean, fewer at the extremes.	）呈对称的钟形：多数值接近均值，两端的值较少。
+Why it matters	为什么重要
+: most statistical tests (t-test, confidence intervals, regression) assume the data — or at least the averages — are roughly normal. Understanding the bell curve is the foundation of inference.	：许多统计推断方法依赖一定的分布假设，例如误差或样本均值近似正态分布。理解钟形曲线有助于理解这些假设。
+The 68–95–99.7 rule	68–95–99.7 法则
+Highlight values within … of the mean:	突出显示均值上下指定范围内的观测：
+1 SD	1 个标准差
+2 SD	2 个标准差
+3 SD	3 个标准差
+Real data: SDG 3.8.1 (UHC index), 2021, 28 WPR Member States	真实数据：西太平洋区域 28 个会员国 2021 年的 SDG 3.8.1 全民健康覆盖指数
+Not a typical normal distribution — real indicator data are often skewed. Mean and median tell you different stories here.	这组指标数据并不呈典型正态分布。均值和中位数反映不同特征。
+Central Limit Theorem: try it yourself	中心极限定理：动手模拟
+Even when the population is	即使总体
+normal (like the UHC values on the left), the distribution of the	正态分布（如图中的 UHC 数据），
+sample mean	样本均值
+becomes approximately normal as the sample size grows.	的分布也会随样本量增大而逐渐接近正态分布。
+Sample size per draw:	每次抽取的样本量：
+2,000 repeated samples (with replacement) from the 28 UHC values; each dot in the histogram is one sample mean.	从 28 个 UHC 值中有放回抽样，重复 2,000 次。直方图展示各次抽样的均值。
+Question: do cats purr more when petted? 🐾	猫咪被抚摸时，会呼噜更久吗？🐾
+Group A: petted	A 组：接受抚摸
+Group B: not petted	B 组：不接受抚摸
+We measured daily purring minutes in two groups of cats. The petted group purrs more	我们测量了两组猫每天打呼噜的分钟数。接受抚摸的组
+on average	平均而言
+— but averages alone are not enough:	时间更长，但只比较均值还不够。
+Every sample is noisy; two random groups never have identical means.	样本存在随机波动，两组样本均值很少完全相同。
+The question is whether the observed difference is	我们想知道观测到的差异是否
+larger than what chance alone would produce	超出随机波动可合理解释的范围
+compares the difference between means against the variation within groups.	将组间均值差与组内变异作比较。
+Try it: simulate the experiment	试一试：模拟实验
+t-test result	t 检验结果
+Cats per group:	每组猫咪数量：
+True difference in purring minutes:	两组真实呼噜时长之差（分钟）：
+Small samples + small differences → large p-values: the data cannot distinguish the difference from chance. More cats or bigger differences → smaller p-values.	小样本且差异较小时，p 值往往较大；增加样本量或增大差异，更容易检出差异。
+The p-value	p 值
+The p-value is the probability of seeing a difference	p 值是指，在零假设和模型假设成立时，获得
+at least as large as observed	与观察值同样或更极端
+if there were truly no difference.	的检验结果的概率。
+Small p-value (commonly < 0.05) → the observed difference is unlikely to be chance alone.	较小的 p 值（常用界值 0.05）说明数据与零假设较不相容。
+It is	它
+the probability that the hypothesis is true, and “not significant” does	假设为真的概率；“不显著”也
+mean “no effect”.	“没有效应”的证明。
+The confidence interval	置信区间
+A 95% confidence interval gives a	95% 置信区间给出了与数据和模型假设相符的
+range of plausible values	合理取值范围
+for the true difference.	，用以描述真实差异。
+If the interval excludes 0, the difference is statistically significant at the 5% level.	对于相应的双侧检验，95% 置信区间不含 0 表示在 5% 水平下差异具有统计学意义。
+Wide intervals mean	区间较宽意味着较大的
+uncertainty	不确定性
+— usually small samples or noisy data.	，通常与样本较小或数据变异较大有关。
+WHO example: SDG 3.8.1 — old vs new estimation method	WHO 示例：SDG 3.8.1 新旧估计方法比较
+The same 28 Member States have UHC index values estimated by an	同样的 28 个会员国分别用
+old	旧
+and a	和
+new	新
+method. Because both values belong to the same country, we use a	方法估计 UHC 指数。同一国家的两个估计值相配对，因此应使用
+paired	配对
+t-test on the within-country differences.	t 检验分析每个国家两种方法之差。
+Paired t-test result	配对 t 检验结果
+Example: longer cats, heavier cats? 🐱	猫咪越长就越重吗？🐱
+Linear regression draws the	线性回归用一条
+best straight line	拟合直线
+through the cloud of points:	描述散点之间的关系。
+Intercept	截距
+: predicted weight when length is 0 (often just a mathematical anchor, not meaningful by itself).	：长度为 0 时的预测体重，这个数学基准未必具有实际意义。
+Slope	斜率
+: extra weight for each extra centimetre of cat.	：猫咪长度每增加 1 厘米，预测体重的平均变化。
+: share of the variation in weight explained by length (0 = nothing, 1 = everything).	：模型解释的体重变异比例（0 表示没有解释，1 表示完全解释）。
+Regression turns “the points look related” into numbers you can report and compare.	回归把图上看到的关联变成可报告、可比较的数值。
+WHO example: GDP per capita vs UHC index	WHO 示例：人均 GDP 与 UHC 指数
+Model: UHC index ~ log10(GDP per capita)	模型：UHC 指数 ~ log10(人均 GDP)
+⚠️ Correlation is not causation	⚠️ 相关不等于因果
+Richer countries tend to have higher UHC — but GDP is also linked with health-system capacity, demographics, and reporting quality (	较富裕的国家往往有较高的 UHC 指数，但 GDP 也与卫生系统能力、人口特征及报告质量有关（
+confounding	混杂
+Safer wording:	建议表述
+“is	“与……
+associated	相关
+with”	”
+“countries with higher X also	“X 较高的国家也
+tend to	往往
+have higher Y”	有较高的 Y”
+Avoid unless the study design supports it:	使用以下措辞需要有研究设计支持：
+“causes”, “leads to”, “because of”, “impact of”	“导致”“引起”“因为”“……的影响”
+Putting it all together	串联整个分析
+A complete small analysis usually walks the same path:	小型分析通常包括以下步骤：
+Descriptive statistics	描述性统计
+— know your data first.	：先了解数据。
+Distribution	分布
+— is it symmetric or skewed? Which summary fits?	：是否对称或偏态？哪种汇总方式合适？
+— is the difference between groups beyond chance?	：两组差异是否超出随机波动？
+— how strong is the relationship, and what would you predict?	：关联有多强？能预测什么？
+Then communicate the result honestly, including its uncertainty.	最后解释结果，并说明不确定性。
+Prompting is thinking, not typing	写提示词，从想清楚问题开始
+When we write a prompt, we are not "instructing" the AI — we are	写提示词的过程也是在
+clarifying our own thinking	理清自己的思路
+. There is no single universal template. The structure of a good prompt depends on the task:	。不同任务需要不同的提示方式。
+Exploration and inspiration	探索与启发
+→ a free, open-ended prompt.	→ 使用开放式提示词。
+Analysis with a clear goal	目标明确的分析
+→ a guided, semi-structured prompt.	→ 使用有引导的半结构化提示词。
+Reproducible, policy-relevant work	需要复现、用于政策的工作
+→ a fully defined workflow.	→ 明确每一步工作流程。
+Structured prompting is not a fixed format. It is a	结构化提示是一种
+strategy for shaping the direction of the analysis	引导分析方向的方法
+Light — explore	轻度：探索
+Middle — guide	中度：引导
+Strong — control	高度：控制
+Five prompt superpowers 💪	写好提示词的五个习惯 💪
+Whatever the level, these five habits improve almost every prompt:	无论任务属于哪个层次，以下做法都有帮助：
+Be specific	说清要求
+— "Summarize in 3 bullet points for a non-technical manager", not "summarize this".	：例如“请为非技术背景的主管概括三点”。
+Give context	交代背景
+— "I am a WHO programme officer writing to a government counterpart."	：例如“我是 WHO 项目官员，正在给政府合作伙伴写信”。
+Show examples	提供例子
+— "Format it like this: [paste an example of what you want]."	：例如“请采用下面的格式：[粘贴示例]”。
+Iterate	逐步调整
+— "Make it more formal." / "Add a table." / "Shorter, please."	：例如“更正式些”“加一个表格”“请再简短一些”。
+Upload files	上传文件
+— "Here is my data — create a chart showing trends by quarter."	：例如“请用这份数据绘图，展示季度趋势”。
+Choose the level to match the task	根据任务选择提示词层次
+Level	层次
+Purpose	目的
+Best for	适用场景
+You get	预期产出
+Light	轻度
+Explore — let AI think with you	探索，请 AI 一起思考
+early EDA, pattern discovery, idea generation	初步探索数据、发现模式、形成想法
+broad insight, hypotheses, directions	总体认识、假设和研究方向
+Middle	中度
+Guide — you know the task, AI keeps some freedom	给出方向，并允许 AI 选择部分做法
+visualization, missing data handling, standard models	目标明确的可视化、缺失值处理、常用模型
+guided analysis plus interpretation	有步骤的分析与解释
+Strong	高度
+Control — every step is defined	明确规定每个步骤
+policy analysis, reports to supervisors, publications	政策分析、向主管汇报、论文发表
+transparent, reproducible, checkable output	透明、可复现、可核查的输出
+Philosophy	思路
+: let AI think with you.	：邀请 AI 参与探索。
+When to use	适用情形
+You don't know the structure of the data yet.	你还不了解数据结构。
+You want inspiration or unexpected patterns.	你想寻找灵感或意外的模式。
+You want alternative views before committing to an analysis.	确定分析方案前，想看看其他可能的解释。
+Minimal limits, maximal flexibility. Treat every answer as a	给 AI 探索空间，将回答当作
+hypothesis to check	有待验证的假设
+, not a conclusion.	，再用数据检验。
+Here is a dataset with [briefly name the variables]. Please explore it freely and tell me 5 interesting observations. Suggest two quick plots that help describe the dataset.	这是一份包含[简要列出变量]的数据。请自由探索，提出五个值得调查的现象，并建议两张能快速说明数据特征的图。
+Worked example: a small cat dataset	示例：猫咪小数据集
+We gave AI a dataset of cats' body weights and heart weights and asked for five interesting observations and two quick plots. AI answered in seconds:	我们让 AI 查看猫咪体重和心脏重量，提出五个发现并建议两张图。它给出了这些想法：
+a strong positive relationship between body and heart weight;	体重与心脏重量呈较强正相关；
+male cats are generally larger than female cats;	公猫通常比母猫体形大；
+the sex difference remains after accounting for body weight;	考虑体重后仍可能存在性别差异；
+possible outliers among very heavy heart weights.	心脏重量特别大的记录可能需要核查。
+Each observation came with ready-to-run R code for a scatterplot and a boxplot.	AI 也给出了绘制散点图和箱线图的 R 代码。
+Total cost: one sentence.	只用了一句话。
+The catch: none of these are conclusions yet — they are directions to investigate.	这些是待验证的调查方向，仍需用数据核实。
+: guide AI without restricting it too much.	：给 AI 明确方向，同时保留一定的灵活性。
+Basic statistical tasks and standard models.	基础统计任务和常用模型。
+Visualization with a clear goal.	目标明确的可视化。
+Missing data handling.	缺失数据处理。
+You already have something in mind, but you stay open to what AI suggests along the way.	你已经有了初步思路，也愿意考虑 AI 提出的其他做法。
+Please analyze the relationship between [x] and [y]. 1. Fit a simple model. 2. Report the model equation. 3. Plot the data with the fitted line. 4. Comment briefly on whether the model seems appropriate.	请分析 [x] 与 [y] 的关系。1. 拟合简单模型。2. 报告模型方程。3. 绘制数据及拟合线。4. 简述模型是否合适。
+Worked example: height and weight	示例：身高与体重
+With the built-in R dataset	使用 R 内置数据集
+(heights and weights of 15 women), the four-step prompt above returned:	（15 名女性的身高和体重），上述四步提示得到：
+the fitted equation	拟合方程
+weight ≈ −87.5 + 3.45 × height	体重 ≈ −87.5 + 3.45 × 身高
+with R² ≈ 0.99;	，R² 约为 0.99；
+a plot with the fitted line;	一张包含拟合线的图；
+a short, honest comment: the relationship is strongly linear, with no major deviations in the residuals.	简要解释：线性关系较强，初步残差检查未见明显偏离。
+The structure told AI	提示词说明了要交付
+what	什么
+to deliver; AI chose	，并让 AI 选择
+how	怎样做
+. That balance is what the middle level is for.	。这就是中度引导的作用。
+: eliminate ambiguity; every step is defined.	：消除歧义，逐步说明要求。
+Reporting to supervisors or member states.	向主管或会员国汇报。
+Policy analysis and research outputs.	政策分析和研究成果。
+Any high-stakes or regulatory work.	对结果可靠性要求较高或有监管要求的工作。
+A fully defined workflow — AI cannot guess or improvise. This is what makes the output	流程越明确，AI 越能按步骤执行，结果也更容易
+transparent, reproducible, and checkable	核查、解释和复现
+Please perform a full diagnostic of the model [formula] using [dataset]. Follow these exact steps and report each section clearly: 1. Fit the model. 2. Report coefficients, R-squared, and residual SD. 3. Plot the fitted line. 4. Plot residuals vs fitted values. 5. Plot a Q-Q plot of the residuals. 6. Test nonlinearity by adding a quadratic term. 7. Compare both models. 8. Give a final recommendation on model suitability.	请使用 [数据集] 对模型 [公式] 做完整诊断。逐项报告：1. 拟合模型。2. 报告系数、R² 和残差标准差。3. 绘制拟合线。4. 绘制残差与拟合值图。5. 绘制残差 Q-Q 图。6. 加入二次项检验非线性。7. 比较两个模型。8. 给出模型适用性建议。
+Worked example: the full diagnostic	示例：完整的模型诊断
+Running the eight-step prompt on the same	将八步提示用于同一份
+dataset, AI reported every section in order:	数据后，AI 依次报告：
+coefficients, R² = 0.991, residual SD = 1.53;	模型系数、R² = 0.991、残差标准差 = 1.53；
+residuals vs fitted showed	残差与拟合值图显示
+slight curvature	轻微弯曲
+— mild nonlinearity the simple summary had hidden;	，提示简单汇总掩盖了轻度非线性；
+the quadratic term was statistically significant and removed the curvature (R² 0.991 → 0.999);	二次项具有统计学意义，弯曲趋势减弱（R² 从 0.991 升到 0.999）；
+but with only 15 observations, AI flagged the	但仅有 15 个观测，AI 提醒要考虑
+risk of overfitting	过拟合风险
+and recommended the linear model as the simpler, acceptable summary.	，并建议保留较简单的线性模型作为概括。
+Every claim can be checked, rerun, and audited. That is why strong structure is the default for anything that feeds a decision.	每项结论都可以核查、重新运行和追溯。用于决策的结果尤其需要明确流程。
+Do ✅	推荐做法 ✅
+Tell AI your level — "assume I know basic regression".	说明你的基础，例如“假定我了解基础回归”。
+State the purpose — exploratory vs policy vs publication.	说明用途，如探索、政策汇报或发表。
+Ask for assumptions and limitations, not just results.	要求说明假设与局限。
+Provide definitions, metadata, and the method to use.	提供指标定义、元数据和指定方法。
+Don't ❌	应避免的做法 ❌
+Just say "analyze this dataset and give me insights".	只说“分析数据，给我一些发现”。
+Ask for "the best model" with no context.	缺乏背景时要求“找出最佳模型”。
+Copy-paste AI output into policy slides without checking.	直接将未经核实的 AI 输出放进政策幻灯片。
+Assume AI knows your organization's current methodology.	默认 AI 掌握所在机构当前的方法。
+Human + AI: a collaboration, not a replacement	人与 AI 如何分工
+AI is strong at:	AI 擅长：
+speed and repetition;	快速完成重复任务；
+pattern detection;	发现数据模式；
+coding and visualization;	编写代码和绘图；
+model diagnostics.	协助模型诊断。
+Humans are strong at:	人需要负责：
+judgment and context;	判断与背景知识；
+interpretation and causality;	解释与因果推断；
+ethics and accountability;	伦理与问责；
+communication with decision-makers.	与决策者沟通。
+Together: better analysis, faster, and safer. AI needs humans to check rules, metadata, and definitions — see the "When AI gets it wrong" page.	人需要核查规则、元数据和定义。请见“当 AI 判断出错”。
+Copy, paste, adapt 🧰	复制并改写提示词 🧰
+Eight ready-made prompts for everyday WHO tasks, tested in live training demos. To use one:	下面是八个在培训中演示过的 WHO 日常工作提示词。使用方法：
+Open your AI assistant — for example	打开你的 AI 助手，例如
+Copy a prompt below and replace everything in	复制提示词，将
+[brackets]	[方括号]
+with your own files, names, and context.	中的内容替换为自己的文件、名称和背景。
+Iterate: "shorter", "more formal", "as a table", "in Tagalog" — the first answer is a draft, not the deliverable.	逐步调整，如“更短”“更正式”“改成表格”“改用塔加洛语”。核查并修改初稿后再交付。
+Most cards need you to	多数示例还需要
+upload a file	上传文件
+together with the prompt.	，与提示词一同提供。
+Data extraction	数据提取
+PDF → Excel tables	将 PDF 表格提取到 Excel
+You need:	所需材料
+a PDF report that contains tables (e.g. an indicator metadata annex).	包含表格的 PDF 报告，如指标元数据附件。
+Extract all tables from this PDF into a clean Excel file. Each row should be one record and each column one field. Keep all fields: names, definitions, numerators, denominators, data sources, and everything else. Tell me clearly if there is anything you could not extract.	请将这份 PDF 中的表格提取为整洁的 Excel 文件，每行一条记录，每列一个字段。保留名称、定义、分子、分母、数据来源等全部字段，并明确指出未能提取的内容。
+From a locked PDF to live data — no manual retyping.	把 PDF 中的表格转为可分析的数据。
+Knowledge	知识检索
+Talk to your 200-page report	和一份 200 页的报告对话
+a long guideline, strategy, or country cooperation document.	一份较长的指南、战略或国家合作文件。
+Give me a structured summary of this document: the main strategic priorities, and for each one list 2-3 key actions. Then I will ask follow-up questions, for example: - What does it say about [a topic]? Which sections mention it? - What is the specific commitment? - How does it align with the SDGs?	请分项概括文件的主要战略重点，每项列出两至三个关键行动。之后我会追问：[主题] 出现在哪些段落？具体承诺是什么？它与可持续发展目标如何衔接？
+Not a keyword search — a real conversation with the document.	围绕文件内容追问，并回到原文核实。
+Reporting	报告编写
+Photos → structured report	从照片到结构化报告
+3-5 photos from a field visit, an office, or a facility.	现场考察、办公室或机构的三至五张照片。
+I visited [a site]. Instead of a standard visit report, analyze these photos as evidence of how the site works in practice. For each photo, identify: - what value or priority it demonstrates; - how it connects to [your strategy or programme]; - what message it sends to staff and visitors. Then produce a one-page structured report.	我访问了[地点]。请逐张分析照片中的可见证据：体现了哪些价值或重点？与[战略或项目]有什么联系？向员工和访客传达了什么信息？请写成一页结构化报告。
+The same places you walk past every day — AI finds meaning in the details.	从日常场景中提取线索，并核实解释。
+Productivity	工作效率
+Data → slide deck	从数据到简报幻灯片
+an Excel or CSV file with the data behind your briefing.	一份包含简报所需数据的 Excel 或 CSV 文件。
+I have data on [topic, e.g. leading causes of death, by age group]. Create a 6-slide presentation for a briefing: 1. Title slide. 2. Overview of the key numbers, with a chart. 3. The main story in the data. 4. A hidden or surprising finding. 5. Implications for [your strategy or audience]. 6. Key messages for leadership. Keep the style professional and highlight surprising findings.	我有关于[主题，如各年龄组主要死因]的数据。请制作六页简报：1. 标题；2. 核心数字及图表；3. 主要发现；4. 意外发现；5. 对[战略或受众]的意义；6. 给主管的关键信息。风格简洁专业，请核实意外发现。
+From raw Excel to a ready-to-present deck, without opening PowerPoint.	用数据生成简报初稿。
+Communication	沟通
+One message, 7 audiences	一条信息，七种受众
+one core paragraph you need to communicate widely.	一段需要向不同受众传达的核心信息。
+Adapt the message below for 7 different audiences. Preserve the core meaning, but rework tone, vocabulary, length, and structure for each. Don't translate - adapt. 1. A formal speech (about 60 words, diplomatic register). 2. A community health worker briefing in [local language] (warm, conversational, simple words). 3. A social media post (max 280 characters, one emoji). 4. A press release quote (1-2 sentences, quotable). 5. A children's version for a primary school health class (use an analogy a child understands). 6. A one-minute ministerial briefing (4-5 bullets). 7. A campaign slogan (max 10 words, rhythmic, memorable). [Paste your message here]	请针对七类受众改写下面的信息，保持核心含义，调整语气、用词、长度和结构：1. 正式发言（约 60 词）；2. 给社区卫生工作者的[当地语言]简报；3. 社交媒体帖（不超过 280 字符，一枚表情）；4. 新闻稿引语（一至两句）；5. 小学健康课，用孩子能懂的类比；6. 给部长的一分钟简报（四至五点）；7. 十词以内的活动口号。[粘贴原文]
+Translation tools change words. A good prompt changes voice.	根据受众调整表达方式。
+Visualization	可视化
+Excel → interactive dashboard	从 Excel 到交互式仪表板
+a raw data export (e.g. GHO or SDG indicator data).	一份原始导出数据，如 GHO 或 SDG 指标数据。
+Here is indicator data for [indicator(s)] across countries and years. Build an interactive dashboard focused on [country/region]. Include: - summary metrics at the top; - a trend chart comparing [country] with the regional average and key peers; - a ranking chart of all countries, with [country] highlighted; - a scatter plot of [indicator A] vs [indicator B]. Keep the design clean and professional. Use one highlight colour so [country] stands out.	这是各国家、各年份的[指标]数据。请为[国家或区域]制作交互式仪表板：顶部列核心指标，用趋势图比较该国、区域平均和主要同类国家，制作突出该国的排名图，并绘制[指标 A] 对[指标 B] 的散点图。设计简洁，用一种强调色标出该国。
+Raw export → dashboard in under a minute. No BI software needed.	将导出数据转为可交互的仪表板初稿。
+Engagement	学员参与
+Team quiz game	团队测验游戏
+nothing — it is generated live from one prompt.	只需现场提供一段提示词。
+Create an interactive quiz game with 10 questions about [topic]. - Mix easy and medium difficulty. - Categories: [3-4 categories relevant to your team]. - Add a score tracker and a timer. - Add a "reveal answer" button after each question. - Finish with a celebratory screen showing the final score.	请就[主题]制作含十道题的交互式测验，难度涵盖容易及中等，围绕[与团队有关的三至四类主题]，加入计分、计时和逐题显示答案的按钮，最后展示总分。
+From one prompt to a custom training tool — great as an ice-breaker.	用作培训开场或复习活动。
+Automation	自动化
+Browser agent: fill a form	用浏览器助手填写表单
+an AI tool that can control a browser (e.g. Claude in Chrome).	可操作浏览器的 AI 工具，例如 Claude in Chrome。
+Open this form: [link]. Fill it in on my behalf with these details: [your details, one per line] Fill every field. IMPORTANT: Do NOT click submit. Stop at the review stage so I can check everything and submit it myself.	打开[表单链接]，按以下资料填写各栏：[每行一项资料]。请停在审核阶段，等我核对后由我自行提交。
+Agents can click and type for you — but the human stays on the submit button.	助手可以填写，提交前由本人核对。
+From the gallery to your real work	将示例用于实际工作
+These prompts are	这些提示词采用
+light-to-middle structure	轻度至中度引导
+: perfect for drafts, exploration, and time-saving. When the output will feed a report, a policy message, or a decision, upgrade to	，适合起草和探索。若输出将用于报告、政策或决策，可改用
+strong structure	高度结构化提示
+: define the method, provide the metadata, and ask AI to state its assumptions. See	，明确方法、提供元数据，并要求说明假设。参见
+AI → Prompting levels	AI → 提示词层次
+for how, and	了解做法，参见
+AI → AI safety	AI → AI 安全
+for the rules that always apply.	了解使用规则。
+Why this page exists	本课目的
+AI can write R code quickly. But a useful health analysis still needs	AI 能快速编写 R 代码，健康数据分析仍需要
+human judgement	专业判断
+Is the data fit for the question?	数据适合回答这个问题吗？
+Is the indicator appropriate?	所选指标合适吗？
+Are missingness, outliers, and denominators handled well?	是否妥善处理了缺失值、异常值和分母？
+Does the interpretation go beyond the evidence?	解释是否超出了证据？
+Can the message support a policy decision?	结果能为政策决策提供什么信息？
+Course map	课程路线
+Question	问题
+Indicator	指标
+Data quality	数据质量
+Descriptive analysis	描述性分析
+Interpretation	解释
+Policy message	政策信息
+Before asking AI to write code, define: the public health	请先明确公共卫生
+question	问题
+, the	、能够回答它的
+indicator	指标
+that answers it, the	、研究的
+population, place, and year	人群、地点和年份
+comparison	比较
+that is meaningful, and the	，以及分析能够支持的
+decision	决策
+the analysis could inform. The AI prompt is never the first analytical step — the question is.	。先确定问题，再编写提示词。
+Data types matter	了解数据类型
+Data type	数据类型
+Examples	示例
+Common summaries	常用汇总方法
+Common plots	常用图表
+Categorical	分类变量
+sex, country, facility type	性别、国家、机构类型
+count, proportion	计数、比例
+bar chart	柱状图
+Numeric	数值变量
+rate, index, age, income	率、指数、年龄、收入
+mean, median, range, SD	均值、中位数、极差、标准差
+histogram, boxplot	直方图、箱线图
+Date or time	日期或时间
+year, month, reporting week	年份、月份、报告周
+trend, change	趋势、变化
+line chart	折线图
+names, free-text notes	名称、自由文本备注
+cleaned categories, keywords	整理后的类别、关键词
+table, bar chart	表格、柱状图
+Data quality is analytical, not just technical	数据质量影响分析与解释
+Issue	问题
+Technical risk	技术风险
+Interpretation risk	解释风险
+Missing values	缺失值
+functions fail or rows drop	函数报错或行被丢弃
+biased indicator	指标估计可能有偏
+mean and model distorted	均值及模型受到影响
+rare but important group hidden	少见但重要的人群被掩盖
+Text inconsistency	文本不一致
+false categories	产生错误类别
+wrong subgroup message	亚组结论错误
+Bad merge key	关联键有误
+duplicated or lost rows	记录重复或丢失
+wrong denominator	分母不正确
+Missing data: ask why	缺失数据：先问原因
+MCAR, MAR, and MNAR are not only statistical labels — they are questions about the	MCAR、MAR 和 MNAR 需要结合
+data-generating process	数据生成过程
+— missing by random chance → safe to drop; small bias risk.	来判断：完全随机缺失时，完整案例分析的偏倚风险通常较小，但精度会下降。
+— related to other observed variables → impute with caution.	：与已观测变量有关，应审慎选择插补模型。
+— related to the missing value itself → high bias risk; investigate before analyzing.	：仍与未观测到的值有关，分析前应调查机制并评估偏倚。
+Outliers: error, rare, or important?	异常值：错误、少见个案，还是重要线索？
+An outlier can be:	异常值可能是：
+a data entry	数据录入
+error	错误
+a valid	真实存在的
+extreme case	极端个案
+a meaningful	值得关注的
+signal	信号
+of inequity or system failure.	，提示不公平或系统问题。
+Do	图表看起来不够美观，
+delete an outlier only because it makes the chart inconvenient.	删除异常值的理由。
+AI-assisted R coding	用 AI 辅助编写 R 代码
+Use AI to draft code, but keep the analytical decisions visible. A good prompt provides:	用 AI 起草代码，同时明确分析决策。提示词应说明：
+context and dataset	背景与数据集
+indicator definition	指标定义
+required checks	必要的检查
+required outputs	需要的输出
+interpretation guardrails	解释的边界
+I am working in R. Please help me use the DSIR package to fetch or prepare WHO/SDG indicator data for SDG 3.8.1 in WPRO. First inspect the data structure, missing values, and variable types. Then produce descriptive statistics and one clear chart. Do not make causal claims. Explain any data quality limitations in simple English.	我使用 R，请帮助我用 DSIR 包获取或整理 WHO 西太平洋区域的 SDG 3.8.1 指标数据。先检查结构、缺失值和变量类型，再做描述性统计并绘制一张清晰的图。请避免因果断言，用简单英语说明数据质量局限。
+Example R workflow the AI should produce	期望 AI 给出的 R 工作流程示例
+Dashboard lab: practice inside this app	在本应用内练习
+Go to	打开
+and load the example data (or upload	并载入示例数据（或上传
+Inspect data types and missing values.	检查数据类型和缺失值。
+Compare missing-data handling choices under	在这里比较缺失值处理方法：
+Cleaning → Missing data	数据清理 → 缺失数据
+Compare outlier handling choices under	在这里比较异常值处理方法：
+Cleaning → Outliers	数据清理 → 异常值
+Create one chart in	在这里绘制清理前后的图表：
+before and after cleaning.	并比较清理前后的结果。
+Debrief questions	讨论问题
+: What did AI need to know before writing useful code? Which data quality issue changed the result? Which cleaning decision should be documented? What would you ask AI to revise?	：AI 编写代码前需要了解什么？哪些质量问题改变了结果？哪项清理决定需要记录？你会要求 AI 修改什么？
+Interpretation is not automatic	解释需要判断
+A chart or model can be technically correct but still misleading. Always check:	图表或模型即使技术上正确，解释仍可能误导。请检查：
+Uncertainty	不确定性
+— sampling variation, small numbers, missing or mismeasured data, changing definitions. Do not hide uncertainty just because a policy message needs to be short.	：抽样变异、样本较小、记录缺失或测量有误、定义变化。即使汇报篇幅有限，也应说明不确定性。
+Confounding	混杂因素
+— a third factor (e.g. GDP) affecting both the exposure and the outcome.	：同时影响暴露和结局的第三个因素，例如 GDP。
+Bias	偏倚
+— who is missing or under-reported? Are groups measured the same way? Do averages hide within-country inequity?	：哪些人没有纳入或报告不足？各组测量方式一致吗？平均值是否掩盖了国内不公平？
+Whether the	表述是否
+language implies causation	暗示了因果关系
+the design cannot support.	，而研究设计无法支持？
+Safer wording	审慎表述
+Instead of:	原表述：
+Higher GDP	较高的 GDP
+causes	导致
+better UHC.	更好的全民健康覆盖。
+Use:	可改为：
+In this dataset, countries with higher GDP per capita	在这份数据中，人均 GDP 较高的国家
+tend to have	往往具有
+higher UHC service coverage index values. This relationship should not be interpreted as causal without considering health-system capacity, demographics, reporting quality, and other confounders.	较高的 UHC 服务覆盖指数。解释时应考虑卫生系统能力、人口特征、报告质量和其他混杂因素。
+Group activity: critique an AI-generated analysis	小组活动：审阅 AI 生成的分析
+Label each part of the AI output:	给 AI 输出的每个部分标记：
+Keep	保留
+— correct and useful.	：正确且有用。
+Revise	修改
+— useful but needs clearer evidence, wording, or chart choice.	：有价值，但需更清楚的证据、表述或图表。
+Remove	删除
+— unsupported, misleading, or irrelevant.	：缺乏支持、具有误导性或与问题无关。
+Check five areas:	检查五个方面：
+data and indicator fit	数据和指标是否合适
+descriptive claims	描述性结论
+causal language	因果措辞
+bias and context	偏倚与背景
+communication and policy use	沟通和政策用途
+. The full checklist is in	。完整清单见
+Training → Training guide	培训 → 培训指南
+Finish with a two-sentence policy message: what does the evidence suggest, and what should decision-makers do next — with what uncertainty in mind?	最后用两句话说明：证据提示了什么？决策者下一步可做什么，又应考虑哪些不确定性？
+A true story about a WHO indicator	一个 WHO 指标的实际案例
+is the Universal Health Coverage (UHC)	是全民健康覆盖（UHC）的
+service coverage index	服务覆盖指数
+: one 1–100 score built from	：取值为 1 至 100，由
+14 tracer indicators	14 个示踪指标
+in four domains (RMNCH, infectious diseases, NCDs, and service capacity and access).	组成，涵盖生殖、孕产妇、新生儿和儿童健康，传染病，非传染性疾病，以及服务能力与可及性四个领域。
+How the tracers are combined	示踪指标的合成方法
+changed	发生了变化
+Old method	旧方法
+— within each domain, a simple geometric mean of the tracers; then a geometric mean of the four sub-indices.	：在各领域内计算示踪指标的简单几何平均数，再取四个领域指数的几何平均数。
+New method (2025 revision)	新方法（2025 年修订）
+— within each domain, a	：在各领域内计算
+weighted	加权
+geometric mean, where each tracer's weight reflects the population it represents; then a geometric mean of the four sub-indices.	几何平均数，权重反映各指标所代表的人口；再取四个领域指数的几何平均数。
+What we asked AI	我们向 AI 提出的问题
+Please calculate the SDG 3.8.1 score for this country, and tell me the process.	请计算该国的 SDG 3.8.1 得分，并说明步骤。
+We uploaded the 14 tracer values for one country and asked the question above. AI answered instantly: clean R code, clear steps, a professional explanation.	我们上传了一个国家的 14 项示踪指标，提出上述问题。AI 很快给出 R 代码、步骤和解释。
+It used the old method.	它使用了旧方法。
+It did not warn us. It could not — the 2025 revision was not part of what it had learned.	它没有提醒我们方法已经修订。
+Same data, two very different answers	同一份数据，两种不同的答案
+Domain	领域
+New method (2025)	新方法（2025）
+RMNCH	生殖、孕产妇、新生儿和儿童健康
+Infectious diseases	传染病
+NCD	非传染性疾病
+Service capacity and access	服务能力与可及性
+Overall index	总指数
+An	相差
+11-point gap	11 分
+on a 100-point index — enough to change a country's ranking, its trend story, and the policy message built on top of it. (Illustrative example: one country's 2023 tracer values.)	（满分 100 分），足以影响排名、趋势解释和政策信息。这是基于某国 2023 年示踪指标的教学示例。
+Both answers	两份答案
+look	看起来
+equally professional. Only one is right.	都很专业，但只有一份符合修订后的方法。
+Why this happens	为什么会发生这种情况
+AI's knowledge has a	AI 的知识有
+cutoff date	截止日期
+— recent methodology revisions may not be in it.	，可能没有包含近期的方法修订。
+Institution-specific rules	机构特定的规则
+(weights, revisions, footnotes) are exactly what generic training data lacks.	，如权重、版本修订和脚注，通用训练资料可能没有涵盖。
+AI cannot tell that it is using an outdated method — the code runs, the numbers appear, everything looks done.	旧方法的代码仍能运行，也会给出数字，AI 未必能识别自己采用了过时方法。
+Polished output	精美的输出可能
+hides	掩盖
+mistakes. Unless a human checks, the error travels straight into slides and briefings.	错误。未经核查，错误就可能进入幻灯片和简报。
+How to protect yourself	如何核查
+Name the method	点明计算方法
+in the prompt — never let AI choose the methodology for an official indicator.	，在提示词中指定官方指标的方法。
+Provide the metadata	提供元数据
+: definitions, weights, revision notes, or the methodology document itself.	，包括定义、权重、修订说明或方法文件。
+Ask AI to	要求 AI
+state the method and assumptions it used	陈述所用方法和假设
+at every step.	，逐步核对。
+Check against a known result	对照已知结果
+(one country, one year) before trusting the rest.	，先验证一个国家、一个年份，再计算其余结果。
+The fix: a strong-structure prompt	改进提示词：明确计算步骤
+Please calculate the UHC sub-indices and the overall index using the 2025 revised method: 1. For each domain, calculate the WEIGHTED geometric mean of its tracer values, using the weights provided in the file. 2. Calculate the geometric mean of the four sub-indices to get the overall index (no weights at this step). 3. Report the method you used at each step, and show the intermediate sub-index values so I can check them.	请按 2025 年修订方法计算 UHC 分领域指数和总指数：1. 使用文件中提供的权重，计算各领域示踪指标的加权几何平均数。2. 对四个分领域指数取几何平均数，得到总指数，这一步不再加权。3. 报告每一步的方法与中间结果，供我核查。
+With the method spelled out and the weights supplied, AI reproduced the revised results exactly.	明确方法并提供权重后，AI 在此示例中复现了修订方法的结果。
+AI can calculate very fast. Only humans know which calculation is the right one.	AI 计算很快，选择和核实适用方法是人的责任。
+Try it yourself 🐾	自己试一试 🐾
+The datasets download on the	从
+page includes	页面下载的数据包括
+: old-method and new-method UHC index values for the same countries.	：同一组国家用新旧方法估计的 UHC 指数。
+In this app	在应用中
+— upload it on the Import page and use	：在“导入”上传文件，再前往
+to compare the two columns (scatterplot with a diagonal reference in mind; or reshape and use a box plot).	比较两列数据。可画散点图对照对角线，也可重整数据后画箱线图。
+With AI	使用 AI
+— upload the same file and ask for a paired comparison: How different are the two methods? Which countries move the most? Is the difference statistically significant (paired t-test)?	：上传同一文件并做配对比较。两种方法相差多少？哪些国家差异最大？配对 t 检验结果如何？
+Interpret	解释
+— if a country's score rises 10 points because the	：若某国指数上升 10 分是因为
+method	计算方法
+changed, what must you say in the policy brief so the trend is not misread as real progress?	变化，政策简报应如何说明，避免把它误读为实际进步？
+This is the whole lesson of this page in one exercise: the numbers changed, the health system did not.	本练习中，计算方法改变了数字，不代表卫生系统发生了相应变化。
+Choose your topics 🎯	选择测验主题 🎯
+Every training uses a different mix of modules. Tick the topics covered in your session and restart the quiz — by default all topics are included.	勾选本次培训涵盖的主题，然后重新开始测验。默认包括所有主题。
+Test yourself	检验所学
+Final exercise: put it all together	综合练习
+Use the	使用
+indicator data (download from the Home page) and, with the help of this dashboard or AI-assisted R coding:	指标数据（可从首页下载），借助本应用或 AI 辅助 R 编程完成以下任务：
+— summarize the distribution of SDG 3.8.1 values across WPRO countries; identify the minimum, maximum, mean, and median.	：概括西太平洋区域各国 SDG 3.8.1 的分布，计算最小值、最大值、均值和中位数。
+Visualize 2021	绘制 2021 年图表
+— create a plot showing the indicator values for all WPRO countries in the year 2021.	：显示区域内各国 2021 年的指标值。
+Trends over time	时间趋势
+— group the data by year, calculate the annual mean for WPRO countries, and create a time series plot.	：按年份分组，计算区域内各国的年度均值，并绘制时间序列图。
+Training playbook: build a session from this app	培训者手册：用本应用安排课程
+Data-quality lab script (20-30 minutes)	数据质量实验脚本（20–30 分钟）
+AI-generated analysis critique checklist	AI 分析审阅清单
+Dataset recommendation	数据集建议
+Workflow	工作流程
+Multiple imputation	多重插补
+Public health example	公共卫生示例
+Why data matters	数据为什么重要
+Ask a question. Examine the evidence. Explain what should happen next.	提出问题，查看证据，说明下一步行动。
+Keep your curiosity: the cats are still here. This workshop connects the data workflow to public health decisions.	继续和猫咪一起探索，在这次培训中用数据回答公共卫生问题。
+Predict, then reveal	先预测，再揭晓
+John Snow	约翰·斯诺
+Care cascade	服务级联
+A figure for the decision-maker	给决策者看的图
+Course route	课程路线
+Which result needs a closer look?	哪项结果需要进一步核查？
+Two fictional district-years from Dataset A. Start with the percentage among people with a usable result.	数据集 A 中两个虚构的地区和年份。先看已有可用检测结果的人群中的病毒抑制率。
+Reveal testing coverage and denominators	显示检测覆盖率及分母
+Synthetic training cases; not Lao PDR estimates. Dataset A is independent of B/C.	这些是合成教学案例，不是老挝估计值。数据集 A 与 B/C 相互独立。
+A map supports an investigation	一张地图如何帮助调查
+During the 1854 London cholera outbreak, John Snow investigated the link between illness and water supply. Mapping deaths helped communicate a pattern, alongside evidence about which water people used.	1854 年伦敦霍乱暴发期间，约翰·斯诺调查了患病与供水的关系。他把死亡病例标在地图上，并结合居民用水来源等证据解释空间分布。
+Discuss: what pattern can you see, what other evidence is needed, and what action could the evidence support? The map alone does not establish causation or measure the effect of removing a pump handle.	讨论：你看到什么分布？还需要哪些证据？可以采取什么行动？仅凭地图无法证明因果关系，也无法估计拆除水泵把手的效果。
+Map source: Wellcome Collection, Public Domain Mark	地图来源：Wellcome Collection，公有领域标记
+Keep the counts and denominators together	一起看人数和分母
+Fictional district	虚构地区
+Year	年份
+L: people living with HIV; D: diagnosed; A: on ART; T: with a usable viral-load result; S: suppressed among those with results.	L：HIV 感染者；D：已诊断；A：接受 ART；T：有可用病毒载量结果；S：有结果且病毒受到抑制。
+These synthetic nested counts are an illustration. S/T describes the tested group; it does not estimate suppression among all people on ART.	这些合成人数逐层包含。S/T 描述有结果的人群，不能据此估计所有 ART 患者的病毒抑制率。
+Dataset A: synthetic training counts, independent of the patient records in B/C.	数据集 A 为合成教学人数，与 B/C 的患者记录相互独立。
+Make the message easy to find	让读者一眼看懂主要发现
+Name the question and audience before choosing a chart.	选图前说明你的问题，以及谁需要答案。
+Show a clear comparison, with units and the denominator.	明确比较对象、单位和分母。
+Keep uncertainty and selection limits visible.	标明不确定性和样本选择的局限。
+Ask a partner to explain the chart without seeing your code.	请同伴在不看代码的情况下解释图表。
+Use Workflow to compare a bar chart and a sorted dot plot from the same summary. Decide which better answers your question.	在“工作流程”中用同一份汇总数据比较柱状图和排序点图，判断哪种更能回答你的问题。
+Claus O. Wilke: Make a figure for the generals	Claus O. Wilke：为决策者制作图表
+Session	课次
+Question, observation unit, codebook and denominator	问题、观测单位、数据字典与分母
+Review, join, summarise and visualise	质量核查、关联、汇总与可视化
+Statistical assumptions and careful interpretation	统计假设与审慎解释
+Reproducible reports, dashboards and peer review	可复现的报告、仪表板与同伴审阅
+In Workflow, use the original cats first, then the synthetic public health examples. Core activities and downloads work offline.	在“工作流程”里先使用猫咪数据，再尝试合成公共卫生示例。本地安装后，核心练习和导出可离线使用。
+AI chart comparison: a separate classroom exercise	课堂拓展：比较 AI 生成的图表
+Download the same synthetic data for each AI tool. Ask for several chart options. Check the numbers, denominator, labels, scales and message against R output. Record actual AI use and human verification. No AI connection is required inside this app.	给不同 AI 工具同一份合成数据，请它们提出多种图表。对照 R 结果核查数字、分母、标签、刻度和信息，记录实际使用的工具与人工复核结果。
+The communication project contains local RStudio, Quarto and Shiny starting points for Sessions 10-12.	结果沟通项目为第 10–12 节课提供本地 RStudio、Quarto 和 Shiny 示例。
+Your data workflow	你的数据工作流程
+Keep the input, record each decision, then communicate a result that another person can reproduce.	保存输入，记录每项决定，让别人能够复现你报告的结果。
+Teaching data	教学数据
+Example	示例
+Original cats	原始猫咪数据
+Second cat table	第二张猫咪表
+A: fictional district-year cascade	A：虚构地区的年度服务级联
+B: raw ART records	B：原始 ART 记录
+B: reference with review flags	B：含核查标记的参考记录
+C: fictional facilities	C：虚构卫生机构
+Load example	载入示例
+Your data	自己的数据
+Upload CSV or Excel	上传 CSV 或 Excel
+Or use an app dataset	或使用应用中的数据集
+Applied merge	已应用的合并结果
+Use this dataset	使用此数据集
+Current selection	当前选择
+Undo last step	撤销上一步
+Reset to input	恢复到输入数据
+The workflow keeps its own input snapshot. Changes on other app pages are imported only when you click Use this dataset.	工作流程保存自己的输入快照。从其他页面获取最新数据时，请点击“使用此数据集”。
+1 Understand	1 了解数据
+2 Review quality	2 核查质量
+3 Join and summarise	3 关联与汇总
+4 Visualise	4 可视化
+5 Communicate	5 结果沟通
+Source and scope	来源与范围
+What does one row represent?	每一行代表什么？
+Variable profile	变量概况
+Codebook and provenance	数据字典与来源
+Record keys	记录键
+Proposed key	拟用的键
+A blank is not zero. A missing result can be expected when no test was reported. Consult the codebook.	空白不等于零。如果没有报告检测，没有结果可能是预期情况。请查阅数据字典。
+Add an outlier/review flag	添加异常值或核查标记
+Numeric field	数值字段
+Screening rule	筛查规则
+IQR screen	四分位距筛查
+Documented limits	有依据的界限
+IQR multiplier	四分位距倍数
+Lowest allowed value	最低允许值
+Highest allowed value	最高允许值
+New flag column	新标记列名
+Also flag missing values for review	同时标记缺失值以供核查
+Add review flag	添加核查标记
+A flag requests review. It does not delete or cap a value.	标记用于提示核查，不会删除记录或截断数值。
+Standardise documented labels	按记录的规则统一标签
+Original field	原字段
+Source labels	原标签
+Documented replacement	有依据的替换值
+New standardised column	新的标准化列名
+Add or update standardised column	添加或更新标准化列
+Unselected labels remain unchanged. The original column is retained; unknown categories are not guessed.	保留原始列和未选中的标签，对未知类别不作推测。
+Check and join a reference table	核查并关联参考表
+Reference	参考表
+App Dataset 2	应用数据集 2
+Key in current records	当前记录的键
+Key in reference	参考表的键
+Expected relationship	预期的关联关系
+many-to-one	多对一
+one-to-one	一对一
+one-to-many	一对多
+many-to-many	多对多
+Check keys and join	核查键并关联
+Missing keys do not match. Overlapping non-key names receive .record and .reference suffixes. Facility location does not replace patient residence.	缺失键互不匹配。重名的非键列会加上 .record 或 .reference 后缀。机构所在地不能代替患者居住地。
+Declare the analysis sample	确定分析样本
+Exclude rows with these review flags (TRUE or unknown)	排除带有下列核查标记的行（TRUE 或未知）
+Apply flag-based selection	按标记筛选
+Optional category filter	可选类别筛选
+(none)	（无）
+Keep these values	保留这些值
+Keep missing values in this filter	此筛选中保留缺失值
+Apply category selection	按类别筛选
+Apply the S7 B-reference sample rule	应用第 7 课的 B 参考样本规则
+S7: retain records with record_action = retain and no age or ART review flag. The full input stays available.	第 7 课：保留 record_action = retain 且没有年龄或 ART 核查标记的记录。原始输入仍可查看。
+A percentage with a named denominator	计算分母明确的百分比
+Reported status field	报告状态字段
+Success label	成功标签
+Failure label	失败标签
+Group	分组
+Percentage = success / (success + failure) × 100. Other and blank statuses stay visible outside this denominator.	百分比 = 成功数 /（成功数 + 失败数）× 100。其他和空白状态另列，不计入此分母。
+Chart title	图表标题
+Subtitle	副标题
+X label and unit	横轴标签和单位
+Y label and unit	纵轴标签和单位
+Source, denominator and limitations	来源、分母和局限性
+Width (in)	宽度（英寸）
+Height (in)	高度（英寸）
+R code	R 代码
+Data to plot	绘图数据
+Selected records	已选记录
+Status summary	状态汇总
+Chart	图表
+Bar	柱状图
+Sorted dot	排序点图
+Density	密度图
+Line	折线图
+Scatter	散点图
+Box	箱线图
+Heatmap	热图
+Dumbbell	哑铃图
+Forest	森林图
+Cascade counts	级联计数图
+X / category / term	横轴 / 类别 / 项
+Y / estimate (none = count records for bars)	纵轴 / 估计值（柱状图选“无”时按记录计数）
+Facet	分面
+Heatmap value	热图数值
+Second value	第二个值
+Lower confidence limit	置信下限
+Upper confidence limit	置信上限
+Reference value	参考值
+Log estimate axis	估计值轴使用对数刻度
+Bins	分箱数
+Sort a single-series comparison	对单系列比较进行排序
+Values are percentages (0-100)	数值为百分比（0–100）
+Theme	主题
+Build a report from the current selected records and figure. Write the interpretation yourself and check it against the table.	使用当前选定的记录和图表生成报告。请自行撰写解释并对照表格核查。
+Report title	报告标题
+Research question	研究问题
+Analysis population, selection and method	分析人群、筛选和方法
+Denominator: percentage of whom?	分母：谁占谁的百分比？
+Main finding, supported by the output	由结果支持的主要发现
+Interpretation and limitations	解释与局限性
+Include the current figure	包含当前图表
+HTML layout	HTML 布局
+Report	报告
+Dashboard	仪表板
+Download HTML	下载 HTML
+Download reproducible project	下载可复现项目
+HTML opens offline. The project includes the input and selected data, preparation code, RStudio project, Quarto sources and a local Shiny dashboard. Review the text again if you change the data.	HTML 可离线打开。项目包含输入及选定的数据、整理代码、RStudio 项目、Quarto 源文件和本地 Shiny 仪表板。数据更改后请重新核查报告文字。
+Preparation and selection record	整理与样本筛选记录
+Preparation R code	数据整理 R 代码
+Missing data: beyond a single replacement	缺失数据：从单次填补到多重插补
+Use a controlled synthetic cat example to see why multiple imputation produces several completed datasets. The original missing weights stay visible.	用合成猫咪数据观察多重插补如何生成多个完整数据集，同时查看哪些体重原本缺失。
+Teaching simulation	教学模拟
+Completed datasets	插补数据集数
+Iterations	迭代次数
+Random seed	随机种子
+Run the cat example	运行猫咪示例
+120 synthetic cats; 36 weights are hidden at random for this demonstration. The model relates weight to length. IDs are not predictors.	示例含 120 只合成猫，随机隐藏了其中 36 个体重值。模型分析体重与体长的关系，标识符不作为预测变量。
+Compare the slope estimates	比较斜率估计值
+Completed values	插补后的值
+Chains	迭代链
+Missingness pattern	缺失模式
+Fit the same model in each completed dataset, then pool estimates and uncertainty. Do not stack completed datasets and treat them as independent observations.	对每个插补数据集拟合同一模型，再合并估计值与不确定性。不要把多个插补数据集堆叠为独立观测。
+This example illustrates a method. Stable chains do not prove a real study's missingness assumptions. Uploaded patient data are not imputed by this lesson.	本例用于讲解方法。稳定的迭代链不能证明真实研究的缺失假设。本课不对上传的患者数据进行插补。
+mice: pooling documentation	mice：模型估计合并说明
+Public health: sample, test and interpretation	公共卫生：样本、检验与解释
+Reproduce the Lao workshop's fixed synthetic B/C example. Reported VL testing is the outcome; it is not viral suppression or verified result availability.	复现老挝培训的合成 B/C 示例。结局为是否报告病毒载量检测，不等同于病毒抑制或已核实有可用结果。
+Run the worked example	运行完整示例
+Sample and denominator	样本与分母
+Chi-square	卡方检验
+Logistic regression	逻辑回归
+Explain the result	解释结果
+Sex by known reported testing status, with the default Yates correction for a 2 × 2 table. Inspect expected counts as well as the test.	对性别与已知检测状态作 2 × 2 列联分析，采用默认的 Yates 连续性校正。请同时检查期望频数和检验结果。
+The crude and adjusted models use the same complete-predictor sample. Reference groups: Female and Health Center; age per 10 years, ART duration per 12 months.	粗模型与调整模型使用同一组预测变量完整的记录。参照组为女性和卫生中心；年龄以 10 年为单位，ART 时长以 12 个月为单位。
+An odds ratio is not a probability ratio. An interval including 1 does not demonstrate equality. A converged model does not establish valid inference.	优势比不同于概率比。区间包含 1 不能证明两组相等。模型收敛也不能确保推断有效。
+Ordinary Wald intervals and tests ignore correlation within facilities. Facility type as a predictor does not remove this issue. Selection, source flags, functional-form assumptions and unmeasured factors remain.	常规 Wald 区间和检验未考虑机构内的相关性。把机构类型作为预测变量并不能解决此问题，还应考虑样本选择、来源标记、函数形式和未测量因素。
+These synthetic examples support descriptive and modelling practice, not national, causal or clinical conclusions.	这些合成示例用于练习描述性统计和建模，不应用于作出国家层面、因果或临床结论。
+Is this data table tidy data?	这张表是整洁数据吗？
+It uses a multi-row header, which violates tidy data principles.	表头占了多行，不符合整洁数据原则。
+Each column should have a single, unique variable name.	每列应有一个唯一的变量名。
+Column names should not span multiple rows or encode hierarchical structure.	列名不应跨行，也不应依赖表头层级来表达变量。
+Yes	是
+No	否
+Tidy data	整洁数据
+Is this tidy data?	这是整洁数据吗？
+It uses merged cells.	表中有合并单元格。
+In tidy data, no values should be implied by the structure of the table.	整洁数据不依靠表格的布局来暗示数值。
+All values must be explicitly filled in.	所有值都应明确记录。
+Each variable forms a column.	每个变量占一列。
+Each observation forms a row.	每个观测占一行。
+Each type of observational unit forms a table.	每种观测单位对应一张表。
+While collecting country-level data, a diabetes treatment indicator is entirely missing for a specific country. Investigation reveals the country	收集国家层面的数据时，某国的糖尿病治疗指标全部缺失。调查发现该国
+has no diabetes registry	没有糖尿病登记系统
+and	，并且
+places low priority on noncommunicable diseases (NCDs)	非传染性疾病的工作优先级较低
+. Other variables such as incident TB cases and malaria were reported normally. Can this information establish the missingness mechanism?	。结核病新发病例及疟疾等指标正常报告。仅凭这些信息能确定缺失机制吗？
+An absent registry explains a collection gap, but does not establish MAR or MNAR.	缺少登记系统能解释收集缺口，但不能据此确定为 MAR 或 MNAR。
+MAR concerns dependence on observed information; MNAR involves remaining dependence on unobserved values.	MAR 涉及已观测的信息，MNAR 则涉及控制已观测信息后，缺失仍与未观测值有关。
+Investigate the collection process, state assumptions and consider sensitivity analyses.	调查数据收集过程，说明假设，并考虑敏感性分析。
+Missing Completely At Random (MCAR)	完全随机缺失（MCAR）
+Missing At Random (MAR)	随机缺失（MAR）
+Missing Not At Random (MNAR)	非随机缺失（MNAR）
+The mechanism cannot be established from this information alone	仅凭这些信息无法确定机制
+In a simple classroom demonstration, you want to replace missing numerical values with one summary statistic. The observed values contain extremes. Which summary statistic is less sensitive to extreme values?	课堂演示中，要用一个统计量填补缺失数值。已观测值中有极端值，哪种统计量受到的影响较小？
+The median is a robust statistic: it is not sensitive to extreme values.	中位数对极端值较为稳健。
+The mean is influenced by outliers.	均值会受到异常值影响。
+This comparison does not make median imputation the best method for a real analysis.	在真实分析中，中位数插补未必是最佳方法。
+Single-value replacement distorts the distribution and does not reflect missing-data uncertainty.	用单一数值填补会改变分布，也不能反映缺失数据带来的不确定性。
+Choose a method using the analysis purpose, data structure and missingness assumptions.	应根据分析目的、数据结构和缺失机制的假设选择方法。
+Drop missing values	删除缺失值
+Replace missing with 0	用 0 填补
+Impute with mean	用均值插补
+Impute with median	用中位数插补
+K-nearest neighbors imputation (kNN)	k 近邻插补（kNN）
+You visualized a numerical SDG 3 indicator with a boxplot and observed several values above the upper whisker. What should you do first?	用箱线图展示某项 SDG 3 数值指标时，有几个观测高于上须。第一步该做什么？
+An IQR flag is a review signal, not proof of an error.	四分位距标记提示需要核查，不能据此认定数据有误。
+Preserve the original values and document the evidence for any correction or exclusion.	保留原始值，记录每项修正或排除的依据。
+Valid extremes may be important. Consider a suitable analysis and sensitivity checks.	真实的极端值可能很重要。考虑合适的分析方法和敏感性检查。
+Capping, replacement and deletion change the data and need justification.	截断、替换或删除都会改变数据，需要说明理由。
+Remove all outliers	删除所有异常值
+Winsorize the outliers by capping them at the IQR bounds	在四分位距边界进行缩尾
+Replace outliers with the mean value	用均值替换异常值
+Check the source and units, then decide whether the values are errors or valid extremes	核查来源和单位，再判断是错误还是真实极端值
+Why is text cleaning an important step before doing any smart analysis?	为什么分析前要清理文本？
+Misspelling can matter but is not the core reason shown here.	拼写错误有影响，但不是此处的核心原因。
+Missing values are a different kind of data cleaning issue.	缺失值属于另一类数据质量问题。
+Machines do handle text — but inconsistently formatted text leads to poor results.	软件可以处理文本，但格式不一致会使结果不可靠。
+Because people often misspell words	因为人们经常拼错单词
+Because text data usually contains lots of missing values	因为文本通常有大量缺失值
+Because inconsistent spelling and casing confuse grouping, filtering, and models	因为拼写和大小写不一致会影响分组、筛选和建模
+Because machines cannot handle text data at all	因为机器完全无法处理文本
+Text cleaning	文本清理
+Please tell me what type of join this diagram shows:	图中展示的是哪种关联方式？
+In a	在
+left join	左连接
+, all rows from the left table are kept, and matching rows from the right table are added where possible; unmatched rows get NA. In this diagram the left table contributes all 3 rows, and key = 3 has no match on the right, so its	中，保留左表全部记录，并添加右表中匹配的信息。无匹配时填 NA。图中保留左表三行，键 3 在右表无匹配，所以其
+is NA.	为 NA。
+Left join	左连接
+Right join	右连接
+Inner join	内连接
+Full join	全连接
+Merging	数据关联
+inner join	内连接
+keeps only the rows whose key is present in both tables. Keys 1 and 2 exist in both tables, so they are kept; key 3 (left) and key 4 (right) are dropped because they have no match in the other table.	只保留两表中键匹配的行。键 1 和 2 两侧都有，予以保留；左表的键 3 和右表的键 4 没有匹配，均被排除。
+A national health survey includes	一项全国健康调查包含
+Age Group	年龄组
+Gender	性别
+(Male/Female), and	（男 / 女）以及各组的
+Prevalence of Hypertension (%)	高血压患病率（%）
+in each group. You want to compare prevalence across age groups, separately for males and females. Which chart type is most appropriate?	。希望按性别分别比较各年龄组患病率，应选哪种图？
+grouped bar chart	分组柱状图
+compares prevalence across age groups while also splitting by gender — exactly the need here.	可以在各年龄组内划分性别，从而比较患病率。
+A line chart suits continuous trends (e.g., over time).	折线图适合连续趋势，例如随时间的变化。
+A pie chart is poor for comparisons across multiple groups.	饼图不适合比较多个组。
+A scatter plot shows relationships between two continuous variables.	散点图显示两个连续变量之间的关系。
+Grouped bar chart	分组柱状图
+Scatter plot	散点图
+You are analyzing a dataset of 3,000 adults with recorded	你正在分析 3,000 名成年人的
+BMI	身体质量指数（BMI）
+Systolic Blood Pressure	收缩压
+. You want to explore whether there is a relationship or trend between these two continuous variables. Which chart type should you use?	。要探索这两个连续变量之间的关系或趋势，应该用什么图？
+scatter plot	散点图
+is best for showing the relationship between two continuous variables — here BMI against systolic blood pressure.	适合显示两个连续变量的关系，本例为 BMI 与收缩压。
+Boxplot	箱线图
+You are preparing visual materials for a public health seminar on NCDs. Which dataset is most appropriate to present with a	为非传染性疾病研讨会制作材料时，哪份数据最适合用
+pie chart	饼图
+Pie charts illustrate the	？饼图用于展示
+composition of a whole	整体构成
+with a small number of mutually exclusive categories.	，适合类别不多且彼此互斥的情形。
+Trends over time → line chart; group comparison with variability → bar chart with error bars; continuous distribution → histogram or density plot.	时间趋势可用折线图；带变异信息的组间比较可用误差线；连续变量分布可用直方图或密度图。
+Hypertension prevalence trends by age group from 2010 to 2020	2010 至 2020 年各年龄组高血压患病率趋势
+Mean BMI for males and females in 2023	2023 年男性和女性的平均 BMI
+Causes of registered deaths in City X (2023): Heart disease, Cancer, Stroke, Diabetes, Others	X 市 2023 年登记死亡的死因构成：心脏病、癌症、卒中、糖尿病和其他
+Fasting glucose levels of 3,000 diabetic patients	3,000 名糖尿病患者的空腹血糖
+A public health officer wants to compare the	一名公共卫生人员要比较三个城市的
+distribution	分布
+of PM2.5 air pollution levels across three cities — which city has the worst air quality, and whether any city has extreme pollution events. Which chart type is most appropriate?	，想了解 PM2.5 空气污染的总体水平及极端污染事件。哪种图最合适？
+boxplot	箱线图
+compares the distribution of a continuous variable across categories — here PM2.5 across three cities — and makes outliers visible.	可比较不同城市 PM2.5 的分布，并显示可能的异常值。
+Bar charts compare counts/proportions, not distributions; line charts show trends over time.	柱状图比较计数或比例，折线图展示时间趋势。
+Look carefully at this 3D chart. Which design principles does it violate?	仔细看这张三维图。它违反了哪些设计原则？
+This chart breaks several rules at once: a truncated y-axis exaggerates differences, the 3D effect distorts perception, and the decoration hides the message. Below is a redesigned version — flat, zero-based, and labelled.	截断纵轴夸大了差异，三维效果扭曲视觉判断，装饰掩盖了信息。下方的改进图采用平面设计、零起点和清晰标签。
+The y-axis does not start at zero	纵轴不是从零开始
+The 3D effect distorts perception	三维效果扭曲了视觉判断
+Too much decoration and unclear labels	装饰过多且标签不清晰
+All of the above	以上所有选项
+A colleague sends you this extract from the cat café dataset. Is it ready for analysis?	同事发来了猫咖数据摘录，可以直接分析吗？
+uses four encodings (Male, female, F, m) for two categories, which would split every grouped analysis into false subgroups.	用 Male、female、F、m 四种编码表示两类性别，会产生错误分组。
+Some values are impossible: a 56 kg cat is almost certainly 5.6 kg with a misplaced decimal, and a 5 cm body length is likely 50 cm.	某些值需要回查原始记录，例如 56 千克可能是 5.6 千克的小数点错误，5 厘米也可能是 50 厘米；不能直接猜测改值。
+Loadable is not the same as clean.	能够读入，不代表已经清理完毕。
+Clean means semantically correct, not just readable by software.	数据清理还要确认数值和类别的含义正确。
+Yes — it loads without errors, so it is clean	是，可以无报错载入，所以数据是干净的
+No — it has encoding problems and impossible values	否，存在编码问题和不合理数值
+What is the most important step	在填补缺失值
+before	之前
+imputing missing values?	，哪一步最重要？
+Understanding	理解数据
+why	为什么
+values are missing (MCAR, MAR, MNAR, or other patterns) determines which methods are valid at all.	缺失（如 MCAR、MAR、MNAR），有助于判断哪些方法适用。
+Tools come second: a sophisticated method applied to a misunderstood missingness mechanism produces confident but biased results.	先弄清缺失机制，再选工具；复杂方法也可能产生偏倚。
+Try random imputation and compare the results	随机填补并比较结果
+Inspect the missingness patterns and mechanisms	检查缺失模式并调查缺失机制
+Run the most advanced imputation package available	使用当前最复杂的插补软件包
+A dataset has two variables with missing values.	一份数据中有两个变量存在缺失。
+Variable A	变量 A
+has few missing values and a stable distribution.	缺失较少，分布稳定。
+Variable B	变量 B
+has many missing values and is clearly related to several other variables in the data. Which imputation plan is better?	缺失较多，且与其他几个变量明显相关。哪项插补方案更合适？
+A stable variable with little missingness is well served by the	对缺失少、分布稳定的变量，可考虑
+: robust, simple, and easy to explain.	：稳健、简单、易解释。
+A variable that depends on others benefits from	与其他变量关系明显时，可考虑
+: the imputed values reflect patterns in the related variables and preserve variability better than a single constant.	：利用相关变量的模式推测缺失值，比单一常数填补更能体现变异。
+The mean is vulnerable to outliers, and random values add pure noise.	均值容易受异常值影响，随机取值则可能引入噪声。
+Impute both variables with the mean	两个变量都用均值填补
+A → median imputation; B → kNN imputation using the related variables	A 用中位数填补，B 根据相关变量用 kNN 插补
+A → mean imputation; B → random values	A 用均值填补，B 用随机数填补
+You built a 5 × 6 contingency table (adoption source × personality) from about 30 cats. Many cells hold counts of 0 or 1. Which test should you use?	约 30 只猫按领养来源和性格形成 5 × 6 列联表，许多格子的频数为 0 或 1。应选哪种检验？
+The chi-square test becomes unreliable when expected cell counts fall below 5 — common in small or sparse tables.	小样本或稀疏表中，期望频数太小会影响卡方近似的可靠性。
+Fisher's exact test	Fisher 精确检验
+works for r × c tables with small counts, which makes it the safer choice here.	可用于小频数的 r × c 列联表，是本例较稳妥的选择。
+Chi-square test	卡方检验
+You want to compare	你想比较
+weight	体重
+across	在不同
+personality groups	性格组
+. The groups are small and unbalanced, and the data show outliers and skewed distributions. Which test is the safer choice?	中的差异。各组样本小且不均衡，数据有异常值和偏态。哪种检验较稳妥？
+ANOVA assumes normality and equal variances — doubtful with small, unbalanced groups, outliers, and skewness.	传统方差分析对正态性和方差齐性有要求；小样本、不均衡分组、偏态及异常值使这些假设难以满足。
+Kruskal-Wallis test	Kruskal–Wallis 检验
+is the non-parametric alternative: robust to outliers and unbalanced groups, at the cost of a little power when ANOVA's assumptions actually hold.	是基于秩的非参数方法，较少受异常值影响。若方差分析的假设成立，其检验效能可能略低。
+One-way ANOVA	单因素方差分析
+Your test returns	检验得到
+. How should you interpret it?	。该如何解释？
+We cannot reject the null hypothesis at conventional levels (e.g. 0.05); the result is	以常用显著性水平（如 0.05）不能拒绝零假设，结果
+inconclusive	尚无定论
+Patterns visible in the plots could easily arise by chance — treat them as exploratory, not as evidence.	。图上看到的模式可能来自随机波动，可作为进一步探索的线索。
+Note the wording: this is	注意措辞，这里是
+no evidence of an association	没有发现关联的充分证据
+, which is not the same as	，不同于
+evidence of no association	有证据表明不存在关联
+A strong association	存在强关联
+A weak but statistically significant association	关联较弱但具有统计学意义
+No statistically significant evidence of an association	没有统计学显著的关联证据
+Which prompt is most likely to produce a reliable analysis?	哪种提示词更可能得到可靠的分析？
+The first prompt is too vague — AI does not know your goal or your constraints.	第一种提示过于笼统，没有说明目标或限制。
+The second provides structure, and	第二种提供了明确步骤，
+clear structure leads to more reliable output	清晰的步骤让输出更容易核查
+The third invites storytelling, not analysis.	。第三种更像请 AI 编故事。
+"Analyze this dataset for me."	“请替我分析这份数据。”
+"Here are the variables and my goals. Please follow these steps…"	“这是变量和分析目标，请按以下步骤完成……”
+"Tell me a story based on the numbers."	“请用这些数字讲一个故事。”
+Prompting	提示词
+Why do policy-relevant tasks need	为什么用于政策的任务需要
+strong-structure	高度结构化
+prompting?	的提示词？
+When an analysis feeds a decision, every step must be explicit, reproducible, and checkable.	分析用于决策时，每一步都应清晰、可复现、可核查。
+A fully defined workflow means AI cannot guess or improvise — and a reviewer can audit exactly what was done.	把流程写清楚，审阅者就能检查具体做法。
+Because AI lacks creativity	因为 AI 缺乏创造力
+Because policy work needs transparency and reproducibility	因为政策工作需要透明和可复现性
+Because it makes the plots prettier	因为这样图更漂亮
+You have just received an unfamiliar dataset and want first impressions. Which prompting level fits best?	刚收到不熟悉的数据，想先形成初步认识。哪种提示词最合适？
+Light structure	轻度引导
+lets AI surface patterns and ideas you have not thought of yet — ideal for early exploration.	有助于 AI 提出可能的模式和新想法，适合初步探索。
+middle	中度引导
+once you know the task, and to	适用于任务明确时；需要
+strong	高度引导
+when the output must be reproducible and policy-ready.	来生成可复现、可用于政策的输出。
+Which task is AI most likely to get wrong	在以下任务中，AI 最容易在哪一项出错，尤其在
+without human supervision	缺少人工复核时
+AI excels at generic tasks such as plotting and standard models.	？AI 擅长绘图、常规模型等通用任务。
+It often misapplies	它可能误用
+institution-specific rules	机构特定的规则
+— weights, revisions, definitions — because they are not in its training data.	，如权重、修订方法和定义，因为训练资料可能没有包含这些细节。
+See	参见
+for a worked example.	中的完整示例。
+Creating a scatter plot	绘制散点图
+Fitting a linear model	拟合线性模型
+Applying the current WHO methodology for SDG 3.8.1	应用 WHO 针对 SDG 3.8.1 的现行方法
+AI & methods	AI 与方法
+Which aggregation is correct for the UHC service coverage index (SDG 3.8.1) after the 2025 revision?	2025 年修订后，UHC 服务覆盖指数（SDG 3.8.1）应如何汇总？
+The 2025 revision weights each tracer by the	2025 年修订方法依照各示踪指标
+population it represents	所代表的人口
+when building the four domain sub-indices.	加权，先构建四个领域的分指数。
+The overall index is then the geometric mean of the four sub-indices, with no additional weights at that step.	总指数取四个分指数的几何平均数，这一步不再额外加权。
+A simple geometric mean of all 14 tracers	对全部 14 项示踪指标取简单几何平均数
+A weighted geometric mean within each domain, then a geometric mean of the four sub-indices	先在每个领域计算加权几何平均数，再对四个分指数取几何平均数
+If AI silently applies the	如果 AI 无提示地使用
+SCI aggregation method, what happens?	版 SCI 汇总方法，会怎样？
+In the worked example on the	在
+page, the old and new methods differ by	页面的示例中，新旧方法相差
+11 points	11 分
+on a 100-point index.	（满分 100 分）。
+Wrong method → wrong rankings → wrong policy message. And because the code runs cleanly, nothing looks wrong until a human checks.	方法有误会影响排名和政策信息，即使代码能顺利运行，也需要人来核查。
+Nothing important — the two methods give almost identical results	影响不大，两种方法几乎得到相同结果
+Systematic bias in the results — and AI will not warn you	结果可能出现系统性偏差，AI 未必会提醒
+Which analysis step is AI	AI 在以下分析步骤中
+least	最难
+able to automate?	自动完成哪一项？
+Cleaning and model-fitting are mechanical once defined — AI does them quickly and well.	在步骤明确后，AI 可以快速协助数据清理和模型拟合。
+Method choice	选择方法
+is conceptual and contextual: it depends on the question, the data-generating process, and the decision at stake. That judgment remains human work.	需要结合研究问题、数据生成过程及所支持的决策，这项判断要由人负责。
+Cleaning the data	清理数据
+Running the models	运行模型
+Choosing conceptually appropriate methods	选择在概念上合适的方法
+No data yet — upload a file or load the example data on the Import page.	尚无数据。请前往“导入”，上传文件或载入猫咪示例。
+Dataset restored to the original import.	数据已恢复为最初导入的版本。
+Please deal with missing values first.	请先处理缺失值。
+No missing values in this dataset. 🎉	这个数据集没有缺失值。🎉
+No numeric variables are available.	没有可用的数值变量。
+No data for this selection yet. Import data on the Import page; for the merged dataset, click 'Apply merging' on the Merge page.	当前选择没有数据。请在“导入”页面载入数据；若要使用合并结果，请先在“合并”页面应用合并结果。
+The optional VIM package is needed for kNN imputation.	kNN 插补需要安装可选的 VIM 包。
+Please select matching join keys.	请选择相互对应的关联键。
+Dataset 1 join keys are not valid.	数据集 1 的关联键无效。
+Dataset 2 join keys are not valid.	数据集 2 的关联键无效。
+Please select a valid join method.	请选择有效的关联方式。
+Please upload a valid file.	请上传有效文件。
+Please choose a CSV, XLS, or XLSX file.	请选择 CSV、XLS 或 XLSX 文件。
+The uploaded file has no columns.	上传的文件没有数据列。
+The uploaded file could not be read as a table.	无法以数据表的形式读取上传文件。
+Predict: is the higher percentage enough to judge overall performance?	先预测：仅凭较高的百分比，能判断整体服务表现吗？
+The two percentages describe different groups. Ask how people were selected for testing and whether those with results represent all ART patients. High coverage alone does not establish representativeness.	这两个百分比描述不同人群。请检查谁接受了检测，以及有结果的人能否代表所有 ART 患者。覆盖率高也不能单独证明样本具有代表性。
+Suppressed among those with results (S/T, %)	有结果者中的病毒抑制率（S/T，%）
+Result coverage among ART patients (T/A, %)	ART 患者的结果覆盖率（T/A，%）
+Case	案例
+Measure	指标
+Numerator	分子
+Denominator	分母
+Percent	百分比
+Diagnosed (D/L)	已诊断比例（D/L）
+ART among diagnosed (A/D)	已诊断者中接受 ART 的比例（A/D）
+Result coverage (T/A)	结果覆盖率（T/A）
+Suppression among results (S/T)	有结果者中的病毒抑制率（S/T）
+Living with HIV	HIV 感染者
+Diagnosed	已诊断
+On ART	接受 ART
+Usable result	有可用结果
+Suppressed	病毒已抑制
+People	人数
+District	地区
+Synthetic training counts	合成教学人数
+Imputing the synthetic cats	正在对合成猫咪数据进行插补
+Weight difference (kg) per cm of length	体长每增加 1 厘米的体重变化（千克）
+One model, different missing-data approaches	同一模型，不同缺失值处理方法
+Adjusted associations in the synthetic sample	合成样本中的调整后关联
+Odds ratio (ordinary 95% Wald CI)	优势比（常规 95% Wald 置信区间）
+Outcome: reported testing Yes vs No. Within-facility correlation is not accounted for.	结局：报告检测“是”与“否”。未考虑机构内相关性。
+Variable	变量
+Load or apply that dataset on the app's Import/Merge pages first.	请先在“导入”或“合并”页面载入或应用该数据集。
+There is no step to undo.	当前没有可以撤销的步骤。
+Choose a new, unused flag column name.	请输入尚未使用的新标记列名。
+Use a new output column; original fields are protected.	请输入新的输出列名，原字段受到保护。
+Choose source labels and a documented replacement.	请选择原标签，并输入有依据的替换值。
+Select at least one review flag.	请至少选择一个核查标记。
+Choose logical review flags.	请选择逻辑型核查标记。
+Choose a field for the category selection.	请选择用于类别筛选的字段。
+Load the Dataset B reference file with review flags first.	请先载入带核查标记的数据集 B 参考文件。
+Load the reference table first.	请先载入参考表。
+Select matching key columns.	请选择对应的键列。
+Choose a reported status field in Join and summarise.	请在“关联与汇总”中选择报告状态字段。
+Record the observation unit, sampling, measurement definitions, missing-value codes and provenance. The original cat example has no full collection protocol; do not infer representativeness.	请记录观测单位、抽样方法、测量定义、缺失编码和数据来源。猫咪示例没有完整的采集方案，请勿据此推断其代表性。
+Dataset A: each row is one fictional district-year. L = estimated people living with HIV; D = diagnosed; A = on ART; T = with a usable VL result; S = suppressed among T. See the bundled workbook's Codebook and Scenarios sheets. A is independent of B/C.	数据集 A：每行对应一个虚构地区和年份。L 为估计 HIV 感染人数，D 为已诊断人数，A 为接受 ART 人数，T 为有可用病毒载量结果人数，S 为 T 中病毒受到抑制的人数。参见工作簿的 Codebook 和 Scenarios 工作表。A 与 B/C 相互独立。
+Apply topics and restart	应用主题并重新开始
+Please keep at least one topic.	请至少保留一个主题。
+Quiz completed	测验已完成
+Purr-fect! You are ready to clean data like a pro. 🐱	答得真好！你已经可以熟练地清理数据了。🐱
+Great job — just a few whiskers away from perfect. 🐾	做得不错！再复习几题，就离满分不远了。🐾
+Good start. Review the Cleaning, Visualize, and AI pages and try again.	已经迈出了第一步。复习数据清理、可视化和 AI 页面，再试一次。
+Keep practising — the Background tabs on each page will help.	继续练习，可以先复习各页的“背景”内容。
+Correct!	答对了！
+Why?	为什么？
+Try again	再试一次
+Submit answer	提交答案
+Next question	下一题
+See my result	查看成绩
+Restart	重新开始
+Please choose an answer first.	请先选择一个答案。
+Copied!	已复制！
+No data available in table	表中暂无数据
+No file selected	未选择文件
+The teacher cat	猫咪老师
+The cataScience teacher cat	cataScience 的猫咪老师
+Two silver tabby cats, one sleepy and one alert	两只银虎斑猫，一只打盹，一只警觉
+Import, tidy, transform, visualize, model, communicate	导入、整理、转换、可视化、建模、结果沟通
+John Snow map of recorded cholera deaths and water pumps around Broad Street	约翰·斯诺地图：宽街附近记录的霍乱死亡病例与水泵位置
+Weight (kg)	体重（千克）
+Dashed line = mean, solid line = median	虚线表示均值，实线表示中位数
+Standard deviations from the mean	距均值的标准差数
+UHC Index (0–100)	UHC 指数（0–100）
+Mean of one sample	单次抽样的均值
+Count	计数
+Purring minutes per day	每日呼噜时长（分钟）
+UHC index — old method	UHC 指数（旧方法）
+UHC index — new method	UHC 指数（新方法）
+Points above the dashed line: new method estimates higher	虚线上方的点表示新方法的估计较高
+Cat length (cm)	猫咪体长（厘米）
+Cat weight (kg)	猫咪体重（千克）
+GDP per capita (US$, log scale)	人均 GDP（美元，对数刻度）
+UHC service coverage index (SDG 3.8.1)	UHC 服务覆盖指数（SDG 3.8.1）
+Mean:	均值：
+Median:	中位数：
+Quantity	统计量
+Value	数值
+Mean (not petted)	未抚摸组均值
+Mean (petted)	抚摸组均值
+Difference	差值
+95% CI	95% 置信区间
+p-value	p 值
+Mean difference (new − old)	平均差（新 − 旧）
+Estimate	估计值
+Term	模型项
+Slope (per 10× GDP)	斜率（GDP 每增加至 10 倍）
+p < 0.05: a difference this large would rarely happen by chance alone.	p < 0.05：若零假设成立，观察到这么大或更大差异的概率较低。
+p ≥ 0.05: this difference could easily arise by chance — we cannot conclude the groups differ.	p ≥ 0.05：这种差异可能来自抽样波动，证据不足以认为两组有差异。
+The two methods give systematically different values — switching methods changes the indicator, so a time series must not mix them.	这两种方法得到系统性不同的值。切换方法会改变指标估计，时间序列中应区分方法。
+No systematic difference between methods is detectable in these data.	这些数据未检出两种方法之间的系统性差异。
+The selected dataset has no rows. Review the sample filters.	当前样本没有记录，请检查筛选条件。
+No dataset is available.	没有可用的数据集。
+Missing values: %d cells, %d variables, %d incomplete rows.	缺失值：%d 个单元格，涉及 %d 个变量、%d 行记录。
+%d selected records · %d variables · %d recorded steps	已选择 %d 条记录 · %d 个变量 · 已记录 %d 个步骤
+About %.1f%% of values fall within %d SD of the mean.	约 %.1f%% 的值位于均值上下 %d 个标准差以内。
+Sampling distribution of the mean (n = %d per sample)	样本均值的抽样分布（每次抽取 %d 个观测）
+weight = %.2f + %.3f × length   (R² = %.2f)	体重 = %.2f + %.3f × 体长（R² = %.2f）
+Runs in your browser	在浏览器中运行
+Classic app	经典版
+Workshop app	扩展培训版
+User guide	使用指南
+kNN imputation is available in the R app.	kNN 插补可在本地 R 版中使用。

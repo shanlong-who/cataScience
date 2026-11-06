@@ -2,8 +2,9 @@
 \name{run_cata}
 \alias{run_cata}
 \title{启动经典版“数据科学之旅”培训应用}
-\usage{run_cata(...)}
-\arguments{\item{...}{传给 \code{\link[shiny:runApp]{shiny::runApp()}} 的参数，例如 \code{port} 或 \code{launch.browser}。}}
+\usage{run_cata(..., language = c("auto", "en", "zh"))}
+\arguments{\item{...}{传给 \code{\link[shiny:runApp]{shiny::runApp()}} 的参数，例如 \code{port} 或 \code{launch.browser}。}
+\item{language}{\code{"zh"} 为简体中文，\code{"en"} 为英文。默认的 \code{"auto"} 优先采用保存的选择，再依据浏览器语言。可在顶部菜单切换。}}
 \value{无返回值，调用的作用是启动应用。应用运行期间会占用 R 会话。}
 \description{启动包内的交互式培训应用，学习导入、清理、可视化和理解数据，以及安全地与 AI 助手协作。应用在默认浏览器中打开。}
 \examples{

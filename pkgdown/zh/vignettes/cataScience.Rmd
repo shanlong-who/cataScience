@@ -24,7 +24,7 @@ library(cataScience)
 
 ## 选择在线版或本地版
 
-无需安装 R，可直接打开[扩展培训版](https://shanlong-who.github.io/cata/)或[经典版](https://shanlong-who.github.io/cata/classic/)。首次访问会下载运行环境和 R 包，请保持页面打开并查看进度。
+无需安装 R，可直接打开中文版的[扩展培训版](https://shanlong-who.github.io/cata/?lang=zh)或[经典版](https://shanlong-who.github.io/cata/classic/?lang=zh)。首次访问会下载运行环境和 R 包，请保持页面打开并查看进度。进入课堂后，点击顶部的 **English** 或 **中文** 即可切换语言。
 
 如需稳定的离线课堂环境，可在 RStudio 中使用本地包。安装完成后，内置课程和数据练习无需联网；与外部 AI 助手互动的演示仍需网络和相应账户。
 

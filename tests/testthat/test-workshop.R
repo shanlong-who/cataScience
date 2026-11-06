@@ -4,10 +4,25 @@ test_that("both launchers pass options without leaking workshop mode", {
   testthat::local_mocked_bindings(run_cata = function(...) {
     called <<- list(workshop = getOption("cataScience.workshop"), args = list(...))
   })
-  run_catas(port = 1234, launch.browser = FALSE)
+  run_catas(port = 1234, launch.browser = FALSE, language = "zh")
   expect_true(called$workshop)
   expect_equal(called$args$port, 1234)
+  expect_equal(called$args$language, "zh")
   expect_identical(getOption("cataScience.workshop"), old)
+})
+
+test_that("switching the local language preserves records and selects the matching codebook", {
+  env <- cata_app_env(c("app-function.R", "mod-workflow.R"))
+  shiny::testServer(env$workflowServer, args = list(datasets = function() list()), {
+    session$setInputs(example = "art", load = 1L)
+    original <- state$data
+    session$rootScope()$setInputs(cata_language = "zh")
+    expect_match(output$dimensions, "604")
+    expect_match(output$codebook$html, "人群与观测单位", fixed = TRUE)
+    session$rootScope()$setInputs(cata_language = "en")
+    expect_match(output$codebook$html, "Population and observation unit", fixed = TRUE)
+    expect_identical(state$data, original)
+  })
 })
 
 test_that("extended UI builds and VIM remains optional", {

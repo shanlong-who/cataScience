@@ -9,11 +9,11 @@
 
 cataScience 最初服务于 WHO 数据培训，包括 Global Health Learning Center 和国家办公室培训。课程内容也适合一般的数据科学入门、自学，以及在工作中开始使用 AI 助手的人。
 
-**在线体验：[扩展培训版](https://shanlong-who.github.io/cata/) · [经典版](https://shanlong-who.github.io/cata/classic/)**
+**在线体验：[扩展培训版](https://shanlong-who.github.io/cata/?lang=zh) · [经典版](https://shanlong-who.github.io/cata/classic/?lang=zh)**
 
 在线版使用 Shinylive，在浏览器中运行 R，无需安装 R。首次访问需要下载运行环境和所需 R 包，启动页会显示进度。网络较慢时请提前加载；本地 R 版适合需要离线使用的培训。在线版不提供 VIM 的 kNN 插补，本地版可安装 VIM 后启用。
 
-本页为中文文档，应用界面、R 函数名、参数和代码示例保留英文，便于与课程和原始文档对照。顶部的 **English** 可切换到当前页面的英文版。
+上面的在线链接直接打开中文课堂。培训中可以随时点击应用顶部的 **English** 或 **中文** 切换语言，已加载的数据和练习进度都会保留。本站顶部的 **English** 可切换到当前页面的英文文档。本地 GitHub 版也可用 `run_cata(language = "zh")` 或 `run_catas(language = "zh")` 直接进入中文界面。
 
 ## 使用指南
 

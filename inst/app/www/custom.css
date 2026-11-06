@@ -344,3 +344,9 @@
 .workshop-hero h1 { color: #00547f; font-weight: 700; }
 .shiny-plot-output { max-width: 100%; }
 @media (max-width: 700px) { .workshop-hero { display: block; } .workshop-hero > img { display: none; } }
+.cata-language-switch { white-space: nowrap; font-weight: 600; }
+[lang="zh-CN"] body { font-family: system-ui, "Microsoft YaHei", "PingFang SC", sans-serif; }
+@media (min-width: 992px) and (max-width: 1399px) {
+  .navbar .navbar-nav { column-gap: .4rem; }
+  .cata-contact-label { display: none; }
+}

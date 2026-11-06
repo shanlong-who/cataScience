@@ -4,11 +4,15 @@
 \alias{run_cata}
 \title{Launch the "A Journey of Data Science" training app}
 \usage{
-run_cata(...)
+run_cata(..., language = c("auto", "en", "zh"))
 }
 \arguments{
 \item{...}{Passed on to \code{\link[shiny:runApp]{shiny::runApp()}}, for example \code{port} or
 \code{launch.browser}.}
+
+\item{language}{Interface language: \code{"zh"} (Simplified Chinese), \code{"en"}
+(English), or \code{"auto"} (saved browser preference, then browser language).
+Participants can switch languages in the navigation bar during a session.}
 }
 \value{
 No return value; called for the side effect of launching the app.

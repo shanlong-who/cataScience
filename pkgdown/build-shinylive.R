@@ -97,8 +97,12 @@ for (mode in c("workshop", "classic")) {
   switch.url <- if (mode == "workshop") "https://shanlong-who.github.io/cata/classic/" else "https://shanlong-who.github.io/cata/"
   switch.label <- if (mode == "workshop") "Classic app" else "Workshop app"
   extra <- c(
-    sprintf('ui <- htmltools::tagAppendChild(ui, shiny::tags$footer(class = "browser-edition", shiny::tags$small("cataScience %s | Runs in your browser | "), shiny::tags$a("%s", href = "%s", target = "_top"), " | ", shiny::tags$a("Guide", href = "https://shanlong-who.github.io/cataScience/", target = "_blank")))',
-      version, switch.label, switch.url)
+    'ui <- htmltools::tagAppendChild(ui, shiny::tags$footer(class = "browser-edition",',
+    sprintf('  shiny::tags$small("cataScience %s | ", shiny::tags$span("Runs in your browser"), " | "),', version),
+    sprintf('  shiny::tags$a("%s", id = "cata-browser-edition", href = "%s", target = "_top"), " | ",', switch.label, switch.url),
+    '  shiny::tags$a("User guide", id = "cata-browser-guide", href = "https://shanlong-who.github.io/cataScience/",',
+    '    `data-en-href` = "https://shanlong-who.github.io/cataScience/",',
+    '    `data-zh-href` = "https://shanlong-who.github.io/cataScience/zh/", target = "_blank")))'
   )
   app <- append(app, extra, after = length(app) - 1L)
   writeLines(c(bootstrap, app), file.path(app.dir, "app.R"), useBytes = TRUE)
