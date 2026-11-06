@@ -7,7 +7,7 @@ assistants safely. The app opens in your default browser.
 ## Usage
 
 ``` r
-run_cata(...)
+run_cata(..., language = c("auto", "en", "zh"))
 ```
 
 ## Arguments
@@ -17,6 +17,13 @@ run_cata(...)
   Passed on to
   [`shiny::runApp()`](https://rdrr.io/pkg/shiny/man/runApp.html), for
   example `port` or `launch.browser`.
+
+- language:
+
+  Interface language: `"zh"` (Simplified Chinese), `"en"` (English), or
+  `"auto"` (saved browser preference, then browser language).
+  Participants can switch languages in the navigation bar during a
+  session.
 
 ## Value
 

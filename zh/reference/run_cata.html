@@ -77,7 +77,7 @@
     <div class="section level2">
     <h2 id="ref-usage">用法<a class="anchor" aria-label="anchor" href="#ref-usage"></a>
 </h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_cata</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_cata</span><span class="op">(</span><span class="va">...</span>, language <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"en"</span>, <span class="st">"zh"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -87,6 +87,10 @@
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a>
 </dt>
 <dd><p>传给 <code><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">shiny::runApp()</a></code> 的参数，例如 <code>port</code> 或 <code>launch.browser</code>。</p></dd>
+
+<dt id="arg-language">language<a class="anchor" aria-label="anchor" href="#arg-language"></a>
+</dt>
+<dd><p><code>"zh"</code> 为简体中文，<code>"en"</code> 为英文。默认的 <code>"auto"</code> 优先采用保存的选择，再依据浏览器语言。可在顶部菜单切换。</p></dd>
 </dl>
 </div>
     <div class="section level2">

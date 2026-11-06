@@ -2,6 +2,8 @@
 
 ## cataScience 2.2.0
 
+CRAN release: 2026-11-05
+
 - Added a shared two-cat navbar icon and favicon based on the
   maintainer’s cats, with a larger circular mark for both app launchers.
   The website uses the same cat favicon and retains its original hex

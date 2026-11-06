@@ -8,7 +8,7 @@ work offline.
 ## Usage
 
 ``` r
-run_catas(...)
+run_catas(..., language = c("auto", "en", "zh"))
 ```
 
 ## Arguments
@@ -17,6 +17,13 @@ run_catas(...)
 
   Arguments passed to
   [`shiny::runApp()`](https://rdrr.io/pkg/shiny/man/runApp.html).
+
+- language:
+
+  Interface language: `"zh"` (Simplified Chinese), `"en"` (English), or
+  `"auto"` (saved browser preference, then browser language).
+  Participants can switch languages in the navigation bar during a
+  session.
 
 ## Value
 

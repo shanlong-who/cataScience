@@ -61,6 +61,13 @@ entry point above:
 run_catas()
 ```
 
+Both online apps and the GitHub package support English and Simplified
+Chinese. Select **中文** or **English** in the navigation bar to switch
+during a lesson. To open directly in Chinese, use
+`run_cata(language = "zh")` or `run_catas(language = "zh")`. The default
+uses a saved browser preference, then the browser language. The language
+catalogue works offline.
+
 The extended app starts with **Why data matters** and adds one connected
 **Workflow**: understand the data, review problems, join and summarise,
 visualise, then communicate. Actions preserve an input snapshot and a

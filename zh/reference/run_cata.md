@@ -6,7 +6,7 @@ AI 助手协作。应用在默认浏览器中打开。
 ## Usage
 
 ``` r
-run_cata(...)
+run_cata(..., language = c("auto", "en", "zh"))
 ```
 
 ## Arguments
@@ -15,6 +15,11 @@ run_cata(...)
 
   传给 [`shiny::runApp()`](https://rdrr.io/pkg/shiny/man/runApp.html)
   的参数，例如 `port` 或 `launch.browser`。
+
+- language:
+
+  `"zh"` 为简体中文，`"en"` 为英文。默认的 `"auto"`
+  优先采用保存的选择，再依据浏览器语言。可在顶部菜单切换。
 
 ## Value
 

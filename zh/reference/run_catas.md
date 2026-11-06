@@ -6,7 +6,7 @@ dashboard 导出。本地版核心活动可离线运行。
 ## Usage
 
 ``` r
-run_catas(...)
+run_catas(..., language = c("auto", "en", "zh"))
 ```
 
 ## Arguments
@@ -15,6 +15,11 @@ run_catas(...)
 
   传给 [`shiny::runApp()`](https://rdrr.io/pkg/shiny/man/runApp.html)
   的参数。
+
+- language:
+
+  `"zh"` 为简体中文，`"en"` 为英文。默认的 `"auto"`
+  优先采用保存的选择，再依据浏览器语言。可在顶部菜单切换。
 
 ## Value
 
