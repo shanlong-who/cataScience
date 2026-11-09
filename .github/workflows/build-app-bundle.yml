@@ -71,10 +71,35 @@ jobs:
           ref: "${{ github.event.inputs.tag || github.event.release.tag_name }}"
           fetch-depth: 0
 
-      - uses: r-lib/actions/setup-r@v2
+      # R itself is downloaded from an external CDN (Posit / mac.r-project.org).
+      # Those endpoints intermittently answer 504; a single attempt turns a
+      # transient gateway timeout into a failed release build, so retry once.
+      - id: setup-r
+        uses: r-lib/actions/setup-r@v2
+        continue-on-error: true
         with:
           r-version: ${{ env.R_VERSION }}
           use-public-rspm: false
+
+      - name: Wait before retrying R setup
+        if: steps.setup-r.outcome == 'failure'
+        shell: bash
+        run: sleep 30
+
+      - id: setup-r-retry
+        if: steps.setup-r.outcome == 'failure'
+        uses: r-lib/actions/setup-r@v2
+        continue-on-error: true
+        with:
+          r-version: ${{ env.R_VERSION }}
+          use-public-rspm: false
+
+      - name: Fail with a clear message if R could not be installed
+        if: steps.setup-r.outcome == 'failure' && steps.setup-r-retry.outcome == 'failure'
+        shell: bash
+        run: |
+          echo "::error::R $R_VERSION could not be installed after two attempts (the download CDN returned 5xx). Re-run the failed jobs."
+          exit 1
 
       - name: Install build helpers
         shell: Rscript {0}
