@@ -194,12 +194,46 @@ jobs:
 
           snap <- Sys.getenv("CRAN_SNAPSHOT")
           cran <- if (nzchar(snap)) sprintf("https://packagemanager.posit.co/cran/%s", snap) else "https://cloud.r-project.org"
-          repos <- c(CRAN = cran)
+          fallback <- "https://cloud.r-project.org"
+          fetch_index <- function(url) {
+            for (attempt in 1:3) {
+              db <- tryCatch(
+                suppressWarnings(available.packages(repos = c(CRAN = url), type = "source")),
+                error = function(e) {
+                  cat("::warning::index fetch error (", url, ", attempt ", attempt, "): ",
+                      conditionMessage(e), "\n", sep = "")
+                  NULL
+                }
+              )
+              rows <- if (is.null(db)) 0L else nrow(db)
+              cat("index rows:", rows, "from", url, "(attempt", attempt, ")\n")
+              if (rows > 5000L) return(list(db = db, url = url))
+              Sys.sleep(5 * attempt)
+            }
+            list(db = NULL, url = url)
+          }
+          idx <- fetch_index(cran)
+          if (is.null(idx$db) && !identical(cran, fallback)) {
+            cat("primary index unusable; falling back to", fallback, "\n")
+            idx <- fetch_index(fallback)
+          }
+          if (is.null(idx$db)) {
+            stop("repository index unavailable from both ", cran, " and ", fallback,
+                 " (0 usable rows); this is a mirror/network failure, not a dependency problem")
+          }
+          db <- idx$db
+          repos <- c(CRAN = idx$url)
           options(repos = repos)
-          cat("CRAN snapshot:", cran, "\n")
-          db <- available.packages(repos = repos, type = "source")
+          cat("CRAN index:", idx$url, "| packages:", nrow(db), "\n")
           dropped <- setdiff(seed, rownames(db))
-          if (length(dropped)) stop("unresolved required dependencies: ", paste(dropped, collapse = ", "))
+          if (length(dropped)) {
+            cat("seed (", length(seed), "):", paste(sort(seed), collapse = ", "), "\n")
+            cat("::error::unresolved required dependencies (", length(dropped), " of ",
+                length(seed), ", index rows = ", nrow(db), "): ",
+                paste(dropped, collapse = ", "), "\n", sep = "")
+            stop("unresolved required dependencies: ", length(dropped), " of ", length(seed),
+                 " seeds are not in the index (metadata rows = ", nrow(db), "; see seed dump above)")
+          }
           seed <- intersect(seed, rownames(db))
           deps <- unlist(tools::package_dependencies(seed, db = db, recursive = TRUE), use.names = FALSE)
           closure_all <- unique(c(seed, deps[!is.na(deps)]))
