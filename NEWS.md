@@ -1,4 +1,4 @@
-# cataScience (development version)
+# cataScience 3.0.0
 
 - Verify individual cells against source records in Missing data or Outliers. Original values and the source correction history are available throughout the session. Applied joins and charts follow the analysis values.
 - Compare counts with group percentages and mean weights with individual cats. Sort bar categories, export a chart with a finding and limitation to HTML, and try four practical AI tasks.

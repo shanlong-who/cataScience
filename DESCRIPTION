@@ -1,6 +1,6 @@
 Package: cataScience
 Title: Interactive Training App for Data Science and AI Skills
-Version: 2.2.0.9000
+Version: 3.0.0
 Authors@R: person(given = "Shanlong",
                   family = "Ding",
                   role = c("aut", "cre"),
