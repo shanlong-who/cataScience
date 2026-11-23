@@ -149,7 +149,7 @@ file.exists(example.file)
 ``` r
 
 packageVersion("cataScience")
-#> [1] '2.2.0.9000'
+#> [1] '3.0.0'
 ```
 
 如遇问题，请在 [cataScience issue

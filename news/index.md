@@ -1,6 +1,6 @@
 # Changelog
 
-## cataScience (development version)
+## cataScience 3.0.0
 
 - Verify individual cells against source records in Missing data or
   Outliers. Original values and the source correction history are

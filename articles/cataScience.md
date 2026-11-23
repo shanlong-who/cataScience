@@ -167,7 +167,7 @@ assistant.
 ``` r
 
 packageVersion("cataScience")
-#> [1] '2.2.0.9000'
+#> [1] '3.0.0'
 ```
 
 Report problems at the [cataScience issue
