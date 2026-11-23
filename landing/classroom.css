@@ -24,6 +24,9 @@ h1 em{display:block;color:var(--copper);font-weight:400}
 .enter:hover{background:#0d433c}
 .enter span{font-size:1.35rem;line-height:1}
 .browser-note{margin-top:.65rem;font-size:.86rem;color:var(--muted)}
+.package-badges{display:flex;flex-wrap:wrap;align-items:center;gap:.25rem .5rem;margin-top:1rem}
+.package-badges a{display:inline-flex;align-items:center;min-height:26px}
+.package-badges img{display:block;height:20px;width:auto}
 .portrait{margin-inline:auto;width:100%;max-width:455px;background:#e6ecdf;border:1px solid #b9c4b5;padding:clamp(.75rem,1.65vw,1.35rem);border-radius:4px;transform:rotate(1.3deg);box-shadow:5px 6px 0 #dbdfd3}
 .portrait-art{display:grid;place-items:center;background:#fcfaf0;aspect-ratio:1.52;border:1px solid #c9cfbe;overflow:hidden}
 .portrait img{display:block;height:100%;width:100%;object-fit:contain;mix-blend-mode:multiply;min-height:0}
