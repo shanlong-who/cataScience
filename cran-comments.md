@@ -1,30 +1,25 @@
-This updates cataScience from 2.1.4 to 2.2.0.
+This updates cataScience 2.2.0 to 3.0.0 after field use in a training workshop.
 
-The update adds an extended workshop launcher, run_catas(), and reusable
-functions for data-quality review, joins, proportions, charts and report
-exports. The original run_cata() entry point is retained. New teaching
-examples cover public health, multiple imputation and a connected analysis
-workflow. Workshop datasets are explicitly documented as synthetic.
+The major version marks the removal of two exported functions. Users of
+run_catas() can switch to run_cata() for the English or Chinese classroom.
+The workshop-specific cata_lao_analysis() function and its HIV examples
+have been retired. These changes are described in NEWS.
 
-The rio dependency was removed. VIM is now optional for kNN imputation,
-and DSIR remains optional for its plot theme. The maintainer, email address
-and MIT + file LICENSE licence are unchanged.
+The classroom now lets learners verify and correct individual values while
+preserving the original data. Joins, charts and exports use the analysis
+values. The two original cat workbooks are included without changes.
 
-On 5 November 2026, R CMD check --as-cran was run on the exact source
-tarball to be submitted:
-- R 4.6.2, Ubuntu 26.04.1: 0 errors, 0 warnings, 0 notes.
-- R-devel, Ubuntu 26.04.1: 0 errors, 0 warnings, 0 notes.
+The same source archive was checked with R CMD check --as-cran on
+Ubuntu 26.04.1 LTS on 23 November 2026:
+- R 4.6.2: 0 errors, 0 warnings, 0 notes.
+- R-devel (r90959): 0 errors, 0 warnings, 0 notes.
 
-Both checks include CRAN incoming checks, tests, examples (including
---run-donttest), rebuilding all three vignettes, and PDF and HTML reference
-manuals. The same source commit also passes the repository's Windows,
-macOS, Linux release, R-devel and old-release checks.
+Both runs included incoming checks, examples, tests, vignette rebuilds,
+and the PDF and HTML manuals. The same source commit also passed the
+repository checks on Windows, macOS and Linux (release, devel and oldrel-1
+on Linux). The CRAN source index on 23 November 2026 listed no reverse
+dependencies in Depends, Imports, LinkingTo, Suggests or Enhances.
 
-Source commit: fb06eb99c30c786427929edf52d46183340f1d7c.
-Source archive: 6,570,896 bytes. Small app and vignette icons use resized
-copies; full-resolution artwork remains in the source repository.
-
-The examples and vignettes use bundled data without network access or
-starting an interactive Shiny session. No reverse dependencies, including
-reverse Suggests, were found in the current CRAN package index on
-5 November 2026. The current CRAN checks for version 2.1.4 are all OK.
+Source commit: eeb63348250c4d0d237bf0ef83c42778fe667791.
+Source archive: 6,412,259 bytes.
+SHA-256: 1c8faeeb67797ef341704a12a26393090dc93d7a8c5fe2b059d1a59a30f1e22d.
