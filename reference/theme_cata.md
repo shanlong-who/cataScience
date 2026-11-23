@@ -26,7 +26,7 @@ A ggplot2 theme.
 
 ``` r
 theme_cata()
-#> <theme> List of 144
+#> <theme>List of 144
 #>  $ line                            : <ggplot2::element_line>
 #>   ..@ colour       : chr "black"
 #>   ..@ linewidth    : num 0.591
@@ -55,7 +55,8 @@ theme_cata()
 #>   ..@ vjust        : num 0.5
 #>   ..@ angle        : num 0
 #>   ..@ lineheight   : num 0.9
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 0
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 0points 0points 0points 0points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : logi FALSE
 #>   ..@ inherit.blank: logi TRUE
 #>  $ title                           : <ggplot2::element_text>
@@ -103,7 +104,8 @@ theme_cata()
 #>   ..@ fill       : NULL
 #>  $ spacing                         : 'simpleUnit' num 6.5points
 #>   ..- attr(*, "unit")= int 8
-#>  $ margins                         : <ggplot2::margin> num [1:4] 6.5 6.5 6.5 6.5
+#>  $ margins                         : <ggplot2::margin> 'simpleUnit' num [1:4] 6.5points 6.5points 6.5points 6.5points
+#>  .. - attr(*, "unit")= int 8
 #>  $ aspect.ratio                    : NULL
 #>  $ axis.title                      : NULL
 #>  $ axis.title.x                    : <ggplot2::element_text>
@@ -118,7 +120,8 @@ theme_cata()
 #>   ..@ vjust        : num 1
 #>   ..@ angle        : NULL
 #>   ..@ lineheight   : NULL
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 3.25 0 0 0
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 3.25points 0points 0points 0points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : NULL
 #>   ..@ inherit.blank: logi TRUE
 #>  $ axis.title.x.top                : <ggplot2::element_text>
@@ -133,7 +136,8 @@ theme_cata()
 #>   ..@ vjust        : num 0
 #>   ..@ angle        : NULL
 #>   ..@ lineheight   : NULL
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 0 0 3.25 0
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 0points 0points 3.25points 0points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : NULL
 #>   ..@ inherit.blank: logi TRUE
 #>  $ axis.title.x.bottom             : NULL
@@ -149,7 +153,8 @@ theme_cata()
 #>   ..@ vjust        : num 1
 #>   ..@ angle        : num 90
 #>   ..@ lineheight   : NULL
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 0 3.25 0 0
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 0points 3.25points 0points 0points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : NULL
 #>   ..@ inherit.blank: logi TRUE
 #>  $ axis.title.y.left               : NULL
@@ -165,7 +170,8 @@ theme_cata()
 #>   ..@ vjust        : num 1
 #>   ..@ angle        : num -90
 #>   ..@ lineheight   : NULL
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 3.25
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 0points 0points 0points 3.25points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : NULL
 #>   ..@ inherit.blank: logi TRUE
 #>  $ axis.text                       : <ggplot2::element_text>
@@ -195,7 +201,8 @@ theme_cata()
 #>   ..@ vjust        : num 1
 #>   ..@ angle        : NULL
 #>   ..@ lineheight   : NULL
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 2.6 0 0 0
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 2.6points 0points 0points 0points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : NULL
 #>   ..@ inherit.blank: logi TRUE
 #>  $ axis.text.x.top                 : <ggplot2::element_text>
@@ -210,7 +217,8 @@ theme_cata()
 #>   ..@ vjust        : NULL
 #>   ..@ angle        : NULL
 #>   ..@ lineheight   : NULL
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 0 0 5.85 0
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 0points 0points 5.85points 0points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : NULL
 #>   ..@ inherit.blank: logi TRUE
 #>  $ axis.text.x.bottom              : <ggplot2::element_text>
@@ -225,7 +233,8 @@ theme_cata()
 #>   ..@ vjust        : NULL
 #>   ..@ angle        : NULL
 #>   ..@ lineheight   : NULL
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 5.85 0 0 0
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 5.85points 0points 0points 0points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : NULL
 #>   ..@ inherit.blank: logi TRUE
 #>  $ axis.text.y                     : <ggplot2::element_text>
@@ -240,7 +249,8 @@ theme_cata()
 #>   ..@ vjust        : NULL
 #>   ..@ angle        : NULL
 #>   ..@ lineheight   : NULL
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 0 2.6 0 0
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 0points 2.6points 0points 0points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : NULL
 #>   ..@ inherit.blank: logi TRUE
 #>  $ axis.text.y.left                : <ggplot2::element_text>
@@ -255,7 +265,8 @@ theme_cata()
 #>   ..@ vjust        : NULL
 #>   ..@ angle        : NULL
 #>   ..@ lineheight   : NULL
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 0 5.85 0 0
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 0points 5.85points 0points 0points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : NULL
 #>   ..@ inherit.blank: logi TRUE
 #>  $ axis.text.y.right               : <ggplot2::element_text>
@@ -270,7 +281,8 @@ theme_cata()
 #>   ..@ vjust        : NULL
 #>   ..@ angle        : NULL
 #>   ..@ lineheight   : NULL
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 5.85
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 0points 0points 0points 5.85points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : NULL
 #>   ..@ inherit.blank: logi TRUE
 #>  $ axis.text.theta                 : NULL
@@ -286,7 +298,8 @@ theme_cata()
 #>   ..@ vjust        : NULL
 #>   ..@ angle        : NULL
 #>   ..@ lineheight   : NULL
-#>   ..@ margin       : <ggplot2::margin> num [1:4] 0 2.6 0 2.6
+#>   ..@ margin       : <ggplot2::margin> 'simpleUnit' num [1:4] 0points 2.6points 0points 2.6points
+#>  .. .. - attr(*, "unit")= int 8
 #>   ..@ debug        : NULL
 #>   ..@ inherit.blank: logi TRUE
 #>  $ axis.ticks                      : <ggplot2::element_blank>
@@ -392,6 +405,7 @@ theme_cata()
 #>  $ legend.justification.right      : NULL
 #>  $ legend.justification.inside     : NULL
 #>   [list output truncated]
+#>  - attr(*, "class")= chr "gg"
 #>  @ complete: logi TRUE
 #>  @ validate: logi TRUE
 ```

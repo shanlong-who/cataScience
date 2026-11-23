@@ -1,5 +1,24 @@
 # Changelog
 
+## cataScience (development version)
+
+- Verify individual cells against source records in Missing data or
+  Outliers. Original values and the source correction history are
+  available throughout the session. Applied joins and charts follow the
+  analysis values.
+- Compare counts with group percentages and mean weights with individual
+  cats. Sort bar categories, export a chart with a finding and
+  limitation to HTML, and try four practical AI tasks.
+- Use
+  [`run_cata()`](https://shanlong-who.github.io/cataScience/reference/run_cata.md)
+  for the English and Chinese cat classroom. Scripts using `run_catas()`
+  should switch to
+  [`run_cata()`](https://shanlong-who.github.io/cataScience/reference/run_cata.md).
+- Retired `cata_lao_analysis()`, the Lao HIV example datasets and the
+  trainer manual. The two original cat workbooks are unchanged.
+- Compare the four joins with two independent two-row tables in Cleaning
+  \> Merge \> Methodology.
+
 ## cataScience 2.2.0
 
 CRAN release: 2026-11-05
@@ -8,9 +27,7 @@ CRAN release: 2026-11-05
   maintainer’s cats, with a larger circular mark for both app launchers.
   The website uses the same cat favicon and retains its original hex
   logo.
-- Added
-  [`run_catas()`](https://shanlong-who.github.io/cataScience/reference/run_catas.md)
-  for an extended workshop;
+- Added `run_catas()` for an extended workshop;
   [`run_cata()`](https://shanlong-who.github.io/cataScience/reference/run_cata.md)
   remains the original entry point. The workflow connects review,
   audited joins, explicit denominators, charts and communication, with

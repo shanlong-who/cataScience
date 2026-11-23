@@ -268,6 +268,5 @@ topics and restart**. Use the answer explanations to revisit a decision,
 rather than treating the score as the only learning outcome.
 
 For a longer session, continue to Statistics or the AI-assisted analysis
-pages. See [Planning a data science and AI
-training](https://shanlong-who.github.io/cataScience/articles/training-guide.md)
-for agendas and a critique activity.
+pages. Open the critique checklist in AI-assisted analysis to review a
+result.

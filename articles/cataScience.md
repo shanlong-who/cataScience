@@ -49,13 +49,8 @@ demonstrations with an external AI assistant need internet access and an
 account with that service.
 
 The documentation website contains guides and the function reference.
-You can also use the [online workshop
-app](https://shanlong-who.github.io/cata/) or [online classic
-app](https://shanlong-who.github.io/cata/classic/) without installing R.
-The first visit downloads the runtime and packages; the startup page
-shows progress and offers retry if a download fails. For the extended
-workshop in a local R session, use
-[`run_catas()`](https://shanlong-who.github.io/cataScience/reference/run_catas.md).
+The [online classroom](https://shanlong-who.github.io/cata/) runs in
+your browser. The first visit downloads the R runtime and packages.
 
 The R console stays busy while the app runs. Use RStudio’s Stop button
 or press Escape in the console to stop it. Closing the browser tab may
@@ -101,11 +96,10 @@ for a complete lab with questions and reproducible R examples.
 | Cleaning → Outliers | Inspect the IQR rule; compare removal and winsorizing |
 | Cleaning → Text | Select character variables and standardize letter case |
 | Cleaning → Merge | Choose matching keys and a left, right, inner or full join |
-| Visualize | Bar, histogram, density, line, pie, scatter and box plots, with grouping and layout options |
+| Visualize | Seven chart types, category sorting, two cat-chart comparisons and a one-page HTML report |
 | Statistics | Describing data, the normal distribution, t-tests and regression |
-| AI | Prompting levels, a prompt gallery, AI-assisted analysis, a methods case study and safety |
+| AI | Prompting levels, four practical tasks, AI-assisted analysis, a methods case study and safety |
 | Quiz | Topic filters, explanations and a final exercise |
-| Training | The trainer playbook and image credits |
 
 The **Background**, **Type**, **Methodology** and **Principles** tabs
 provide short explanations alongside the hands-on pages. You can return
@@ -135,24 +129,30 @@ file.exists(example_file)
 #> [1] TRUE
 ```
 
-Use the bundled cat data for the first cleaning exercise. It lets
-learners focus on data decisions before moving to indicator
-interpretation.
+Load both cat tables. Under **Cleaning → Outliers → Dataset 1 → Verify a
+source record**, check Trevor’s length and Stanley’s weight against the
+café records. Enter the verified value and identify the source. The same
+editor under **Missing data** accepts a missing measurement when a
+source confirms it. The original import and correction history remain
+available during the session.
+
+Join the tables by `id` and apply the join. In **Visualize → Compare
+charts**, compare counts with group percentages or mean weights with
+individual cats. Later corrections also update the applied join and its
+charts. Open **Communicate your finding** beneath a chart, enter one
+finding and one limitation, then download the self-contained HTML page.
 
 ## Use the AI pages
 
-Start with **AI → Prompting levels**, then adapt one prompt from
-**Prompt gallery**. Give the assistant a clear task, relevant context,
-an expected output and criteria for checking it.
+Start with **AI → Prompting levels**, then try one of the **Four AI
+tasks**. Give the assistant a clear task, relevant context, an expected
+output and criteria for checking it.
 
 Use **AI-assisted analysis** to review data and claims. The **When AI
 gets it wrong** case study shows why the current indicator methodology
 must be checked against its source. The app presents teaching material;
 it does not call an AI service or send your uploaded data to an AI
 assistant.
-
-For a facilitated session, see [Planning a data science and AI
-training](https://shanlong-who.github.io/cataScience/articles/training-guide.md).
 
 ## Common questions
 
@@ -167,7 +167,7 @@ training](https://shanlong-who.github.io/cataScience/articles/training-guide.md)
 ``` r
 
 packageVersion("cataScience")
-#> [1] '2.2.0'
+#> [1] '2.2.0.9000'
 ```
 
 Report problems at the [cataScience issue

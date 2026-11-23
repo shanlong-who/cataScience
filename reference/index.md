@@ -6,8 +6,6 @@ Open the bundled training app in a local R session.
 
 - [`run_cata()`](https://shanlong-who.github.io/cataScience/reference/run_cata.md)
   : Launch the "A Journey of Data Science" training app
-- [`run_catas()`](https://shanlong-who.github.io/cataScience/reference/run_catas.md)
-  : Launch the extended cataScience workshop
 
 ## Review and prepare data
 
@@ -32,8 +30,6 @@ Open the bundled training app in a local R session.
   : Calculate proportions with explicit denominators
 - [`cata_count_status()`](https://shanlong-who.github.io/cataScience/reference/cata_count_status.md)
   : Summarise a reported binary status with unknowns kept visible
-- [`cata_lao_analysis()`](https://shanlong-who.github.io/cataScience/reference/cata_lao_analysis.md)
-  : Reproduce the synthetic Lao workshop analysis
 - [`cata_mice_demo()`](https://shanlong-who.github.io/cataScience/reference/cata_mice_demo.md)
   : Explore multiple imputation using synthetic cats
 
