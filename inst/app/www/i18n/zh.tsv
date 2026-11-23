@@ -1365,181 +1365,23 @@ Visualize 2021	绘制 2021 年图表
 — create a plot showing the indicator values for all WPRO countries in the year 2021.	：显示区域内各国 2021 年的指标值。
 Trends over time	时间趋势
 — group the data by year, calculate the annual mean for WPRO countries, and create a time series plot.	：按年份分组，计算区域内各国的年度均值，并绘制时间序列图。
-Training playbook: build a session from this app	培训者手册：用本应用安排课程
-Data-quality lab script (20-30 minutes)	数据质量实验脚本（20–30 分钟）
-AI-generated analysis critique checklist	AI 分析审阅清单
-Dataset recommendation	数据集建议
-Workflow	工作流程
 Multiple imputation	多重插补
-Public health example	公共卫生示例
-Why data matters	数据为什么重要
-Ask a question. Examine the evidence. Explain what should happen next.	提出问题，查看证据，说明下一步行动。
-Keep your curiosity: the cats are still here. This workshop connects the data workflow to public health decisions.	继续和猫咪一起探索，在这次培训中用数据回答公共卫生问题。
-Predict, then reveal	先预测，再揭晓
-John Snow	约翰·斯诺
-Care cascade	服务级联
-A figure for the decision-maker	给决策者看的图
-Course route	课程路线
-Which result needs a closer look?	哪项结果需要进一步核查？
-Two fictional district-years from Dataset A. Start with the percentage among people with a usable result.	数据集 A 中两个虚构的地区和年份。先看已有可用检测结果的人群中的病毒抑制率。
-Reveal testing coverage and denominators	显示检测覆盖率及分母
-Synthetic training cases; not Lao PDR estimates. Dataset A is independent of B/C.	这些是合成教学案例，不是老挝估计值。数据集 A 与 B/C 相互独立。
-A map supports an investigation	一张地图如何帮助调查
-During the 1854 London cholera outbreak, John Snow investigated the link between illness and water supply. Mapping deaths helped communicate a pattern, alongside evidence about which water people used.	1854 年伦敦霍乱暴发期间，约翰·斯诺调查了患病与供水的关系。他把死亡病例标在地图上，并结合居民用水来源等证据解释空间分布。
-Discuss: what pattern can you see, what other evidence is needed, and what action could the evidence support? The map alone does not establish causation or measure the effect of removing a pump handle.	讨论：你看到什么分布？还需要哪些证据？可以采取什么行动？仅凭地图无法证明因果关系，也无法估计拆除水泵把手的效果。
-Map source: Wellcome Collection, Public Domain Mark	地图来源：Wellcome Collection，公有领域标记
-Keep the counts and denominators together	一起看人数和分母
-Fictional district	虚构地区
 Year	年份
-L: people living with HIV; D: diagnosed; A: on ART; T: with a usable viral-load result; S: suppressed among those with results.	L：HIV 感染者；D：已诊断；A：接受 ART；T：有可用病毒载量结果；S：有结果且病毒受到抑制。
-These synthetic nested counts are an illustration. S/T describes the tested group; it does not estimate suppression among all people on ART.	这些合成人数逐层包含。S/T 描述有结果的人群，不能据此估计所有 ART 患者的病毒抑制率。
-Dataset A: synthetic training counts, independent of the patient records in B/C.	数据集 A 为合成教学人数，与 B/C 的患者记录相互独立。
-Make the message easy to find	让读者一眼看懂主要发现
-Name the question and audience before choosing a chart.	选图前说明你的问题，以及谁需要答案。
-Show a clear comparison, with units and the denominator.	明确比较对象、单位和分母。
-Keep uncertainty and selection limits visible.	标明不确定性和样本选择的局限。
-Ask a partner to explain the chart without seeing your code.	请同伴在不看代码的情况下解释图表。
-Use Workflow to compare a bar chart and a sorted dot plot from the same summary. Decide which better answers your question.	在“工作流程”中用同一份汇总数据比较柱状图和排序点图，判断哪种更能回答你的问题。
-Claus O. Wilke: Make a figure for the generals	Claus O. Wilke：为决策者制作图表
 Session	课次
-Question, observation unit, codebook and denominator	问题、观测单位、数据字典与分母
-Review, join, summarise and visualise	质量核查、关联、汇总与可视化
-Statistical assumptions and careful interpretation	统计假设与审慎解释
-Reproducible reports, dashboards and peer review	可复现的报告、仪表板与同伴审阅
-In Workflow, use the original cats first, then the synthetic public health examples. Core activities and downloads work offline.	在“工作流程”里先使用猫咪数据，再尝试合成公共卫生示例。本地安装后，核心练习和导出可离线使用。
-AI chart comparison: a separate classroom exercise	课堂拓展：比较 AI 生成的图表
-Download the same synthetic data for each AI tool. Ask for several chart options. Check the numbers, denominator, labels, scales and message against R output. Record actual AI use and human verification. No AI connection is required inside this app.	给不同 AI 工具同一份合成数据，请它们提出多种图表。对照 R 结果核查数字、分母、标签、刻度和信息，记录实际使用的工具与人工复核结果。
-The communication project contains local RStudio, Quarto and Shiny starting points for Sessions 10-12.	结果沟通项目为第 10–12 节课提供本地 RStudio、Quarto 和 Shiny 示例。
-Your data workflow	你的数据工作流程
-Keep the input, record each decision, then communicate a result that another person can reproduce.	保存输入，记录每项决定，让别人能够复现你报告的结果。
-Teaching data	教学数据
 Example	示例
-Original cats	原始猫咪数据
-Second cat table	第二张猫咪表
-A: fictional district-year cascade	A：虚构地区的年度服务级联
-B: raw ART records	B：原始 ART 记录
-B: reference with review flags	B：含核查标记的参考记录
-C: fictional facilities	C：虚构卫生机构
-Load example	载入示例
-Your data	自己的数据
-Upload CSV or Excel	上传 CSV 或 Excel
-Or use an app dataset	或使用应用中的数据集
-Applied merge	已应用的合并结果
-Use this dataset	使用此数据集
-Current selection	当前选择
-Undo last step	撤销上一步
-Reset to input	恢复到输入数据
-The workflow keeps its own input snapshot. Changes on other app pages are imported only when you click Use this dataset.	工作流程保存自己的输入快照。从其他页面获取最新数据时，请点击“使用此数据集”。
-1 Understand	1 了解数据
-2 Review quality	2 核查质量
-3 Join and summarise	3 关联与汇总
-4 Visualise	4 可视化
-5 Communicate	5 结果沟通
-Source and scope	来源与范围
-What does one row represent?	每一行代表什么？
-Variable profile	变量概况
-Codebook and provenance	数据字典与来源
-Record keys	记录键
-Proposed key	拟用的键
-A blank is not zero. A missing result can be expected when no test was reported. Consult the codebook.	空白不等于零。如果没有报告检测，没有结果可能是预期情况。请查阅数据字典。
-Add an outlier/review flag	添加异常值或核查标记
-Numeric field	数值字段
-Screening rule	筛查规则
-IQR screen	四分位距筛查
-Documented limits	有依据的界限
-IQR multiplier	四分位距倍数
-Lowest allowed value	最低允许值
-Highest allowed value	最高允许值
-New flag column	新标记列名
-Also flag missing values for review	同时标记缺失值以供核查
-Add review flag	添加核查标记
-A flag requests review. It does not delete or cap a value.	标记用于提示核查，不会删除记录或截断数值。
-Standardise documented labels	按记录的规则统一标签
-Original field	原字段
-Source labels	原标签
-Documented replacement	有依据的替换值
-New standardised column	新的标准化列名
-Add or update standardised column	添加或更新标准化列
-Unselected labels remain unchanged. The original column is retained; unknown categories are not guessed.	保留原始列和未选中的标签，对未知类别不作推测。
-Check and join a reference table	核查并关联参考表
-Reference	参考表
-App Dataset 2	应用数据集 2
-Key in current records	当前记录的键
-Key in reference	参考表的键
-Expected relationship	预期的关联关系
-many-to-one	多对一
-one-to-one	一对一
-one-to-many	一对多
 many-to-many	多对多
-Check keys and join	核查键并关联
-Missing keys do not match. Overlapping non-key names receive .record and .reference suffixes. Facility location does not replace patient residence.	缺失键互不匹配。重名的非键列会加上 .record 或 .reference 后缀。机构所在地不能代替患者居住地。
-Declare the analysis sample	确定分析样本
-Exclude rows with these review flags (TRUE or unknown)	排除带有下列核查标记的行（TRUE 或未知）
-Apply flag-based selection	按标记筛选
-Optional category filter	可选类别筛选
 (none)	（无）
-Keep these values	保留这些值
-Keep missing values in this filter	此筛选中保留缺失值
-Apply category selection	按类别筛选
-Apply the S7 B-reference sample rule	应用第 7 课的 B 参考样本规则
-S7: retain records with record_action = retain and no age or ART review flag. The full input stays available.	第 7 课：保留 record_action = retain 且没有年龄或 ART 核查标记的记录。原始输入仍可查看。
-A percentage with a named denominator	计算分母明确的百分比
-Reported status field	报告状态字段
-Success label	成功标签
-Failure label	失败标签
 Group	分组
-Percentage = success / (success + failure) × 100. Other and blank statuses stay visible outside this denominator.	百分比 = 成功数 /（成功数 + 失败数）× 100。其他和空白状态另列，不计入此分母。
-Chart title	图表标题
-Subtitle	副标题
-X label and unit	横轴标签和单位
-Y label and unit	纵轴标签和单位
-Source, denominator and limitations	来源、分母和局限性
-Width (in)	宽度（英寸）
-Height (in)	高度（英寸）
 R code	R 代码
-Data to plot	绘图数据
-Selected records	已选记录
-Status summary	状态汇总
 Chart	图表
 Bar	柱状图
-Sorted dot	排序点图
 Density	密度图
 Line	折线图
 Scatter	散点图
 Box	箱线图
 Heatmap	热图
-Dumbbell	哑铃图
-Forest	森林图
-Cascade counts	级联计数图
-X / category / term	横轴 / 类别 / 项
-Y / estimate (none = count records for bars)	纵轴 / 估计值（柱状图选“无”时按记录计数）
-Facet	分面
-Heatmap value	热图数值
-Second value	第二个值
-Lower confidence limit	置信下限
-Upper confidence limit	置信上限
-Reference value	参考值
-Log estimate axis	估计值轴使用对数刻度
-Bins	分箱数
-Sort a single-series comparison	对单系列比较进行排序
-Values are percentages (0-100)	数值为百分比（0–100）
-Theme	主题
-Build a report from the current selected records and figure. Write the interpretation yourself and check it against the table.	使用当前选定的记录和图表生成报告。请自行撰写解释并对照表格核查。
-Report title	报告标题
-Research question	研究问题
-Analysis population, selection and method	分析人群、筛选和方法
-Denominator: percentage of whom?	分母：谁占谁的百分比？
-Main finding, supported by the output	由结果支持的主要发现
-Interpretation and limitations	解释与局限性
-Include the current figure	包含当前图表
-HTML layout	HTML 布局
 Report	报告
 Dashboard	仪表板
-Download HTML	下载 HTML
-Download reproducible project	下载可复现项目
-HTML opens offline. The project includes the input and selected data, preparation code, RStudio project, Quarto sources and a local Shiny dashboard. Review the text again if you change the data.	HTML 可离线打开。项目包含输入及选定的数据、整理代码、RStudio 项目、Quarto 源文件和本地 Shiny 仪表板。数据更改后请重新核查报告文字。
-Preparation and selection record	整理与样本筛选记录
-Preparation R code	数据整理 R 代码
 Missing data: beyond a single replacement	缺失数据：从单次填补到多重插补
 Use a controlled synthetic cat example to see why multiple imputation produces several completed datasets. The original missing weights stay visible.	用合成猫咪数据观察多重插补如何生成多个完整数据集，同时查看哪些体重原本缺失。
 Teaching simulation	教学模拟
@@ -1555,18 +1397,7 @@ Missingness pattern	缺失模式
 Fit the same model in each completed dataset, then pool estimates and uncertainty. Do not stack completed datasets and treat them as independent observations.	对每个插补数据集拟合同一模型，再合并估计值与不确定性。不要把多个插补数据集堆叠为独立观测。
 This example illustrates a method. Stable chains do not prove a real study's missingness assumptions. Uploaded patient data are not imputed by this lesson.	本例用于讲解方法。稳定的迭代链不能证明真实研究的缺失假设。本课不对上传的患者数据进行插补。
 mice: pooling documentation	mice：模型估计合并说明
-Public health: sample, test and interpretation	公共卫生：样本、检验与解释
-Reproduce the Lao workshop's fixed synthetic B/C example. Reported VL testing is the outcome; it is not viral suppression or verified result availability.	复现老挝培训的合成 B/C 示例。结局为是否报告病毒载量检测，不等同于病毒抑制或已核实有可用结果。
-Run the worked example	运行完整示例
-Sample and denominator	样本与分母
 Chi-square	卡方检验
-Logistic regression	逻辑回归
-Explain the result	解释结果
-Sex by known reported testing status, with the default Yates correction for a 2 × 2 table. Inspect expected counts as well as the test.	对性别与已知检测状态作 2 × 2 列联分析，采用默认的 Yates 连续性校正。请同时检查期望频数和检验结果。
-The crude and adjusted models use the same complete-predictor sample. Reference groups: Female and Health Center; age per 10 years, ART duration per 12 months.	粗模型与调整模型使用同一组预测变量完整的记录。参照组为女性和卫生中心；年龄以 10 年为单位，ART 时长以 12 个月为单位。
-An odds ratio is not a probability ratio. An interval including 1 does not demonstrate equality. A converged model does not establish valid inference.	优势比不同于概率比。区间包含 1 不能证明两组相等。模型收敛也不能确保推断有效。
-Ordinary Wald intervals and tests ignore correlation within facilities. Facility type as a predictor does not remove this issue. Selection, source flags, functional-form assumptions and unmeasured factors remain.	常规 Wald 区间和检验未考虑机构内的相关性。把机构类型作为预测变量并不能解决此问题，还应考虑样本选择、来源标记、函数形式和未测量因素。
-These synthetic examples support descriptive and modelling practice, not national, causal or clinical conclusions.	这些合成示例用于练习描述性统计和建模，不应用于作出国家层面、因果或临床结论。
 Is this data table tidy data?	这张表是整洁数据吗？
 It uses a multi-row header, which violates tidy data principles.	表头占了多行，不符合整洁数据原则。
 Each column should have a single, unique variable name.	每列应有一个唯一的变量名。
@@ -1808,48 +1639,12 @@ Please upload a valid file.	请上传有效文件。
 Please choose a CSV, XLS, or XLSX file.	请选择 CSV、XLS 或 XLSX 文件。
 The uploaded file has no columns.	上传的文件没有数据列。
 The uploaded file could not be read as a table.	无法以数据表的形式读取上传文件。
-Predict: is the higher percentage enough to judge overall performance?	先预测：仅凭较高的百分比，能判断整体服务表现吗？
-The two percentages describe different groups. Ask how people were selected for testing and whether those with results represent all ART patients. High coverage alone does not establish representativeness.	这两个百分比描述不同人群。请检查谁接受了检测，以及有结果的人能否代表所有 ART 患者。覆盖率高也不能单独证明样本具有代表性。
-Suppressed among those with results (S/T, %)	有结果者中的病毒抑制率（S/T，%）
-Result coverage among ART patients (T/A, %)	ART 患者的结果覆盖率（T/A，%）
 Case	案例
-Measure	指标
-Numerator	分子
-Denominator	分母
-Percent	百分比
-Diagnosed (D/L)	已诊断比例（D/L）
-ART among diagnosed (A/D)	已诊断者中接受 ART 的比例（A/D）
-Result coverage (T/A)	结果覆盖率（T/A）
-Suppression among results (S/T)	有结果者中的病毒抑制率（S/T）
-Living with HIV	HIV 感染者
-Diagnosed	已诊断
-On ART	接受 ART
-Usable result	有可用结果
-Suppressed	病毒已抑制
 People	人数
-District	地区
-Synthetic training counts	合成教学人数
 Imputing the synthetic cats	正在对合成猫咪数据进行插补
 Weight difference (kg) per cm of length	体长每增加 1 厘米的体重变化（千克）
 One model, different missing-data approaches	同一模型，不同缺失值处理方法
-Adjusted associations in the synthetic sample	合成样本中的调整后关联
-Odds ratio (ordinary 95% Wald CI)	优势比（常规 95% Wald 置信区间）
-Outcome: reported testing Yes vs No. Within-facility correlation is not accounted for.	结局：报告检测“是”与“否”。未考虑机构内相关性。
 Variable	变量
-Load or apply that dataset on the app's Import/Merge pages first.	请先在“导入”或“合并”页面载入或应用该数据集。
-There is no step to undo.	当前没有可以撤销的步骤。
-Choose a new, unused flag column name.	请输入尚未使用的新标记列名。
-Use a new output column; original fields are protected.	请输入新的输出列名，原字段受到保护。
-Choose source labels and a documented replacement.	请选择原标签，并输入有依据的替换值。
-Select at least one review flag.	请至少选择一个核查标记。
-Choose logical review flags.	请选择逻辑型核查标记。
-Choose a field for the category selection.	请选择用于类别筛选的字段。
-Load the Dataset B reference file with review flags first.	请先载入带核查标记的数据集 B 参考文件。
-Load the reference table first.	请先载入参考表。
-Select matching key columns.	请选择对应的键列。
-Choose a reported status field in Join and summarise.	请在“关联与汇总”中选择报告状态字段。
-Record the observation unit, sampling, measurement definitions, missing-value codes and provenance. The original cat example has no full collection protocol; do not infer representativeness.	请记录观测单位、抽样方法、测量定义、缺失编码和数据来源。猫咪示例没有完整的采集方案，请勿据此推断其代表性。
-Dataset A: each row is one fictional district-year. L = estimated people living with HIV; D = diagnosed; A = on ART; T = with a usable VL result; S = suppressed among T. See the bundled workbook's Codebook and Scenarios sheets. A is independent of B/C.	数据集 A：每行对应一个虚构地区和年份。L 为估计 HIV 感染人数，D 为已诊断人数，A 为接受 ART 人数，T 为有可用病毒载量结果人数，S 为 T 中病毒受到抑制的人数。参见工作簿的 Codebook 和 Scenarios 工作表。A 与 B/C 相互独立。
 Apply topics and restart	应用主题并重新开始
 Please keep at least one topic.	请至少保留一个主题。
 Quiz completed	测验已完成
@@ -1872,7 +1667,6 @@ The teacher cat	猫咪老师
 The cataScience teacher cat	cataScience 的猫咪老师
 Two silver tabby cats, one sleepy and one alert	两只银虎斑猫，一只打盹，一只警觉
 Import, tidy, transform, visualize, model, communicate	导入、整理、转换、可视化、建模、结果沟通
-John Snow map of recorded cholera deaths and water pumps around Broad Street	约翰·斯诺地图：宽街附近记录的霍乱死亡病例与水泵位置
 Weight (kg)	体重（千克）
 Dashed line = mean, solid line = median	虚线表示均值，实线表示中位数
 Standard deviations from the mean	距均值的标准差数
@@ -1916,3 +1710,87 @@ Classic app	经典版
 Workshop app	扩展培训版
 User guide	使用指南
 kNN imputation is available in the R app.	kNN 插补可在本地 R 版中使用。
+I am also a cat person.	我也是个爱猫的人。
+Imagine opening a cat café. Some cats enjoy meeting guests and others prefer a quiet corner. Could age, size, weight or neuter status help us understand their personalities?	想象你开了一家猫咖。有的猫喜欢迎接客人，有的更喜欢安静的角落。年龄、体型、体重或绝育状态能帮助我们了解它们的性格吗？
+Case 1 records the cats’ measurements. Case 2 records their personalities. Start in Import, inspect both tables, then join them by ID.	示例 1 记录身体特征，示例 2 记录性格。从“导入”开始，检查两张表，再按 ID 合并。
+Check the original records for Case 1	核对示例 1 的原始记录
+The café records give Trevor (a30) a length of 50 cm and Stanley (a08) a weight of 5.6 kg. Compare these with Case 1 before choosing a cleaning method.	猫咖原始记录中，Trevor（a30）的身长是 50 厘米，Stanley（a08）的体重是 5.6 公斤。请与示例 1 对照，再选择处理方法。
+Two small tables, four joins	两张小表，四种连接
+Only A1 appears in both tables. Predict which IDs each join keeps. These practice values are separate from the two Excel files.	只有 A1 同时出现在两张表中。先预测每种连接会保留哪些 ID。这个小例子独立于两份 Excel 猫表。
+Left table: names	左表：名字
+Right table: weights (kg)	右表：体重（千克）
+Choose a join to see its result	选择一种连接，查看结果
+NA means the other table has no record for that ID.	NA 表示另一张表中没有这个 ID 的记录。
+Review an AI analysis	审阅一份 AI 分析
+Image and asset credits	图片与素材来源
+The cat photographs, teaching illustrations and charts in this classroom are the author’s work or were generated with AI tools by the author. The navigation logo was generated from the author’s photograph of two silver tabby cats. These assets are distributed under the package MIT license.	课堂中的猫咪照片、教学插图和图表由作者创作，或由作者借助 AI 工具生成。导航图标以作者拍摄的两只银虎斑猫为原型。这些素材随包按 MIT 许可分发。
+The downloadable exercise archive includes the author’s cat tables and public WHO/UN indicator data. See the individual exercise materials for their data sources.	练习压缩包包含作者设计的猫表和世卫组织、联合国的公开指标数据。具体数据来源见相应练习材料。
+Review the evidence behind an AI-generated analysis before using it in a policy brief.	将 AI 生成的分析用于政策简报之前，先核查支持它的证据。
+Verify a source record	核对并更正原始记录
+Check a register or measurement sheet before changing a value. If you cannot verify it, leave it as recorded.	请先查阅登记册或测量记录，再录入核实值。查不到依据时，保留现有记录。
+Field to check	选择要核对的字段
+Record to check	选择要核对的记录
+Enter a verified value	录入核实值
+Source correction history	来源核对与更正记录
+Imported value	导入原值
+Analysis value	当前分析值
+Load a dataset on the Import page.	请先在“导入”页面载入数据。
+No missing cells to verify.	这张表中没有待核实的缺失值。
+Verified value	核实值
+Source checked	核对依据
+Cancel	取消
+Save correction	保存更正
+This record changed. Select the cell again.	该记录已发生变化，请重新选择。
+Enter the value from the source record.	请输入在原始记录中核实的值。
+Enter a valid value of the same type as the field.	请输入符合该字段类型的有效值。
+Identify the source you checked.	请填写核对过的来源。
+The analysis value already matches.	当前分析值与输入值一致。
+Correction saved to the analysis data.	更正已保存到分析数据。
+No source corrections recorded.	还没有手动更正记录。
+Record	记录
+Field	字段
+Previous value	更正前分析值
+Original import	查看原始导入表
+A table was reloaded. Preview and apply the join again.	有一张表已重新载入，请重新预览并应用连接。
+Select the merged cat tables to compare personality groups.	请先合并两张猫表，并在作图数据中选择“合并后”，即可比较不同性格组。
+No complete records for these fields.	这两个字段没有可用于比较的完整记录。
+Neutered	已绝育
+Number of cats	猫的只数
+Within-group percentage	组内百分比
+Weight must be numeric.	体重字段必须为数值。
+Mean weight	平均体重
+Every cat and the mean	每只猫的体重与组均值
+My data science report	我的数据分析报告
+Analysis dataset	分析数据集
+Selected chart	所选图形
+One finding	一条发现
+One limitation	一条局限
+Category order	类别排序
+Data order	数据原有顺序
+High to low	从高到低
+Low to high	从低到高
+Sort categories to compare size. Keep the natural order for months or ordered grades.	比较大小时可以按数值排序。月份、等级等有自然顺序的类别，宜保留原有顺序。
+Compare charts	对照看图
+Choose a comparison	选择对照练习
+Counts and within-group percentages	只数与组内百分比
+Mean weight and individual cats	平均体重与每只猫的观测值
+Each bar represents one personality group. Its n counts cats with known neuter status. Which group has the most neutered cats? Which has the highest proportion?	每根柱子表示一个性格组，n 是其中绝育状态已知的猫数。哪组已绝育的猫最多？哪组已绝育的比例最高？
+Each blue dot is one recorded weight. The diamond is the group mean. Compare the two panels before and after checking Stanley’s record.	每个蓝点是一只猫的实测体重，菱形是组均值。核对 Stanley 的体重前后，分别比较这两幅图。
+Communicate your finding	写下发现并导出报告
+Use the chart on this tab. Write what it shows and one limit on what you can conclude.	报告会使用当前选项卡的图。写下你观察到的一条发现，以及这张图能支持的结论有什么局限。
+Download one-page HTML report	下载单页 HTML 报告
+Missing	缺失
+Try four AI tasks, choose a prompting level and check the results.	尝试四个 AI 任务，选择提示词层次，然后核查结果。
+Four AI tasks	四个 AI 练习
+1. Ask a question in chat	1. 在普通对话中提出问题
+Give a chat assistant the fields in the two cat tables. Ask which personality group has the highest proportion of neutered cats.	告诉对话助手两张猫表有哪些字段，问它怎样找出已绝育比例最高的性格组。
+Ask a follow-up about the denominator. Check the numerator and denominator for one group against the merged table.	追问分母应如何定义，再用合并表核对一个组的分子和分母。
+2. Write and check R code with Posit Assistant	2. 用 Posit Assistant 编写和核查 R 代码
+In RStudio, ask for a short script to count missing weights and plot weight by personality. Run it, then introduce a misspelled field name and ask the assistant to explain the error.	在 RStudio 中请助手写一段脚本，统计缺失体重并按性格画体重图。运行后故意拼错一个字段名，再让助手解释报错。
+If tidyverse is unavailable, ask for base R. Check one cat by ID and one group mean by hand before asking for a spoken summary.	如果无法使用 tidyverse，就请助手用基础 R。按 ID 核对一只猫的记录，手算一组的均值，再请助手写一段口头汇报。
+3. Read sources with NotebookLM	3. 用 NotebookLM 核对资料并整理简报
+Supply two course documents and ask for a short briefing with a source passage for each claim. Ask which questions the documents leave open.	提供两份课程资料，请它写一份简报，为每条结论列出原文依据，并指出资料尚未回答的问题。
+Open each cited passage. Keep the claims you can trace and mark any disagreement between the documents.	打开每一处引用的原文，保留能核实的结论，标出两份资料意见不一致之处。
+4. Review a coding agent’s changes	4. 审查编程智能体的修改
+Give a coding agent such as Antigravity a copy of a small R project. Ask it to add category sorting to one chart and keep the input data intact.	交给 Antigravity 等编程智能体一份小型 R 项目的副本，请它为一张图增加类别排序，同时保留输入数据。
+Read the changed lines, run the project and compare the counts before and after sorting. Explain which changes you would accept.	阅读改动的代码，运行项目，核对排序前后的计数，然后说明你会接受哪些修改。

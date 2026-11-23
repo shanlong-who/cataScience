@@ -23,6 +23,18 @@ test_that("the example dataset loads through the import button", {
   })
 })
 
+test_that("outlier removal never consumes source shadow columns", {
+  env <- cata_app_env(c("app-function.R", "mod-cleaning.R"))
+  original <- data.frame(value = c(1:9, 100), shadow_note = rep("original note", 10))
+  rv <- shiny::reactiveVal(original)
+  shiny::testServer(env$cleaningServer, args = list(data_rv = rv), {
+    session$setInputs(outlier_variable = "value", deal_outlier_method = "remove", apply_outlier = 1)
+    expect_equal(nrow(rv()), 9)
+    expect_identical(names(rv()), names(original))
+    expect_true(all(rv()$shadow_note == "original note"))
+  })
+})
+
 test_that("dropping rows with missing values removes them from the dataset", {
   env <- cata_app_env(c("app-function.R", "mod-cleaning.R"))
   rv <- shiny::reactiveVal()

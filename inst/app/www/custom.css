@@ -90,6 +90,20 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
+/* Let the merge form grow vertically when a key list opens. */
+.merge-controls .form-group,
+.merge-controls .selectize-control {
+  margin-bottom: 0;
+}
+
+.merge-controls .selectize-dropdown {
+  position: static;
+}
+
+.merge-controls .selectize-dropdown-content {
+  max-height: 18rem;
+}
+
 /* ---- Hero (Home page) --------------------------------------------------- */
 
 .hero-card {
@@ -337,13 +351,7 @@
   background-color: rgba(0, 114, 178, 0.05) !important;
   color: #005a8e !important;
 }
-/* Extended workshop: readable projection and responsive lesson layout. */
-.workshop-hero { display: flex; align-items: center; gap: 28px; margin: 12px 0 28px; }
-.workshop-hero > div { flex: 1; }
-.workshop-hero > img { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; }
-.workshop-hero h1 { color: #00547f; font-weight: 700; }
 .shiny-plot-output { max-width: 100%; }
-@media (max-width: 700px) { .workshop-hero { display: block; } .workshop-hero > img { display: none; } }
 .cata-language-switch { white-space: nowrap; font-weight: 600; }
 [lang="zh-CN"] body { font-family: system-ui, "Microsoft YaHei", "PingFang SC", sans-serif; }
 @media (min-width: 992px) and (max-width: 1399px) {

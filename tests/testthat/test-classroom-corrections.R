@@ -1,0 +1,83 @@
+test_that("verified measurements flow through an applied join to a chart and report", {
+  local_app_dir()
+  env <- new.env(parent = globalenv())
+  source("app.R", local = env, encoding = "UTF-8")
+  shiny::testServer(env$server, {
+    session$setInputs(`ds1-demo` = 1, `ds2-demo` = 1, key1 = "id", key2 = "id", join = "left_join")
+    original <- df1()
+    session$setInputs(action_merge = 1)
+    session$setInputs(apply_merge = 1, vis_dataset = "merged", point_x = "length_cm",
+      point_y = "weight_kg", point_smooth = FALSE, flip = FALSE, chart_tab = "point")
+    expect_equal(df0()$weight_kg[df0()$id == "a08"], 56)
+    correct <- function(editor, id, field, value, source, attempt) {
+      prefix <- paste0("ds1-", editor, "_edit-")
+      set <- function(...) {
+        values <- list(...)
+        names(values) <- paste0(prefix, names(values))
+        do.call(session$setInputs, values)
+      }
+      set(field = field, record = paste0("1/", match(id, original$id)))
+      set(edit = attempt)
+      set(save = list(value = value, source = source))
+    }
+    correct("outlier", "a30", "length_cm", "50", "Measurement sheet", 1)
+    correct("outlier", "a08", "weight_kg", "five", "Measurement sheet", 2)
+    expect_equal(df1()$weight_kg[df1()$id == "a08"], 56)
+    correct("outlier", "a08", "weight_kg", "5.6", "", 3)
+    expect_equal(df1()$weight_kg[df1()$id == "a08"], 56)
+    correct("outlier", "a08", "weight_kg", "5.6", "Measurement sheet", 4)
+    # A synthetic verification supplied only by this test.
+    correct("missing", "a05", "weight_kg", "4.25", "Test register", 1)
+    expect_equal(df0()$length_cm[df0()$id == "a30"], 50)
+    expect_equal(df0()$weight_kg[df0()$id == "a08"], 5.6)
+    expect_equal(df0()$weight_kg[df0()$id == "a05"], 4.25)
+    expect_true(is.na(df0()$weight_kg[df0()$id == "a18"]))
+    expect_identical(report_plot()$data, df0())
+    log <- output[[ "ds1-outlier_edit-history" ]]$html
+    for (value in c(">56<", ">5.6<", ">5<", ">50<", ">NA<", "Test register"))
+      expect_match(log, value, fixed = TRUE)
+    session$setInputs(chart_tab = "compare", comparison = "shares")
+    expect_s3_class(report_plot(), "ggplot")
+    session$setInputs(comparison = "weights", chart_finding = "After review <5>", chart_limitation = "Small groups")
+    file <- output$classroom_html
+    html <- paste(readLines(file, warn = FALSE), collapse = "")
+    expect_match(html, "data:image/png;base64,", fixed = TRUE)
+    expect_match(html, "After review &lt;5&gt;", fixed = TRUE)
+    expect_match(html, "Small groups", fixed = TRUE)
+    session$setInputs(`ds1-reset_missing` = 1)
+    expect_identical(df1(), original)
+    expect_equal(df0()$weight_kg[df0()$id == "a08"], 56)
+    session$setInputs(`ds1-demo` = 2)
+    expect_error(df0(), "reloaded")
+  })
+})
+
+test_that("a correction follows the original row after removal, including for duplicate IDs", {
+  env <- cata_app_env(c("app-function.R", "mod-cleaning.R"))
+  df <- data.frame(id = c("same", "same", "same"), weight = c(NA, 56, 5), keep = c(NA, 1, 1))
+  rv <- shiny::reactiveVal(df)
+  shiny::testServer(env$cleaningServer, args = list(data_rv = rv), {
+    session$setInputs(deal_missing_method = "drop_na", missing_variable = "keep", apply_missing = 1)
+    session$setInputs(`outlier_edit-field` = "weight", `outlier_edit-record` = "0/2")
+    session$setInputs(`outlier_edit-edit` = 1)
+    session$setInputs(`outlier_edit-save` = list(value = "5.6", source = "Original row 2"))
+    expect_identical(rv()$weight, c(5.6, 5))
+    expect_identical(raw_rv(), df)
+    expect_identical(history()[["Imported value"]], "56")
+    session$setInputs(reset_outlier = 1)
+    expect_identical(rv(), df)
+    expect_equal(nrow(history()), 0)
+  })
+})
+
+test_that("bar order uses counts or pre-counted totals and respects ordered factors", {
+  env <- cata_app_env("classroom-figures.R")
+  d <- data.frame(group = c("B", "A", "A"), n = c(10, 2, 3))
+  order <- function(y, mode) levels(env$classroom_bar_data(d, "group", y, mode)$group)
+  expect_equal(order(NULL, "default"), c("B", "A"))
+  expect_equal(order(NULL, "descending"), c("A", "B"))
+  expect_equal(order("n", "descending"), c("B", "A"))
+  expect_equal(order("n", "ascending"), c("A", "B"))
+  d$group <- ordered(d$group, levels = c("A", "B"))
+  expect_identical(env$classroom_bar_data(d, "group", NULL, "default")$group, d$group)
+})

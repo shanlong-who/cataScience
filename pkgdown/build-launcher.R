@@ -4,13 +4,15 @@ library(jsonlite)
 write_cata_launcher <- function(site.dir) {
   template <- readLines("pkgdown/shinylive-launcher/index.html", encoding = "UTF-8")
   template <- gsub("{{loader_version}}", unname(tools::md5sum("pkgdown/shinylive-launcher/launch.js")), template, fixed = TRUE)
-  for (mode in c("workshop", "classic")) {
-    html <- gsub("{{edition}}", if (mode == "workshop") "Workshop" else "Classic", template, fixed = TRUE)
-    html <- gsub("{{root}}", if (mode == "workshop") "./" else "../", html, fixed = TRUE)
-    html <- gsub("{{launcher}}", if (mode == "workshop") "run_catas" else "run_cata", html, fixed = TRUE)
-    directory <- if (mode == "workshop") site.dir else file.path(site.dir, mode)
-    writeBin(charToRaw(paste0(paste(html, collapse = "\n"), "\n")), file.path(directory, "index.html"))
-  }
+  writeLines(template, file.path(site.dir, "index.html"), useBytes = TRUE)
+  legacy.dir <- file.path(site.dir, "classic")
+  dir.create(legacy.dir, recursive = TRUE, showWarnings = FALSE)
+  redirect <- c('<!doctype html><meta charset="utf-8"><title>cataScience</title>',
+    '<script>location.replace("../" + location.search + location.hash);</script>',
+    '<a href="../">Open cataScience</a>')
+  writeLines(redirect, file.path(legacy.dir, "index.html"), useBytes = TRUE)
+  old.bundle <- file.path(legacy.dir, "app.json")
+  if (file.exists(old.bundle) && !file.remove(old.bundle)) stop("Could not retire ", old.bundle)
   file.copy("pkgdown/shinylive-launcher/launch.js", site.dir, overwrite = TRUE)
   runtime.files <- c(
     "shinylive/shinylive.js", "shinylive/shinylive.css", "shinylive/style-resets.css",
@@ -23,8 +25,7 @@ write_cata_launcher <- function(site.dir) {
   package.files <- list.files(file.path(site.dir, "shinylive/webr/packages"), recursive = TRUE)
   paths <- unique(c(runtime.files, paste0("shinylive/webr/packages/", package.files)))
   describe_file <- function(path) list(path = path, bytes = unname(file.info(file.path(site.dir, path))$size))
-  manifest <- list(files = lapply(paths, describe_file), apps = list(
-    workshop = list(describe_file("app.json")), classic = list(describe_file("classic/app.json"))))
+  manifest <- list(files = lapply(c(paths, "app.json"), describe_file))
   stopifnot(all(vapply(manifest$files, function(file) is.finite(file$bytes), logical(1))))
   writeBin(charToRaw(paste0(toJSON(manifest, auto_unbox = TRUE, pretty = TRUE), "\n")),
     file.path(site.dir, "launch-manifest.json"))

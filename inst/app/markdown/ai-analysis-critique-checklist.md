@@ -1,8 +1,6 @@
 # AI-Generated Analysis Critique Checklist
 
-Use this checklist in Slot 2 when participants review an AI-generated
-analysis. The goal is not to catch every coding mistake. The goal is to decide
-whether the analysis is trustworthy enough to inform a policy brief.
+Review the evidence behind an AI-generated analysis before using it in a policy brief.
 
 ## 1. Data and indicator fit
 

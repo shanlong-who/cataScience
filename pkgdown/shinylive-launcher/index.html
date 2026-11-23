@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>cataScience {{edition}}</title>
-  <link rel="icon" type="image/png" href="{{root}}favicon-96x96.png">
+  <title>cataScience</title>
+  <link rel="icon" type="image/png" href="./favicon-96x96.png">
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; color: #173d50; background: #f5f8fb; font-family: system-ui, "Microsoft YaHei", sans-serif; }
@@ -29,12 +29,12 @@
     @media (max-width: 520px) { .launch-card { padding: 22px; } h1 { font-size: 1.35rem; } .brand img { width: 56px; height: 56px; } }
   </style>
 </head>
-<body data-root="{{root}}" data-edition="{{edition}}">
+<body>
   <section id="launch-panel" aria-label="App startup">
     <div class="launch-card">
       <div class="brand">
-        <img src="{{root}}favicon-96x96.png" alt="The two cataScience cats">
-        <div><h1 id="launch-title">cataScience {{edition}}</h1><span class="muted" id="launch-subtitle">A Journey of Data Science</span></div>
+        <img src="./favicon-96x96.png" alt="The two cataScience cats">
+        <div><h1 id="launch-title">cataScience</h1><span class="muted" id="launch-subtitle">A Journey of Data Science</span></div>
       </div>
       <p id="launch-status" role="status" aria-live="polite">Starting cataScience · 正在启动</p>
       <p id="launch-intro">The first visit downloads the app and its R packages. Keep this tab open. 首次访问需要下载应用和 R 包，请保持页面打开。</p>
@@ -52,13 +52,13 @@
         <pre>install.packages("remotes")
 remotes::install_github("shanlong-who/cataScience")
 library(cataScience)
-{{launcher}}()</pre>
+run_cata()</pre>
         <pre id="error-detail" hidden></pre>
       </details>
       <noscript><p>JavaScript is disabled. Enable it for this site to use the app, or use the local R commands above. 浏览器已禁用 JavaScript，请为本站启用，或使用上面的本地 R 命令。</p></noscript>
     </div>
   </section>
   <div id="root"></div>
-  <script src="{{root}}launch.js?v={{loader_version}}" defer></script>
+  <script src="./launch.js?v={{loader_version}}" defer></script>
 </body>
 </html>

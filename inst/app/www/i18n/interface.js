@@ -6,14 +6,13 @@
   const attributes = ['title', 'alt', 'placeholder', 'aria-label'];
   const ignored = 'script,style,pre,code,textarea,svg,canvas,.html-widget,.dataTables_wrapper,.dt-container,[contenteditable],#cata-language-switch';
   const fixedSelects = new Set(['join', 'bar_position', 'ds1-missing_params', 'ds2-missing_params',
-    'ds1-text_uppercase', 'ds2-text_uppercase', ...['example', 'existing', 'reference', 'relationship',
-      'plot_data', 'plot_type', 'style'].map(id => 'workflow-' + id)]);
+    'ds1-text_uppercase', 'ds2-text_uppercase']);
   let language = 'en';
   let button;
   function protectedText(element) {
     if (element.closest(ignored)) return true;
     const table = element.closest('table');
-    if (table && !table.closest('.md-page,.table-sm-tight,#why-cases,#why-ratios')) return true;
+    if (table && !table.closest('.md-page,.table-sm-tight')) return true;
     const picker = element.closest('select,.selectize-control,.selectize-dropdown');
     if (picker) {
       const select = picker.tagName === 'SELECT' ? picker : picker.closest('.shiny-input-container')?.querySelector('select');
@@ -79,12 +78,6 @@
     button.setAttribute('aria-label', next === 'zh' ? 'Switch to English' : '切换到简体中文');
     const guide = document.getElementById('cata-browser-guide');
     if (guide) guide.href = next === 'zh' ? guide.dataset.zhHref : guide.dataset.enHref;
-    const edition = document.getElementById('cata-browser-edition');
-    if (edition) {
-      const url = new URL(edition.href);
-      url.searchParams.set('lang', next);
-      edition.href = url.href;
-    }
     visit(document.body);
     notify();
   }
@@ -98,7 +91,7 @@
     }
     let saved;
     try { saved = localStorage.getItem('cataScience.language'); } catch (_) { /* Private browsing. */ }
-    // The two Shinylive editions run inside a same-origin launcher frame.
+    // The Shinylive app runs inside a same-origin launcher frame.
     let launcherLanguage;
     try { launcherLanguage = window.frameElement?.ownerDocument.body.dataset.cataLaunchLanguage; }
     catch (_) { /* Other hosts can embed the local app across origins. */ }

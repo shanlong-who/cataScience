@@ -4,6 +4,8 @@
 
 # ---- UI fragments -----------------------------------------------------------
 
+source("R/source-correction.R", local = TRUE, encoding = "UTF-8")
+
 cleaningImportUI <- function(id, label) {
   ns <- NS(id)
   card(
@@ -39,6 +41,8 @@ cleaningPreviewUI <- function(id) {
   ns <- NS(id)
   tagList(
     div(DTOutput(ns("datatable")), style = "clear: both; margin-bottom: 15px;"),
+    accordion(open = FALSE,
+      accordion_panel("Original import", DTOutput(ns("original_table")))),
     div(
       style = "overflow-x: auto; white-space: pre; clear: both; margin-top: 15px;",
       verbatimTextOutput(ns("glimpse"))
@@ -72,6 +76,7 @@ cleaningMissingUI <- function(id) {
         )
       )
     ),
+    nav_panel("Verify a source record", sourceCorrectionUI(ns("missing_edit"))),
     nav_panel(
       "Deal",
       layout_sidebar(
@@ -133,12 +138,12 @@ cleaningOutlierUI <- function(id) {
         plotlyOutput(ns("p_outlier"), height = "480px")
       )
     ),
+    nav_panel("Verify a source record", sourceCorrectionUI(ns("outlier_edit"))),
     nav_panel(
       "Deal",
       layout_sidebar(
         sidebar = sidebar(
           width = 320,
-          uiOutput(ns("missing_alert")),
           radioButtons(
             ns("deal_outlier_method"),
             "Please select a method:",
@@ -217,7 +222,27 @@ cleaningTextUI <- function(id) {
 cleaningServer <- function(id, data_rv, demo_file = NULL) {
   moduleServer(id, function(input, output, session) {
     # Untouched copy of the last import, for the reset buttons.
-    raw_rv <- reactiveVal(NULL)
+    initial <- isolate(data_rv())
+    raw_rv <- reactiveVal(initial)
+    rows <- reactiveVal(seq_len(NROW(initial)))
+    history <- reactiveVal(tibble())
+    generation <- reactiveVal(0L)
+    import.version <- reactiveVal(0L)
+    example <- reactiveVal(FALSE)
+    restore <- function(df) {
+      generation(generation() + 1L)
+      rows(seq_len(nrow(df)))
+      history(tibble())
+      data_rv(df)
+    }
+    load_data <- function(df, case.one = FALSE) {
+      raw_rv(df)
+      example(case.one)
+      import.version(import.version() + 1L)
+      restore(df)
+    }
+    sourceCorrectionServer("missing_edit", TRUE, data_rv, raw_rv, rows, history, generation, example)
+    sourceCorrectionServer("outlier_edit", FALSE, data_rv, raw_rv, rows, history, generation, example)
 
     # Friendly empty state shown in place of tables and plots before import.
     need_data <- function() {
@@ -232,8 +257,7 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       tryCatch(
         {
           df <- safe_import_data(input$file$datapath, input$file$name)
-          raw_rv(df)
-          data_rv(df)
+          load_data(df)
         },
         error = function(e) {
           showNotification(conditionMessage(e), type = "error")
@@ -246,8 +270,7 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       tryCatch(
         {
           df <- safe_import_data(demo_file)
-          raw_rv(df)
-          data_rv(df)
+          load_data(df, basename(demo_file) == "cat-dirty-data.xlsx")
           showNotification(
             paste("Example data loaded:", basename(demo_file)),
             type = "message"
@@ -265,7 +288,7 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       function(.id) {
         observeEvent(input[[.id]], {
           req(raw_rv())
-          data_rv(raw_rv())
+          restore(raw_rv())
           showNotification(
             "Dataset restored to the original import.",
             type = "message"
@@ -281,6 +304,10 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       },
       server = FALSE
     )
+    output$original_table <- renderDT({
+      need_data()
+      catatable(raw_rv())
+    }, server = FALSE)
     output$glimpse <- renderPrint({
       req(data_rv())
       old_width <- getOption("width")
@@ -316,13 +343,9 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       }
     })
 
-    df_drop_na <- reactive({
-      req(input$deal_missing_method == "drop_na")
-      if (length(missing_variable()) == 0) {
-        data_rv()
-      } else {
-        drop_na(data_rv(), missing_variable())
-      }
+    complete_rows <- reactive({
+      vars <- missing_variable()
+      if (length(vars)) stats::complete.cases(data_rv()[vars]) else rep(TRUE, nrow(data_rv()))
     })
 
     df_fill <- reactive({
@@ -361,7 +384,7 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       req(input$deal_missing_method)
       switch(
         input$deal_missing_method,
-        "drop_na" = df_drop_na(),
+        "drop_na" = data_rv()[complete_rows(), , drop = FALSE],
         "fill" = df_fill(),
         "mean" = df_mean(),
         "median" = df_median(),
@@ -371,7 +394,9 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
 
     observeEvent(input$apply_missing, {
       if (!is.null(input$deal_missing_method)) {
-        data_rv(df_no_missing())
+        cleaned <- df_no_missing()
+        if (input$deal_missing_method == "drop_na") rows(rows()[complete_rows()])
+        data_rv(cleaned)
       }
     })
 
@@ -426,18 +451,6 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       )
     })
 
-    output$missing_alert <- renderUI({
-      df <- data_rv()
-      req(df)
-      if (any_miss(df)) {
-        div(
-          class = "alert alert-warning py-2",
-          icon("triangle-exclamation"),
-          "Please deal with missing values first."
-        )
-      }
-    })
-
     outlier_variable <- reactive({
       req(data_rv())
       if (is.null(input$outlier_variable)) {
@@ -449,13 +462,9 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       }
     })
 
-    df_remove <- reactive({
-      if (length(outlier_variable()) == 0) {
-        data_rv()
-      } else {
-        keep <- Reduce(`&`, lapply(data_rv()[outlier_variable()], recognize_outlier))
-        data_rv()[keep, , drop = FALSE]
-      }
+    non_extreme_rows <- reactive({
+      vars <- outlier_variable()
+      if (length(vars)) Reduce(`&`, lapply(data_rv()[vars], recognize_outlier)) else rep(TRUE, nrow(data_rv()))
     })
 
     df_winsorize <- reactive({
@@ -472,14 +481,16 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       req(input$deal_outlier_method)
       switch(
         input$deal_outlier_method,
-        "remove" = df_remove(),
+        "remove" = data_rv()[non_extreme_rows(), , drop = FALSE],
         "winsorize" = df_winsorize()
       )
     })
 
     observeEvent(input$apply_outlier, {
       if (!is.null(input$deal_outlier_method)) {
-        data_rv(df_no_outlier())
+        cleaned <- df_no_outlier()
+        if (input$deal_outlier_method == "remove") rows(rows()[non_extreme_rows()])
+        data_rv(cleaned)
       }
     })
 
@@ -524,16 +535,22 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       )
     })
 
-    df_cleaned_text <- eventReactive(input$show_text, {
+    text.settings <- eventReactive(input$show_text, {
+      list(vars = input$text_variable, case = input$text_uppercase,
+           from = input$text_replace_from, to = input$text_replace_to, generation = generation())
+    })
+    df_cleaned_text <- reactive({
+      settings <- text.settings()
+      req(identical(settings$generation, generation()))
       req(data_rv())
       df_tmp <- data_rv()
       vars <- intersect(
-        input$text_variable,
+        settings$vars,
         names(select(df_tmp, where(is.character)))
       )
       if (length(vars) > 0) {
         fn <- switch(
-          input$text_uppercase,
+          settings$case,
           "ALL UPPER" = str_to_upper,
           "all lower" = str_to_lower,
           "Like Title" = str_to_title,
@@ -543,14 +560,14 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
           mutate(across(all_of(vars), fn))
         # Whole-cell replacement by exact match, not regex: trainee input like
         # "N/A (unknown)" must never be interpreted as a pattern.
-        if (input$text_replace_from != "") {
+        if (settings$from != "") {
           df_tmp <- df_tmp %>%
             mutate(
               across(
                 all_of(vars),
                 ~ if_else(
-                  .x == input$text_replace_from,
-                  input$text_replace_to,
+                  .x == settings$from,
+                  settings$to,
                   .x,
                   missing = .x
                 )
@@ -572,5 +589,6 @@ cleaningServer <- function(id, data_rv, demo_file = NULL) {
       },
       server = FALSE
     )
+    import.version
   })
 }

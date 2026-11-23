@@ -6,10 +6,8 @@ folder through `includeMarkdown()` (see `md_page()` in `R/app-function.R`).
 - `background-*.md` — the Background / methodology tabs on the Import,
   Cleaning, and Visualize pages.
 - `ai-safety.md` — the AI → AI safety page.
-- `training-playbook.md`, `lab-script-data-quality.md`,
-  `ai-analysis-critique-checklist.md`, `training-dataset-recommendation.md`
-  — the Training → Training guide panels.
-- `image-credits.md` — the Training → Credits page.
+- `ai-analysis-critique-checklist.md` — the checklist in AI-assisted analysis.
+- `image-credits.md` — sources for the app assets.
 - `images/` — figures referenced by the `.md` pages, served via
   `addResourcePath()` in `R/app-load.R`.
 

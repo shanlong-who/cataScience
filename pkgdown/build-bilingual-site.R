@@ -10,11 +10,17 @@ source("pkgdown/patch-search.R")
 args <- commandArgs(trailingOnly = TRUE)
 destination <- path_abs(if (length(args)) args[1] else "docs")
 dir_create(destination)
+# A previous build in this directory may still contain retired reference pages.
+retired <- c("reference/run_catas", "reference/cata_lao_analysis", "articles/training-guide")
+for (root in c(destination, file.path(destination, "zh"))) {
+  pages <- file.path(root, c(paste0(retired, ".html"), paste0(retired, ".md")))
+  file_delete(pages[file_exists(pages)])
+}
 build_site_github_pages(dest_dir = destination, clean = FALSE,
   new_process = FALSE, install = FALSE)
 
 # The overlay changes website text only. Package help and CRAN sources stay English.
-stage.dir <- path_abs(file.path("outputs", "website-source-zh"))
+stage.dir <- tempfile("cata-website-zh-")
 dir_create(stage.dir)
 for (directory in c("R", "man", "inst", "vignettes", "pkgdown")) {
   dir_copy(directory, file.path(stage.dir, directory), overwrite = TRUE)

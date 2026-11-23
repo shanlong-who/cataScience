@@ -6,7 +6,7 @@
   const progress = document.getElementById("launch-progress");
   const error = document.getElementById("launch-error");
   const retry = document.getElementById("retry");
-  const base = new URL(document.body.dataset.root, location.href);
+  const base = new URL("./", location.href);
   const preferenceKey = "cataScience.language";
   const requested = new URL(location.href).searchParams.get("lang");
   let saved;
@@ -51,9 +51,6 @@
   function render() {
     document.documentElement.lang = chinese ? "zh-CN" : "en";
     document.body.dataset.cataLaunchLanguage = chinese ? "zh" : "en";
-    const workshop = document.body.dataset.edition === "Workshop";
-    const edition = chinese ? (workshop ? "扩展培训版" : "经典版") : document.body.dataset.edition;
-    document.title = `cataScience ${edition}`;
     document.getElementById("launch-title").textContent = document.title;
     document.getElementById("launch-subtitle").textContent = chinese ? "数据科学之旅" : "A Journey of Data Science";
     status.textContent = text()[phase];
@@ -169,7 +166,7 @@
       const manifestResponse = await deadline(fetch(new URL("launch-manifest.json", base), { cache: "no-cache" }), "The download manifest could not be loaded.");
       if (!manifestResponse.ok) throw new Error(`Download manifest: HTTP ${manifestResponse.status}`);
       const manifest = await manifestResponse.json();
-      files = manifest.files.concat(manifest.apps[document.body.dataset.edition.toLowerCase()]);
+      files = manifest.files;
       files.sort((a, b) => b.bytes - a.bytes);
       phase = "downloading";
       render();
@@ -184,7 +181,7 @@
       }
       const module = await import(new URL("shinylive/shinylive.js", base));
       runtimeStarted = true;
-      await module.runExportedApp({ id: "root", appEngine: "r", relPath: document.body.dataset.root === "./" ? "" : document.body.dataset.root });
+      await module.runExportedApp({ id: "root", appEngine: "r", relPath: "" });
       const slow = setTimeout(() => { detail.textContent = text().slow; retry.hidden = false; document.getElementById("launch-help").open = true; }, 90000);
       const watch = setInterval(() => {
         const runtimeError = document.querySelector("#root .error-alert");

@@ -182,4 +182,4 @@ ggplot(comparison.data, aes(x = method, y = weight_kg, fill = method)) +
 
 在 **Quiz** 中选择练习涉及的主题并点击 **Apply topics and restart**。结合答案解释重新讨论决策，不只关注分数。
 
-较长的课程可继续学习 Statistics 或 AI 辅助分析。课程安排和审阅练习见[培训指南](training-guide.html)。
+较长的课程可继续学习 Statistics 或 AI 辅助分析。可在 AI 辅助分析页打开审阅清单。

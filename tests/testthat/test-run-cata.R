@@ -40,3 +40,8 @@ test_that("app_dependencies() covers every declared import", {
   # directly. An import added to DESCRIPTION but wired up nowhere fails here.
   expect_length(deps, length(setdiff(imports, "shiny")))
 })
+
+test_that("there is one public app launcher", {
+  exports <- getNamespaceExports("cataScience")
+  expect_identical(grep("^run_", exports, value = TRUE), "run_cata")
+})

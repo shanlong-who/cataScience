@@ -92,12 +92,13 @@ p_bar <- reactive({
   .x <- input$bar_x
   .group <- input$bar_group
   .facet <- input$bar_facet
+  df <- classroom_bar_data(df0(), .x, NULL, input$bar_order)
 
   if (!is.null(.group) && .group != "__none__") {
-    p <- ggplot(df0(), aes(.data[[.x]], fill = .data[[.group]])) +
+    p <- ggplot(df, aes(.data[[.x]], fill = .data[[.group]])) +
       geom_bar(color = "black", position = input$bar_position)
   } else {
-    p <- ggplot(df0(), aes(.data[[.x]])) +
+    p <- ggplot(df, aes(.data[[.x]])) +
       geom_bar(color = "black")
   }
 
@@ -115,12 +116,13 @@ p_col <- reactive({
   .y <- input$bar_y
   .group <- input$bar_group
   .facet <- input$bar_facet
+  df <- classroom_bar_data(df0(), .x, .y, input$bar_order)
 
   if (!is.null(.group) && .group != "__none__") {
-    p <- ggplot(df0(), aes(.data[[.x]], .data[[.y]], fill = .data[[.group]])) +
+    p <- ggplot(df, aes(.data[[.x]], .data[[.y]], fill = .data[[.group]])) +
       geom_col(color = "black", position = input$bar_position)
   } else {
-    p <- ggplot(df0(), aes(.data[[.x]], .data[[.y]])) +
+    p <- ggplot(df, aes(.data[[.x]], .data[[.y]])) +
       geom_col(color = "black")
   }
 
@@ -199,8 +201,9 @@ df0_count <- reactive({
   if (is.null(input$pie_x) || input$pie_x == "") {
     return(NULL)
   }
-  count(df0(), .data[[input$pie_x]]) %>%
-    set_names("label", "count")
+  counts <- count(df0(), .data[[input$pie_x]], sort = TRUE) %>% set_names("label", "count")
+  counts$label <- ifelse(is.na(counts$label), cata_label("Missing"), as.character(counts$label))
+  counts
 })
 
 pie_title <- reactive(paste0(title_lab(), "\n", subtitle_lab()))
@@ -214,7 +217,8 @@ p_pie <- reactive({
     df0_count(),
     labels = ~label,
     values = ~count,
-    type = "pie"
+    type = "pie", sort = FALSE, direction = "clockwise",
+    marker = list(colors = rep_len(okabe_ito, nrow(df0_count())))
   ) %>%
     layout(title = list(text = pie_title()))
 })
@@ -310,3 +314,38 @@ p_line <- reactive({
   if (input$flip) p <- p + coord_flip()
   p + labs(title = title_lab(), subtitle = subtitle_lab())
 })
+
+comparison_plot <- reactive({
+  validate_vis_data()
+  classroom_comparison(df0(), req(input$comparison))
+})
+output$classroom_comparison <- renderPlot(comparison_plot(), res = 96)
+
+report_plot <- reactive({
+  validate_vis_data()
+  switch(req(input$chart_tab),
+    bar = p_bar_col(), hist = p_hist(), density = p_den(), line = p_line(),
+    point = p_point(), box = p_box(), compare = comparison_plot(),
+    pie = {
+      counts <- req(df0_count())
+      counts$label <- factor(counts$label, levels = unique(counts$label))
+      ggplot(counts, aes(x = "", y = count, fill = label)) +
+        geom_col(width = 1, position = position_stack(reverse = TRUE)) +
+        geom_text(aes(label = scales::percent(count / sum(count), accuracy = 1)),
+          position = position_stack(vjust = 0.5, reverse = TRUE)) +
+        coord_polar(theta = "y") + theme_void() + palette_cat() +
+        labs(title = title_lab(), subtitle = subtitle_lab(), fill = input$pie_x)
+    })
+})
+output$report_link <- renderUI({
+  req(isTruthy(trimws(input$chart_finding)), isTruthy(trimws(input$chart_limitation)), report_plot())
+  downloadButton("classroom_html", cata_label("Download one-page HTML report"))
+})
+output$classroom_html <- downloadHandler(
+  filename = function() "cataScience-report.html", contentType = "text/html",
+  content = function(file) {
+    req(isTruthy(trimws(input$chart_finding)), isTruthy(trimws(input$chart_limitation)))
+    dataset <- switch(input$vis_dataset, ds1 = "Dataset 1", ds2 = "Dataset 2", merged = "Merged")
+    write_classroom_report(file, req(report_plot()), input$chart_finding, input$chart_limitation,
+      dataset, cata_session_language())
+  })

@@ -1,6 +1,6 @@
 Package: cataScience
 Title: Interactive Training App for Data Science and AI Skills
-Version: 2.2.0
+Version: 2.2.0.9000
 Authors@R: person(given = "Shanlong",
                   family = "Ding",
                   role = c("aut", "cre"),
@@ -10,11 +10,10 @@ Description: An interactive 'shiny' training companion for people who are
     new to data, developed for World Health Organization data trainings.
     Bundles hands-on modules for importing data, missing values, outliers,
     text cleaning, merging, visualization, and basic statistics, plus a set
-    of AI-skills pages (prompting levels, a prompt gallery, AI safety rules,
+    of AI-skills pages (prompting levels, four practical tasks, AI safety rules,
     and a methodology case study) and an interactive quiz with per-session
     topic filters. Includes reusable data-quality, plotting and reporting
-    functions and an extended workshop app with public health examples.
-    Launch the original app with run_cata() or the workshop with run_catas().
+    functions. Launch the cat classroom with run_cata().
 License: MIT + file LICENSE
 Language: en-US
 URL: https://github.com/shanlong-who/cataScience,

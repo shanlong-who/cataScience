@@ -2,7 +2,7 @@
 # ("AI-Empowered Data Analysis: From Code to System Thinking") and the
 # 2026-04-22 PHL-WCO Claude Cowork session. Three pages:
 #   ui_ai_prompting - the light / middle / strong prompting framework
-#   ui_ai_gallery   - copy-and-adapt prompt cards for everyday WHO tasks
+#   ui_ai_tasks     - four practical tasks from the Lao training
 #   ui_ai_case      - case study: AI applies an outdated WHO methodology
 
 # ---- Page 1: Prompting levels -------------------------------------------------
@@ -287,193 +287,21 @@ ui_ai_prompting <- div(
   )
 )
 
-# ---- Page 2: Prompt gallery ---------------------------------------------------
+# ---- Page 2: Four classroom tasks --------------------------------------------
 
-# Small helper for one gallery card: a category badge, a copyable prompt, and
-# an optional footer tip.
-gallery_card <- function(id, category, title, need, prompt, tip = NULL) {
-  card(
-    card_header(
-      div(
-        span(class = "badge bg-info quiz-topic-badge me-2", category),
-        span(title)
-      )
-    ),
-    markdown(paste0("**You need:** ", need)),
-    copy_button(id),
-    div(id = id, class = "prompt-block", prompt),
-    if (!is.null(tip)) card_footer(tip)
-  )
-}
-
-ui_ai_gallery <- div(
-  card(
-    card_header("Copy, paste, adapt 🧰"),
-    markdown(paste(
-      "Eight ready-made prompts for everyday WHO tasks, tested in live",
-      "training demos. To use one:",
-      "",
-      "1. Open your AI assistant — for example **Claude (claude.ai)**.",
-      "2. Copy a prompt below and replace everything in **[brackets]** with",
-      "   your own files, names, and context.",
-      "3. Iterate: \"shorter\", \"more formal\", \"as a table\", \"in",
-      "   Tagalog\" — the first answer is a draft, not the deliverable.",
-      "",
-      "Most cards need you to **upload a file** together with the prompt.",
-      sep = "\n"
-    ))
-  ),
-  layout_columns(
-    col_widths = c(6, 6),
-    gallery_card(
-      "pg_pdf",
-      "Data extraction", "PDF → Excel tables",
-      "a PDF report that contains tables (e.g. an indicator metadata annex).",
-      paste(
-        "Extract all tables from this PDF into a clean Excel file.",
-        "Each row should be one record and each column one field.",
-        "Keep all fields: names, definitions, numerators, denominators,",
-        "data sources, and everything else.",
-        "Tell me clearly if there is anything you could not extract.",
-        sep = "\n"
-      ),
-      "From a locked PDF to live data — no manual retyping."
-    ),
-    gallery_card(
-      "pg_docqa",
-      "Knowledge", "Talk to your 200-page report",
-      "a long guideline, strategy, or country cooperation document.",
-      paste(
-        "Give me a structured summary of this document: the main strategic",
-        "priorities, and for each one list 2-3 key actions.",
-        "",
-        "Then I will ask follow-up questions, for example:",
-        "- What does it say about [a topic]? Which sections mention it?",
-        "- What is the specific commitment?",
-        "- How does it align with the SDGs?",
-        sep = "\n"
-      ),
-      "Not a keyword search — a real conversation with the document."
-    ),
-    gallery_card(
-      "pg_photos",
-      "Reporting", "Photos → structured report",
-      "3-5 photos from a field visit, an office, or a facility.",
-      paste(
-        "I visited [a site]. Instead of a standard visit report, analyze",
-        "these photos as evidence of how the site works in practice.",
-        "For each photo, identify:",
-        "- what value or priority it demonstrates;",
-        "- how it connects to [your strategy or programme];",
-        "- what message it sends to staff and visitors.",
-        "Then produce a one-page structured report.",
-        sep = "\n"
-      ),
-      "The same places you walk past every day — AI finds meaning in the details."
-    ),
-    gallery_card(
-      "pg_slides",
-      "Productivity", "Data → slide deck",
-      "an Excel or CSV file with the data behind your briefing.",
-      paste(
-        "I have data on [topic, e.g. leading causes of death, by age group].",
-        "Create a 6-slide presentation for a briefing:",
-        "1. Title slide.",
-        "2. Overview of the key numbers, with a chart.",
-        "3. The main story in the data.",
-        "4. A hidden or surprising finding.",
-        "5. Implications for [your strategy or audience].",
-        "6. Key messages for leadership.",
-        "Keep the style professional and highlight surprising findings.",
-        sep = "\n"
-      ),
-      "From raw Excel to a ready-to-present deck, without opening PowerPoint."
-    ),
-    gallery_card(
-      "pg_audiences",
-      "Communication", "One message, 7 audiences",
-      "one core paragraph you need to communicate widely.",
-      paste(
-        "Adapt the message below for 7 different audiences. Preserve the",
-        "core meaning, but rework tone, vocabulary, length, and structure",
-        "for each. Don't translate - adapt.",
-        "1. A formal speech (about 60 words, diplomatic register).",
-        "2. A community health worker briefing in [local language]",
-        "   (warm, conversational, simple words).",
-        "3. A social media post (max 280 characters, one emoji).",
-        "4. A press release quote (1-2 sentences, quotable).",
-        "5. A children's version for a primary school health class",
-        "   (use an analogy a child understands).",
-        "6. A one-minute ministerial briefing (4-5 bullets).",
-        "7. A campaign slogan (max 10 words, rhythmic, memorable).",
-        "",
-        "[Paste your message here]",
-        sep = "\n"
-      ),
-      "Translation tools change words. A good prompt changes voice."
-    ),
-    gallery_card(
-      "pg_dashboard",
-      "Visualization", "Excel → interactive dashboard",
-      "a raw data export (e.g. GHO or SDG indicator data).",
-      paste(
-        "Here is indicator data for [indicator(s)] across countries and",
-        "years. Build an interactive dashboard focused on [country/region].",
-        "Include:",
-        "- summary metrics at the top;",
-        "- a trend chart comparing [country] with the regional average and",
-        "  key peers;",
-        "- a ranking chart of all countries, with [country] highlighted;",
-        "- a scatter plot of [indicator A] vs [indicator B].",
-        "Keep the design clean and professional. Use one highlight colour",
-        "so [country] stands out.",
-        sep = "\n"
-      ),
-      "Raw export → dashboard in under a minute. No BI software needed."
-    ),
-    gallery_card(
-      "pg_quiz",
-      "Engagement", "Team quiz game",
-      "nothing — it is generated live from one prompt.",
-      paste(
-        "Create an interactive quiz game with 10 questions about [topic].",
-        "- Mix easy and medium difficulty.",
-        "- Categories: [3-4 categories relevant to your team].",
-        "- Add a score tracker and a timer.",
-        "- Add a \"reveal answer\" button after each question.",
-        "- Finish with a celebratory screen showing the final score.",
-        sep = "\n"
-      ),
-      "From one prompt to a custom training tool — great as an ice-breaker."
-    ),
-    gallery_card(
-      "pg_browser",
-      "Automation", "Browser agent: fill a form",
-      "an AI tool that can control a browser (e.g. Claude in Chrome).",
-      paste(
-        "Open this form: [link].",
-        "Fill it in on my behalf with these details:",
-        "[your details, one per line]",
-        "Fill every field.",
-        "IMPORTANT: Do NOT click submit. Stop at the review stage so I can",
-        "check everything and submit it myself.",
-        sep = "\n"
-      ),
-      "Agents can click and type for you — but the human stays on the submit button."
-    )
-  ),
-  card(
-    card_header("From the gallery to your real work"),
-    markdown(paste(
-      "These prompts are **light-to-middle structure**: perfect for drafts,",
-      "exploration, and time-saving. When the output will feed a report, a",
-      "policy message, or a decision, upgrade to **strong structure**: define",
-      "the method, provide the metadata, and ask AI to state its assumptions.",
-      "See **AI → Prompting levels** for how, and **AI → AI safety** for the",
-      "rules that always apply.",
-      sep = "\n"
-    ))
-  )
+ui_ai_tasks <- tagList(
+  card(card_header("1. Ask a question in chat"),
+    p("Give a chat assistant the fields in the two cat tables. Ask which personality group has the highest proportion of neutered cats."),
+    p("Ask a follow-up about the denominator. Check the numerator and denominator for one group against the merged table.")),
+  card(card_header("2. Write and check R code with Posit Assistant"),
+    p("In RStudio, ask for a short script to count missing weights and plot weight by personality. Run it, then introduce a misspelled field name and ask the assistant to explain the error."),
+    p("If tidyverse is unavailable, ask for base R. Check one cat by ID and one group mean by hand before asking for a spoken summary.")),
+  card(card_header("3. Read sources with NotebookLM"),
+    p("Supply two course documents and ask for a short briefing with a source passage for each claim. Ask which questions the documents leave open."),
+    p("Open each cited passage. Keep the claims you can trace and mark any disagreement between the documents.")),
+  card(card_header("4. Review a coding agent’s changes"),
+    p("Give a coding agent such as Antigravity a copy of a small R project. Ask it to add category sorting to one chart and keep the input data intact."),
+    p("Read the changed lines, run the project and compare the counts before and after sorting. Explain which changes you would accept."))
 )
 
 # ---- Page 3: When AI gets it wrong --------------------------------------------

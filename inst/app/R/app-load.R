@@ -31,8 +31,5 @@ theme_set(theme_minimal_grid())
 # default.
 addResourcePath("images", "markdown/images")
 
-# Captured when the UI is built; the original launcher remains the default.
-cata_workshop <- isTRUE(getOption("cataScience.workshop", FALSE))
-
 # One offline catalogue is shared by the browser controls and R-rendered results.
 source("R/app-language.R", local = TRUE, encoding = "UTF-8")

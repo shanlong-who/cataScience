@@ -10,9 +10,7 @@ cata_example(name = NULL)
 \item{name}{Example name. NULL returns the catalogue.}
 }
 \value{
-A tibble with a \code{cata_source} attribute, or the catalogue. Teaching
-datasets A, B and C are synthetic. A is independent of B/C and must not
-be linked to individual ART records.
+A tibble with a \code{cata_source} attribute, or the catalogue.
 }
 \description{
 Load a documented example

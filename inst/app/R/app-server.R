@@ -13,8 +13,8 @@ server <- function(input, output, session) {
   df1 <- reactiveVal()
   df2 <- reactiveVal()
 
-  cleaningServer("ds1", df1, demo_file = "data/cat-dirty-data.xlsx")
-  cleaningServer("ds2", df2, demo_file = "data/cat-dirty-data2.xlsx")
+  import1 <- cleaningServer("ds1", df1, demo_file = "data/cat-dirty-data.xlsx")
+  import2 <- cleaningServer("ds2", df2, demo_file = "data/cat-dirty-data2.xlsx")
 
   # Merging ------------------------------------------------------------------
 
@@ -35,9 +35,10 @@ server <- function(input, output, session) {
     updateSelectizeInput(session, "key2", choices = names(df), selected = keep_selected)
   })
 
-  df_merged_applied <- reactiveVal(NULL)
+  applied.join <- reactiveVal(NULL)
   observeEvent(input$apply_merge, {
-    df_merged_applied(df_merged())
+    req(df_merged())
+    applied.join(join.preview())
     updateRadioButtons(session, "vis_dataset", selected = "merged")
   })
 
@@ -48,7 +49,7 @@ server <- function(input, output, session) {
       input$vis_dataset,
       ds1 = df1(),
       ds2 = df2(),
-      merged = df_merged_applied()
+      merged = joined_data(req(applied.join()))
     )
   })
 
@@ -143,10 +144,5 @@ server <- function(input, output, session) {
 
   quizServer("quiz", quiz_questions)
 
-  if (cata_workshop) {
-    whyServer("why")
-    workflowServer("workflow", reactive(list(ds1 = df1(), ds2 = df2(), merged = df_merged_applied())))
-    miServer("mi")
-    publicHealthServer("public")
-  }
+  miServer("mi")
 }

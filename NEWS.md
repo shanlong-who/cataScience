@@ -1,3 +1,11 @@
+# cataScience (development version)
+
+- Verify individual cells against source records in Missing data or Outliers. Original values and the source correction history are available throughout the session. Applied joins and charts follow the analysis values.
+- Compare counts with group percentages and mean weights with individual cats. Sort bar categories, export a chart with a finding and limitation to HTML, and try four practical AI tasks.
+- Use `run_cata()` for the English and Chinese cat classroom. Scripts using `run_catas()` should switch to `run_cata()`.
+- Retired `cata_lao_analysis()`, the Lao HIV example datasets and the trainer manual. The two original cat workbooks are unchanged.
+- Compare the four joins with two independent two-row tables in Cleaning > Merge > Methodology.
+
 # cataScience 2.2.0
 
 * Added a shared two-cat navbar icon and favicon based on the maintainer's

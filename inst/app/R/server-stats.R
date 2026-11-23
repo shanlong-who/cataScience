@@ -304,7 +304,7 @@ output$st_p_uhc_gdp <- renderPlotly({
   p <- ggplot(stats_df_uhc_gdp, aes(gdp_per_capita, sdg381, text = paste0("id: ", id))) +
     geom_point(color = "#0072B2", size = 2.5, alpha = .8) +
     geom_smooth(
-      aes(group = 1),
+      aes(x = gdp_per_capita, y = sdg381, group = 1), inherit.aes = FALSE,
       method = "lm", se = FALSE, color = "#D55E00"
     ) +
     scale_x_log10(labels = scales::label_comma()) +

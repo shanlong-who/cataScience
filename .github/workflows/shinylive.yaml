@@ -1,4 +1,4 @@
-name: Build Shinylive apps
+name: Build the Shinylive classroom
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
         with:
           extra-packages: any::shinylive, any::fs, any::jsonlite, local::.
           needs: website
-      - name: Build workshop and classic browser apps
+      - name: Build the classroom and legacy URL redirect
         run: Rscript pkgdown/build-shinylive.R outputs/shinylive
       - uses: actions/upload-artifact@v4
         with:

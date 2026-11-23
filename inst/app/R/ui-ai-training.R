@@ -220,12 +220,14 @@ ui_ai_training <- div(
       "",
       "Check five areas: **data and indicator fit**, **descriptive claims**,",
       "**causal language**, **bias and context**, **communication and policy",
-      "use**. The full checklist is in *Training → Training guide*.",
+      "use**.",
       "",
       "Finish with a two-sentence policy message: what does the evidence",
       "suggest, and what should decision-makers do next — with what",
       "uncertainty in mind?",
       sep = "\n"
     ))
-  )
+  ),
+  accordion(open = FALSE, accordion_panel("Review an AI analysis",
+    md_page("ai-analysis-critique-checklist.md")))
 )

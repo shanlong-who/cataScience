@@ -50,3 +50,31 @@ test_that("every image used by a markdown lesson exists", {
     }
   }
 })
+
+test_that("the four classroom joins use independent tables", {
+  local_app_dir()
+  env <- new.env(parent = globalenv())
+  source("app.R", local = env)
+  expect_identical(env$join.names$ID, c("A1", "A2"))
+  expect_identical(env$join.weights$ID, c("A1", "A3"))
+  # Exercise the merge handlers without rendering unrelated statistics plots.
+  join_server <- function(input, output, session) {
+    df1 <- shiny::reactiveVal(NULL)
+    df2 <- shiny::reactiveVal(NULL)
+    source("R/server-merging.R", local = TRUE, encoding = "UTF-8")
+  }
+  environment(join_server) <- env
+  shiny::testServer(join_server, {
+    expected <- list(left_join = c("A1", "A2"), right_join = c("A1", "A3"),
+                     inner_join = "A1", full_join = c("A1", "A2", "A3"))
+    for (method in names(expected)) {
+      session$setInputs(example_join = method)
+      html <- output$example_join_result$html
+      ids <- regmatches(html, gregexpr("A[123]", html))[[1]]
+      expect_identical(ids, expected[[method]])
+      expect_identical(grepl(">NA<", html), method != "inner_join")
+    }
+    expect_null(df1())
+    expect_null(df2())
+  })
+})

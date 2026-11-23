@@ -77,17 +77,10 @@ test_that("status summaries account for every row and retain missing groups", {
   expect_error(cata_count_status(data, "status", yes = "Yes", no = "Yes"), "distinct")
 })
 
-test_that("the workshop reproduces the course denominators and fixed model sample", {
-  lesson <- cata_lao_analysis()
-  expect_equal(lesson$flow$records, c(604, 604, 587, 582, 577, 575))
-  expect_equal(lesson$join_audit$unmatched_left_rows, 2)
-  out <- lesson$summary
-  expect_equal(out$records, out$yes + out$no + out$unknown + out$blank)
-  expect_equal(out$yes[out$group %in% "Hospital"], 200)
-  expect_equal(out$known[out$group %in% "Hospital"], 265)
-  expect_equal(out$yes[out$group %in% "Health Center"], 233)
-  expect_equal(out$known[out$group %in% "Health Center"], 315)
-  expect_equal(sum(lesson$model_data$vl_event), 430)
-  expect_equal(lesson$odds_ratios$estimate[1], 1.232142857, tolerance = 1e-7)
-  expect_equal(nrow(cata_example("cascade")), 15)
+test_that("the example catalogue loads both original cat tables", {
+  expect_identical(cata_example()$name, c("cats", "cats2"))
+  cats <- cata_example("cats")
+  expect_equal(cats$length_cm[cats$id == "a30"], 5)
+  expect_equal(cats$weight_kg[cats$id == "a08"], 56)
+  expect_setequal(cats$id, cata_example("cats2")$id)
 })
