@@ -12,9 +12,12 @@ home:
   description: 用交互式 R Shiny 应用学习数据导入、清理、可视化、统计分析与结果沟通。
 navbar:
   structure:
-    left: [app, intro, reference, articles, news]
+    left: [app, technical, reference, articles, news]
     right: [language, search, github]
   components:
+    technical:
+      text: 技术首页
+      href: technical.html
     app:
       text: 打开应用
       href: https://shanlong-who.github.io/cata/?lang=zh

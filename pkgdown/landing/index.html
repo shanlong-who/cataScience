@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="{{ language }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} · cataScience</title>
+  <meta name="description" content="{{ description }}">
+  <meta property="og:title" content="{{ title }} · cataScience">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:image" content="{{ image.url }}">
+  <link rel="canonical" href="{{ url }}">
+  <link rel="icon" href="{{ asset }}favicon.ico">
+  <link rel="stylesheet" href="{{ asset }}landing/classroom.css">
+  <script defer src="{{ asset }}landing/guide-links.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip">{{ skip }}</a>
+  <header class="wrap">
+    <a class="wordmark" href="index.html"><img src="{{ asset }}favicon-48x48.png" width="36" height="36" alt="">cataScience</a>
+    <nav aria-label="{{ nav }}"><a href="technical.html">{{ guide }}</a><a class="language" href="{{ other.path }}">{{ other }}</a></nav>
+  </header>
+  <main id="main" class="wrap">
+    <section class="hero" aria-labelledby="intro">
+      <div class="intro">
+        <h1 id="intro">{{ headline }} <em>{{ accent }}</em></h1>
+        <p class="lede">{{ description }}</p>
+        <a class="enter" href="{{ classroom }}">{{ enter }} <span aria-hidden="true">→</span></a>
+        <p class="browser-note">{{ browser }}</p>
+      </div>
+      <figure class="portrait">
+        <div class="portrait-art"><img src="{{ asset }}landing/cats.webp" width="760" height="760" alt="{{ alt }}"></div>
+        <figcaption><span>{{ caption }}</span><i aria-hidden="true"></i><span>cataScience</span></figcaption>
+      </figure>
+    </section>
+    <div class="workbench">
+      <section class="exercise" aria-labelledby="record">
+        <p class="kicker">{{ exercise }}</p>
+        <h2 id="record">{{ question }}</h2>
+        <p>{{ instruction }}</p>
+        <details><summary>{{ reveal }}</summary><div class="record-answer"><strong>5.6 kg</strong><p>{{ answer }}</p></div></details>
+      </section>
+      <section class="workbooks" aria-labelledby="data">
+        <h2 id="data">{{ data.title }}</h2>
+        <p>{{ data.intro }}</p>
+        <a download href="{{ asset }}landing/cat-dirty-data.xlsx"><span>{{ measures }}</span><small>XLSX&nbsp; ↓</small></a>
+        <a download href="{{ asset }}landing/cat-dirty-data2.xlsx"><span>{{ traits }}</span><small>XLSX&nbsp; ↓</small></a>
+      </section>
+    </div>
+    <section class="resources" aria-labelledby="more">
+      <h2 id="more">{{ more }}</h2>
+      <div class="resource-list">
+        <a href="articles/cataScience.html"><strong>{{ first }} <span aria-hidden="true">↗</span></strong><span>{{ first.text }}</span></a>
+        <a href="articles/data-quality-workflow.html"><strong>{{ workflow }} <span aria-hidden="true">↗</span></strong><span>{{ workflow.text }}</span></a>
+        <a href="technical.html"><strong>{{ guide }} <span aria-hidden="true">↗</span></strong><span>{{ guide.text }}</span></a>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap"><span>cataScience · Shanlong Ding</span><a href="news/index.html">{{ news }} {{ version }}</a></footer>
+</body>
+</html>

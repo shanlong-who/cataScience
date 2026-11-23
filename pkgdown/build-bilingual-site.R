@@ -6,6 +6,7 @@ library(withr)
 library(jsonlite)
 source("pkgdown/translate-interface.R")
 source("pkgdown/patch-search.R")
+source("pkgdown/build-home.R")
 
 args <- commandArgs(trailingOnly = TRUE)
 destination <- path_abs(if (length(args)) args[1] else "docs")
@@ -39,6 +40,13 @@ with_language("zh_CN", {
     clean = FALSE, new_process = FALSE, install = FALSE)
 })
 for (directory in c(destination, file.path(destination, "zh"))) patch_search(directory)
+asset.dir <- dir_create(file.path(destination, "landing"))
+for (file in c("pkgdown/landing/classroom.css", "pkgdown/landing/cats.webp",
+               "pkgdown/landing/guide-links.js", "inst/app/data/cat-dirty-data.xlsx",
+               "inst/app/data/cat-dirty-data2.xlsx")) {
+  file_copy(file, file.path(asset.dir, path_file(file)), overwrite = TRUE)
+}
+for (chinese in c(FALSE, TRUE)) build_home(destination, chinese)
 
 # Resolve the language switch at build time: no translation service or JS is needed.
 base.url <- "https://shanlong-who.github.io/cataScience/"
@@ -90,6 +98,10 @@ for (directory in c(destination, file.path(destination, "zh"))) {
   search <- fromJSON(search.file, simplifyVector = FALSE)
   for (i in seq_along(search)) {
     page <- sub(base.url, "", search[[i]]$path, fixed = TRUE)
+    if (length(page) == 1L && page %in% c("", "index.html", "zh/", "zh/index.html")) {
+      page <- if (startsWith(page, "zh/")) "zh/technical.html" else "technical.html"
+      search[[i]]$path <- paste0(base.url, page)
+    }
     # Search records without a page or fragment do not need an anchor rewrite.
     replacements <- if (length(page) == 1L && page %in% names(anchor.changes)) anchor.changes[[page]] else NULL
     if (length(search[[i]]$id) == 1L && search[[i]]$id %in% names(replacements)) {

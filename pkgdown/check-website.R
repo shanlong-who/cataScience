@@ -75,6 +75,24 @@ stopifnot(trimws(xml_text(xml_find_first(reference.zh, "//*[@id='ref-usage']")))
 stopifnot(xml_attr(xml_find_first(reference.zh, "//*[@id='search-input']"), "aria-label") == "搜索网站")
 # Simulate a build without Chinese message catalogs and preserve every code block.
 reference.en <- read_html(file.path(site.dir, "reference/cata_mice_demo.html"), encoding = "UTF-8")
+for (locale in c("", "zh")) {
+  home <- read_html(file.path(site.dir, locale, "index.html"), encoding = "UTF-8")
+  guide <- read_html(file.path(site.dir, locale, "technical.html"), encoding = "UTF-8")
+  lang <- if (locale == "zh") "zh" else "en"
+  other.home <- if (locale == "zh") "../index.html" else "zh/index.html"
+  other.guide <- if (locale == "zh") "../technical.html" else "zh/technical.html"
+  stopifnot(xml_attr(xml_find_first(home, "//a[@class='enter']"), "href") ==
+    paste0("https://shanlong-who.github.io/cata/?lang=", lang),
+    xml_attr(xml_find_first(home, "//nav//a[@hreflang]"), "href") == other.home,
+    xml_attr(xml_find_first(guide, "//nav//a[@hreflang]"), "href") == other.guide,
+    grepl("5.6 kg", xml_text(xml_find_first(home, "//details")), fixed = TRUE),
+    any(grepl('install.packages("cataScience")', xml_text(xml_find_all(guide, "//pre")), fixed = TRUE)),
+    length(xml_find_all(home, "//a[@download]")) == 2L)
+}
+for (book in c("cat-dirty-data.xlsx", "cat-dirty-data2.xlsx")) {
+  stopifnot(unname(tools::md5sum(file.path(site.dir, "landing", book))) ==
+    unname(tools::md5sum(file.path("inst/app/data", book))))
+}
 code.before <- xml_text(xml_find_all(reference.en, "//pre"))
 fallback.zh <- translate_interface(reference.en)
 stopifnot(trimws(xml_text(xml_find_first(fallback.zh, "//*[@id='ref-usage']"))) == "用法")

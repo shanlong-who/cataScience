@@ -18,9 +18,12 @@ home:
     visualizing and understanding data, with guided AI exercises and a quiz.
 navbar:
   structure:
-    left: [app, intro, reference, articles, news]
+    left: [app, technical, reference, articles, news]
     right: [language, search, github]
   components:
+    technical:
+      text: Technical guide
+      href: technical.html
     app:
       text: Open app
       href: https://shanlong-who.github.io/cata/
