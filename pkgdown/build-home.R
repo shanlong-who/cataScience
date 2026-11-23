@@ -50,6 +50,7 @@ build_home <- function(destination, chinese) {
     rel = "canonical", href = paste0(url, "technical.html"))
   xml2::write_html(technical, file.path(root, "technical.html"))
   values <- c(copy, asset = asset, url = url, classroom = classroom, guide = guide,
+    css.hash = unname(tools::md5sum("pkgdown/landing/classroom.css")),
     version = version, image.url = paste0(base.url, "landing/cats.webp"))
   template <- paste(readLines("pkgdown/landing/index.html", encoding = "UTF-8"), collapse = "\n")
   html <- stringr::str_replace_all(template, "\\{\\{ [a-z.]+ \\}\\}", function(matches) {
